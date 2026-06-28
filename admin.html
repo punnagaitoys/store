@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Admin Panel — Punnagai Toy Store Management">
+  <title>Admin Panel | Punnagai Toy Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+
+<!-- ================================================
+     LOGIN SCREEN
+================================================ -->
+<div id="admin-login-screen" class="admin-login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-icon">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <rect width="48" height="48" rx="14" fill="#15803D"/>
+          <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="Fredoka, sans-serif" font-size="28" font-weight="700" fill="white">K</text>
+        </svg>
+      </div>
+      <h1>Punnagai Admin</h1>
+      <p>Toy Store Management Panel</p>
+    </div>
+
+    <form id="admin-login-form" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="admin-email">Email Address</label>
+        <div class="input-wrapper">
+          <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <input
+            type="email"
+            id="admin-email"
+            class="form-control"
+            placeholder="admin@punnaagitoystore.com"
+            autocomplete="email"
+            required
+          >
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="admin-password">Password</label>
+        <div class="input-wrapper">
+          <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input
+            type="password"
+            id="admin-password"
+            class="form-control"
+            placeholder="Enter admin password"
+            autocomplete="current-password"
+            required
+          >
+          <button
+            type="button"
+            class="toggle-password-btn"
+            onclick="togglePasswordVisibility()"
+            aria-label="Toggle password visibility"
+          >
+            <svg id="eye-icon-show" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg id="eye-icon-hide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
+      </div>
+      <p id="login-error" class="error-text" role="alert" aria-live="polite"></p>
+      <button type="submit" id="login-btn" class="btn btn-primary btn-block">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        <span id="login-btn-text">Sign In</span>
+        <div class="btn-spinner" id="login-spinner" style="display:none"></div>
+      </button>
+    </form>
+
+    <p class="login-note">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Admin access only. If you are a customer, <a href="index.html">go to the store</a>.
+    </p>
+  </div>
+</div>
+
+
+<!-- ================================================
+     ADMIN PANEL (shown after login)
+================================================ -->
+<div id="admin-panel" class="admin-panel" style="display:none">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar" id="admin-sidebar">
+    <div class="admin-logo">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+        <rect width="36" height="36" rx="10" fill="rgba(255,255,255,0.15)"/>
+        <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="Fredoka, sans-serif" font-size="22" font-weight="700" fill="white">K</text>
+      </svg>
+      <span class="admin-logo-text">Punnagai Admin</span>
+    </div>
+
+    <nav class="admin-nav" role="navigation" aria-label="Admin navigation">
+
+      <button
+        class="admin-nav-item active"
+        data-section="dashboard"
+        onclick="showSection('dashboard')"
+        type="button"
+        aria-current="page"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <rect x="3" y="3" width="7" height="7"/>
+          <rect x="14" y="3" width="7" height="7"/>
+          <rect x="14" y="14" width="7" height="7"/>
+          <rect x="3" y="14" width="7" height="7"/>
+        </svg>
+        <span>Dashboard</span>
+      </button>
+
+      <button
+        class="admin-nav-item"
+        data-section="products"
+        onclick="showSection('products')"
+        type="button"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+          <line x1="12" y1="22.08" x2="12" y2="12"/>
+        </svg>
+        <span>All Products</span>
+      </button>
+
+      <button
+        class="admin-nav-item"
+        data-section="add-product"
+        onclick="showSection('add-product')"
+        type="button"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="16"/>
+          <line x1="8" y1="12" x2="16" y2="12"/>
+        </svg>
+        <span>Add Product</span>
+      </button>
+
+    </nav>
+
+    <div class="admin-sidebar-footer">
+      <div class="admin-user-info">
+        <div class="admin-user-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <p id="admin-user-email" class="admin-user-email">Loading...</p>
+      </div>
+      <button id="admin-logout-btn" class="logout-btn" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Logout
+      </button>
+      <a href="index.html" target="_blank" class="view-store-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        View Store
+      </a>
+    </div>
+  </aside>
+
+  <!-- Mobile sidebar toggle -->
+  <button class="sidebar-toggle-btn" id="sidebar-toggle" onclick="toggleAdminSidebar()" type="button" aria-label="Toggle sidebar">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+
+  <!-- ============================
+       ADMIN MAIN CONTENT
+  ============================ -->
+  <main class="admin-main" id="admin-main">
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- ── DASHBOARD SECTION ── -->
+    <div id="section-dashboard" class="admin-section">
+
+      <div class="admin-page-header">
+        <div>
+          <h1 class="admin-page-title">Dashboard</h1>
+          <p class="admin-page-subtitle">Welcome back! Here's what's happening at your store.</p>
+        </div>
+        <button
+          id="seed-btn"
+          class="btn btn-outline"
+          onclick="handleSeed()"
+          type="button"
+          style="display:none"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 0v20M2 12h20"/></svg>
+          Load Sample Products
+        </button>
+      </div>
+
+      <!-- Stat Cards -->
+      <div class="stat-cards">
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-green">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2" aria-hidden="true">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+              <line x1="12" y1="22.08" x2="12" y2="12"/>
+            </svg>
+          </div>
+          <div class="stat-card-info">
+            <p class="stat-label">Total Products</p>
+            <p class="stat-number" id="stat-total-products">–</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-amber">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" aria-hidden="true">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+          </div>
+          <div class="stat-card-info">
+            <p class="stat-label">Featured</p>
+            <p class="stat-number" id="stat-featured">–</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-blue">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" aria-hidden="true">
+              <path d="M9 12l2 2 4-4"/>
+              <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/>
+            </svg>
+          </div>
+          <div class="stat-card-info">
+            <p class="stat-label">In Stock</p>
+            <p class="stat-number" id="stat-in-stock">–</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-red">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2" aria-hidden="true">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </div>
+          <div class="stat-card-info">
+            <p class="stat-label">On Sale</p>
+            <p class="stat-number" id="stat-on-sale">–</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions-section">
+        <h2 class="quick-actions-title">Quick Actions</h2>
+        <div class="quick-actions">
+          <button class="quick-action-btn" onclick="showSection('add-product')" type="button">
+            <div class="quick-action-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            </div>
+            <span>Add New Product</span>
+          </button>
+          <button class="quick-action-btn" onclick="showSection('products')" type="button">
+            <div class="quick-action-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            </div>
+            <span>View All Products</span>
+          </button>
+          <a href="index.html" target="_blank" class="quick-action-btn">
+            <div class="quick-action-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+            <span>View Storefront</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Recent Products Preview -->
+      <div class="recent-products-section">
+        <div class="recent-header">
+          <h2 class="quick-actions-title">Recent Products</h2>
+          <button class="btn btn-outline btn-sm" onclick="showSection('products')" type="button">View All</button>
+        </div>
+        <div id="dashboard-recent-products" class="dashboard-recent-list">
+          <div class="loading-spinner-center"><div class="loading-spinner"></div></div>
+        </div>
+      </div>
+
+    </div>
+    <!-- / DASHBOARD SECTION -->
+
+
+    <!-- ── PRODUCTS LIST SECTION ── -->
+    <div id="section-products" class="admin-section" style="display:none">
+
+      <div class="admin-page-header">
+        <div>
+          <h1 class="admin-page-title">All Products</h1>
+          <p class="admin-page-subtitle" id="products-section-count">Loading products...</p>
+        </div>
+        <button class="btn btn-primary" onclick="showSection('add-product')" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Product
+        </button>
+      </div>
+
+      <!-- Products Search & Filter Bar -->
+      <div class="admin-table-toolbar">
+        <div class="admin-search-wrapper">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input
+            type="text"
+            id="admin-product-search"
+            class="admin-search-input"
+            placeholder="Search products..."
+            oninput="filterAdminProducts()"
+          >
+        </div>
+        <div class="admin-table-filters">
+          <select id="admin-cat-filter" class="admin-select" onchange="filterAdminProducts()">
+            <option value="">All Categories</option>
+            <option>Educational &amp; Learning</option>
+            <option>Building Blocks</option>
+            <option>Board Games &amp; Puzzles</option>
+            <option>Outdoor &amp; Sports</option>
+            <option>Arts &amp; Crafts</option>
+            <option>Dolls &amp; Fashion</option>
+            <option>Remote Control</option>
+            <option>Musical Toys</option>
+            <option>Soft Toys &amp; Plush</option>
+            <option>Action &amp; Adventure</option>
+          </select>
+          <select id="admin-stock-filter" class="admin-select" onchange="filterAdminProducts()">
+            <option value="">All Stock</option>
+            <option value="instock">In Stock</option>
+            <option value="outofstock">Out of Stock</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Products Table -->
+      <div class="table-container">
+        <table class="product-table" role="table" aria-label="Products list">
+          <thead>
+            <tr>
+              <th scope="col">Image</th>
+              <th scope="col">Name / Category</th>
+              <th scope="col">Price</th>
+              <th scope="col">Age Group</th>
+              <th scope="col">Status</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="admin-product-table-body">
+            <tr>
+              <td colspan="6" class="table-loading-cell">
+                <div class="loading-spinner" style="margin:auto"></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+    <!-- / PRODUCTS LIST SECTION -->
+
+
+    <!-- ── ADD / EDIT PRODUCT SECTION ── -->
+    <div id="section-add-product" class="admin-section" style="display:none">
+
+      <div class="admin-page-header">
+        <div>
+          <h1 class="admin-page-title" id="form-title">Add New Product</h1>
+          <p class="admin-page-subtitle" id="form-subtitle">Fill in the product details below</p>
+        </div>
+        <button class="btn btn-outline" onclick="showSection('products')" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Back to Products
+        </button>
+      </div>
+
+      <div class="form-card">
+        <form id="product-form" novalidate>
+          <!-- Hidden field for edit mode -->
+          <input type="hidden" id="f-product-id" value="">
+
+          <!-- Row 1: Name + Category -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="f-name">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                Product Name <span class="required-star">*</span>
+              </label>
+              <input
+                type="text"
+                id="f-name"
+                class="form-control"
+                placeholder="e.g. Wooden Rainbow Stacker"
+                required
+                maxlength="120"
+              >
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="f-category">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                Category <span class="required-star">*</span>
+              </label>
+              <select id="f-category" class="form-control" required>
+                <option value="">Select category...</option>
+                <option value="Educational &amp; Learning">Educational &amp; Learning</option>
+                <option value="Action &amp; Adventure">Action &amp; Adventure</option>
+                <option value="Board Games &amp; Puzzles">Board Games &amp; Puzzles</option>
+                <option value="Outdoor &amp; Sports">Outdoor &amp; Sports</option>
+                <option value="Arts &amp; Crafts">Arts &amp; Crafts</option>
+                <option value="Dolls &amp; Fashion">Dolls &amp; Fashion</option>
+                <option value="Remote Control">Remote Control</option>
+                <option value="Building Blocks">Building Blocks</option>
+                <option value="Musical Toys">Musical Toys</option>
+                <option value="Soft Toys &amp; Plush">Soft Toys &amp; Plush</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="form-group">
+            <label class="form-label" for="f-description">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>
+              Description <span class="required-star">*</span>
+            </label>
+            <textarea
+              id="f-description"
+              class="form-control form-textarea"
+              placeholder="Describe the toy, its features, materials, educational benefits, what makes it special..."
+              required
+              rows="4"
+              maxlength="1000"
+            ></textarea>
+            <small class="form-hint char-counter">
+              <span id="desc-char-count">0</span>/1000 characters
+            </small>
+          </div>
+
+          <!-- Row 2: Price + Original Price + Age Group -->
+          <div class="form-row form-row-3">
+            <div class="form-group">
+              <label class="form-label" for="f-price">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Price (₹) <span class="required-star">*</span>
+              </label>
+              <div class="input-with-prefix">
+                <span class="input-prefix">₹</span>
+                <input
+                  type="number"
+                  id="f-price"
+                  class="form-control"
+                  placeholder="499"
+                  min="0"
+                  step="1"
+                  required
+                >
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="f-original-price">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                Original Price (₹) <small class="form-label-hint">for sale items</small>
+              </label>
+              <div class="input-with-prefix">
+                <span class="input-prefix">₹</span>
+                <input
+                  type="number"
+                  id="f-original-price"
+                  class="form-control"
+                  placeholder="699"
+                  min="0"
+                  step="1"
+                >
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="f-age">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Age Group <span class="required-star">*</span>
+              </label>
+              <select id="f-age" class="form-control" required>
+                <option value="">Select age...</option>
+                <option value="0-2">Baby (0–2 years)</option>
+                <option value="3-5">Toddler (3–5 years)</option>
+                <option value="6-8">Kids (6–8 years)</option>
+                <option value="9-12">Tween (9–12 years)</option>
+                <option value="12+">Teen (12+ years)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Image URL -->
+          <div class="form-group">
+            <label class="form-label" for="f-image-url">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              Product Image URL <span class="required-star">*</span>
+            </label>
+            <input
+              type="url"
+              id="f-image-url"
+              class="form-control"
+              placeholder="https://example.com/toy-image.jpg"
+              oninput="updateImagePreview()"
+            >
+            <small class="form-hint">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Upload your image to <a href="https://imgbb.com" target="_blank" rel="noopener">imgbb.com</a> or Google Drive and paste the direct link here.
+            </small>
+            <!-- Image Preview -->
+            <div id="img-preview-wrapper" class="img-preview-wrapper" style="display:none">
+              <img id="img-preview" src="" alt="Product image preview" class="img-preview">
+              <button type="button" class="img-preview-clear" onclick="clearImagePreview()" aria-label="Clear image">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Row 3: Badge + (spacer) -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="f-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                Badge / Label
+              </label>
+              <select id="f-badge" class="form-control">
+                <option value="">None</option>
+                <option value="New">New</option>
+                <option value="Sale">Sale</option>
+                <option value="Best Seller">Best Seller</option>
+                <option value="Limited">Limited</option>
+                <option value="Popular">Popular</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <!-- Spacer -->
+            </div>
+          </div>
+
+          <!-- Image File Upload (optional → Firebase Storage + auto thumbnail) -->
+          <div class="form-group">
+            <label class="form-label" for="f-image-file">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Or Upload an Image File
+            </label>
+            <input
+              type="file"
+              id="f-image-file"
+              class="form-control"
+              accept="image/*"
+              onchange="handleImageFileSelect(event)"
+            >
+            <small class="form-hint">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Stored securely with an auto-generated thumbnail. In local mode the image is embedded directly.
+            </small>
+          </div>
+
+          <!-- Variants: Sizes × Colors → auto-generated SKUs (one per combination) -->
+          <div class="form-row form-row-3">
+            <div class="form-group">
+              <label class="form-label" for="f-sizes">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                Sizes <small class="form-label-hint">comma separated</small>
+              </label>
+              <input
+                type="text"
+                id="f-sizes"
+                class="form-control"
+                placeholder="e.g. Small, Medium, Large"
+                oninput="updateVariantPreview()"
+              >
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="f-colors">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+                Colors <small class="form-label-hint">comma separated</small>
+              </label>
+              <input
+                type="text"
+                id="f-colors"
+                class="form-control"
+                placeholder="e.g. Red, Blue"
+                oninput="updateVariantPreview()"
+              >
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="f-variant-stock">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                Initial Stock / Variant
+              </label>
+              <input
+                type="number"
+                id="f-variant-stock"
+                class="form-control"
+                placeholder="0"
+                min="0"
+                step="1"
+                value="0"
+              >
+            </div>
+          </div>
+          <p id="variant-preview" class="form-hint" style="margin-top:-4px"></p>
+
+          <!-- Toggles: In Stock + Featured -->
+          <div class="form-toggles-row">
+            <label class="toggle-label" for="f-in-stock">
+              <div class="toggle-wrapper">
+                <input type="checkbox" id="f-in-stock" class="toggle-input" checked>
+                <span class="toggle-slider"></span>
+              </div>
+              <div class="toggle-text">
+                <span class="toggle-title">In Stock</span>
+                <span class="toggle-desc">Product is available for purchase</span>
+              </div>
+            </label>
+
+            <label class="toggle-label" for="f-featured">
+              <div class="toggle-wrapper">
+                <input type="checkbox" id="f-featured" class="toggle-input">
+                <span class="toggle-slider"></span>
+              </div>
+              <div class="toggle-text">
+                <span class="toggle-title">Featured on Homepage</span>
+                <span class="toggle-desc">Show in the Featured Toys section</span>
+              </div>
+            </label>
+
+            <label class="toggle-label" for="f-new-arrival">
+              <div class="toggle-wrapper">
+                <input type="checkbox" id="f-new-arrival" class="toggle-input">
+                <span class="toggle-slider"></span>
+              </div>
+              <div class="toggle-text">
+                <span class="toggle-title">New Arrival</span>
+                <span class="toggle-desc">Show in the New Arrivals section</span>
+              </div>
+            </label>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <button type="submit" id="submit-product-btn" class="btn btn-primary btn-lg">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              <span id="submit-btn-text">Add Product</span>
+              <div class="btn-spinner" id="submit-spinner" style="display:none"></div>
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline btn-lg"
+              id="cancel-edit-btn"
+              onclick="cancelEditMode()"
+              style="display:none"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Cancel Edit
+            </button>
+            <button type="button" class="btn btn-ghost" onclick="resetProductForm()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+              Reset Form
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+    <!-- / ADD / EDIT PRODUCT SECTION -->
+
+  </main>
+  <!-- / ADMIN MAIN -->
+
+</div>
+<!-- / ADMIN PANEL -->
+
+
+<!-- ================================================
+     DELETE CONFIRM MODAL
+================================================ -->
+<div id="delete-modal" class="modal-overlay" style="display:none" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+  <div class="modal" role="document">
+    <div class="modal-icon modal-icon-danger">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2" aria-hidden="true">
+        <polyline points="3 6 5 6 21 6"/>
+        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+        <line x1="10" y1="11" x2="10" y2="17"/>
+        <line x1="14" y1="11" x2="14" y2="17"/>
+      </svg>
+    </div>
+    <h3 class="modal-title" id="delete-modal-title">Delete Product?</h3>
+    <p class="modal-desc">
+      Are you sure you want to delete <strong id="delete-product-name"></strong>?
+      <br>This action cannot be undone.
+    </p>
+    <div class="modal-actions">
+      <button class="btn btn-danger" onclick="executeDelete()" type="button" id="confirm-delete-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        Yes, Delete
+      </button>
+      <button class="btn btn-outline" onclick="closeDeleteModal()" type="button">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Sidebar Overlay (mobile) -->
+<div class="admin-sidebar-overlay" id="admin-sidebar-overlay" onclick="toggleAdminSidebar()" aria-hidden="true"></div>
+
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<!-- App Scripts -->
+<script src="js/firebase-config.js"></script>
+<script src="js/data.js"></script>
+<!-- Pure logic libs (product/variant builders, inventory, audit log) -->
+<script src="js/lib/products-model.js"></script>
+<script src="js/lib/inventory-model.js"></script>
+<script src="js/lib/audit.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/app.js"></script>
+<script src="js/admin.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', initAdminPage);
+
+  // Toggle mobile sidebar
+  function toggleAdminSidebar() {
+    const sidebar = document.getElementById('admin-sidebar');
+    const overlay = document.getElementById('admin-sidebar-overlay');
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('show');
+  }
+
+  // Toggle password visibility on login form
+  function togglePasswordVisibility() {
+    const input = document.getElementById('admin-password');
+    const showIcon = document.getElementById('eye-icon-show');
+    const hideIcon = document.getElementById('eye-icon-hide');
+    if (input.type === 'password') {
+      input.type = 'text';
+      showIcon.style.display = 'none';
+      hideIcon.style.display = 'block';
+    } else {
+      input.type = 'password';
+      showIcon.style.display = 'block';
+      hideIcon.style.display = 'none';
+    }
+  }
+
+  // Character counter for description textarea
+  const descTextarea = document.getElementById('f-description');
+  const descCounter = document.getElementById('desc-char-count');
+  if (descTextarea && descCounter) {
+    descTextarea.addEventListener('input', () => {
+      descCounter.textContent = descTextarea.value.length;
+    });
+  }
+
+  // Image preview on URL input
+  function updateImagePreview() {
+    const url = document.getElementById('f-image-url').value.trim();
+    const wrapper = document.getElementById('img-preview-wrapper');
+    const img = document.getElementById('img-preview');
+    if (url) {
+      img.src = url;
+      img.onload = () => { wrapper.style.display = 'block'; };
+      img.onerror = () => { wrapper.style.display = 'none'; };
+    } else {
+      wrapper.style.display = 'none';
+      img.src = '';
+    }
+  }
+
+  // Clear image preview
+  function clearImagePreview() {
+    document.getElementById('f-image-url').value = '';
+    document.getElementById('img-preview-wrapper').style.display = 'none';
+    document.getElementById('img-preview').src = '';
+  }
+</script>
+</body>
+</html>

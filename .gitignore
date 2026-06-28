@@ -1,0 +1,6 @@
+node_modules/
+.agents/
+.kiro/
+.vscode/
+.firebase/
+*.log

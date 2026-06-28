@@ -34,7 +34,10 @@
 // ============================================================
 
 const ADMIN_LOCAL_EMAIL = 'admin@punnaagitoystore.com';
-const ADMIN_LOCAL_PASSWORD = 'Punnagai@admin321';
+// Password is NOT stored in source. In local mode it is read at runtime from:
+//   localStorage.setItem('__punnagai_admin_env', JSON.stringify({ password: 'your-password' }))
+// Set this once in the browser console on your development machine.
+// In production, Firebase Auth handles authentication and this constant is unused.
 const ADMIN_SESSION_KEY = 'admin_session';
 const THUMBNAIL_MAX_PX = 240;
 
@@ -138,14 +141,26 @@ function handleAdminLogin(e) {
   setLoginLoading(true);
 
   if (window.USE_LOCAL_MODE) {
+    // Read the local admin password from runtime config (never stored in source)
+    let localAdminPassword = '';
+    try {
+      const envRaw = localStorage.getItem('__punnagai_admin_env');
+      if (envRaw) {
+        const envData = JSON.parse(envRaw);
+        localAdminPassword = envData && envData.password ? String(envData.password) : '';
+      }
+    } catch (e) { /* ignore parse errors */ }
+
     setTimeout(() => {
-      if (email === ADMIN_LOCAL_EMAIL && pass === ADMIN_LOCAL_PASSWORD) {
+      if (email === ADMIN_LOCAL_EMAIL && pass === localAdminPassword && localAdminPassword !== '') {
         sessionStorage.setItem(ADMIN_SESSION_KEY, 'true');
         setLoginLoading(false);
         enterAdminApp(ADMIN_LOCAL_EMAIL + ' (Local)');
       } else {
         setLoginLoading(false);
-        if (errEl) errEl.textContent = 'Invalid credentials. Try ' + ADMIN_LOCAL_EMAIL + ' / ' + ADMIN_LOCAL_PASSWORD;
+        if (errEl) errEl.textContent = localAdminPassword === ''
+          ? 'Local admin password not configured. Set it via: localStorage.setItem(\'__punnagai_admin_env\', JSON.stringify({ password: \'your-password\' })) in the browser console.'
+          : 'Invalid credentials. Please try again.';
       }
     }, 500);
   } else {

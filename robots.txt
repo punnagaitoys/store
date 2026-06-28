@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and private pages
+Disallow: /admin.html
+Disallow: /account.html
+Disallow: /checkout.html
+Disallow: /order-confirmation.html
+
+# Sitemap location
+Sitemap: https://punnagaitoystore.com/sitemap.xml

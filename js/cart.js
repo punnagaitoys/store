@@ -210,6 +210,14 @@ function buildWhatsAppMessage() {
 
   const subtotal = getCartSubtotal();
 
+  // Recompute discount from applied coupon
+  let discountAmount = 0;
+  if (appliedCouponRecord && appliedCouponCode) {
+    const res = cartValidateCoupon(appliedCouponCode, cart, appliedCouponRecord);
+    if (res.valid) discountAmount = res.discountAmount;
+  }
+  const total = Math.max(0, subtotal - discountAmount);
+
   let message = `Hello! 👋 I'd like to *pre-book* the following toys from *Punnagai Toy Store, Mylapore* 🎉\n\n`;
   message += `*My Order:*\n`;
 
@@ -218,8 +226,16 @@ function buildWhatsAppMessage() {
     message += `   Qty: ${item.quantity} × ${formatPrice(item.price)} = ${formatPrice(item.price * item.quantity)}\n`;
   });
 
-  message += `\n*Total: ${formatPrice(subtotal)}*\n\n`;
-  message += `Please confirm availability and let me know the next steps. Thank you! 🙏`;
+  message += `\n*Subtotal: ${formatPrice(subtotal)}*`;
+
+  if (discountAmount > 0) {
+    message += `\n*Discount (${appliedCouponCode}): −${formatPrice(discountAmount)}*`;
+    message += `\n*Total: ${formatPrice(total)}*`;
+  } else {
+    message += `\n*Total: ${formatPrice(total)}*`;
+  }
+
+  message += `\n\nPlease confirm availability and let me know the next steps. Thank you! 🙏`;
 
   return encodeURIComponent(message);
 }
@@ -430,6 +446,19 @@ function wireCartInteractions(itemsContainer, summaryContainer) {
         showToast('Your cart is empty!', 'error');
         return;
       }
+      // Save applied coupon state so checkout-page.js can pick it up
+      try {
+        if (appliedCouponCode && appliedCouponRecord) {
+          const cart = getCart();
+          const res = cartValidateCoupon(appliedCouponCode, cart, appliedCouponRecord);
+          sessionStorage.setItem('punnagai_checkout_coupon', JSON.stringify({
+            code: appliedCouponCode,
+            discount: res.valid ? res.discountAmount : 0
+          }));
+        } else {
+          sessionStorage.removeItem('punnagai_checkout_coupon');
+        }
+      } catch (_) { /* ignore storage errors */ }
       window.location.href = 'checkout.html';
     });
   }

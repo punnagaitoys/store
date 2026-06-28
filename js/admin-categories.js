@@ -1,5 +1,5 @@
 /**
- * admin-categories.js — Admin category & banner management (Punnagai / Kamaal Toy Store)
+ * admin-categories.js — Admin category & banner management (Punnagai / Punnagai Toy Store)
  *
  * Browser-side glue for Requirement 12 (Admin Panel — Category and Banner
  * Management). The PURE logic (product-count maintenance, idempotent product

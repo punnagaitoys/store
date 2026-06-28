@@ -1,5 +1,5 @@
 /**
- * category-banner-model.js — Pure category & banner logic (Punnagai / Kamaal Toy Store)
+ * category-banner-model.js — Pure category & banner logic (Punnagai / Punnagai Toy Store)
  *
  * Pure-logic module: NO DOM, NO Firebase, NO localStorage. Works in the browser
  * (as `window.PunnagaiCategoryBanner`) and under Node/Jest (via `module.exports`).

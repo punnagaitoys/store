@@ -1,5 +1,5 @@
 /**
- * shipping.js — Pure multi-region shipping logic (Punnagai / Kamaal Toy Store)
+ * shipping.js — Pure multi-region shipping logic (Punnagai / Punnagai Toy Store)
  *
  * Pure-logic module: NO DOM, NO Firebase, NO localStorage, NO direct network.
  * Works in the browser (as `window.PunnagaiShipping`) and under Node/Jest

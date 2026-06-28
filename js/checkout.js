@@ -1,5 +1,5 @@
 /**
- * checkout.js — UPI checkout orchestration (Punnagai / Kamaal Toy Store)
+ * checkout.js — UPI checkout orchestration (Punnagai / Punnagai Toy Store)
  *
  * Wires the pure order logic (`js/lib/order.js`), the cart persistence glue
  * (`js/lib/cart-storage.js`), and the data layer (`js/data.js`) into the

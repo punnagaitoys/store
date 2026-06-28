@@ -1,5 +1,5 @@
 /**
- * auth.js — Customer authentication glue (Punnagai / Kamaal Toy Store)
+ * auth.js — Customer authentication glue (Punnagai / Punnagai Toy Store)
  *
  * BROWSER GLUE (not a pure module): wraps the Firebase Auth compat SDK
  * (`window.auth` from `firebase-config.js`) and manages the customer session.
@@ -43,7 +43,7 @@
   const SESSION_KEY = 'punnagai_user';
 
   /** localStorage key holding mock-auth credentials (LOCAL MODE only). */
-  const MOCK_AUTH_KEY = 'kamaal_mock_auth';
+  const MOCK_AUTH_KEY = 'punnagai_mock_auth';
 
   // ──────────────────────────────────────────────────────────────────────
   // Dependency resolution (defensive — works even if load order slips).

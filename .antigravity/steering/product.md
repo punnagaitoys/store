@@ -1,6 +1,6 @@
 # Product Overview
 
-Punnagai Toy Store (also branded "Kamaal Toy Store") is a static marketing and catalog website for a physical toy shop located in Mylapore, Chennai, India.
+Punnagai Toy Store (also branded "Punnagai Toy Store") is a static marketing and catalog website for a physical toy shop located in Mylapore, Chennai, India.
 
 ## Purpose
 
@@ -18,5 +18,5 @@ Punnagai Toy Store (also branded "Kamaal Toy Store") is a static marketing and c
 
 ## Conventions
 
-- The brand appears as both "Punnagai" and "Kamaal" across files — preserve existing naming in each file unless asked to unify it.
+- The brand appears as both "Punnagai" and "Punnagai" across files — preserve existing naming in each file unless asked to unify it.
 - Contact details, store address, and the Google Maps pin contain placeholders (e.g. `[STORE-ADDRESS-PLACEHOLDER]`, `[PHONE-PLACEHOLDER]`) that are intentionally left for the store owner to fill in.

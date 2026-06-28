@@ -1,5 +1,5 @@
 /**
- * products-model.js — Pure product & variant model logic (Punnagai / Kamaal Toy Store)
+ * products-model.js — Pure product & variant model logic (Punnagai / Punnagai Toy Store)
  *
  * Pure-logic module: NO DOM, NO Firebase, NO localStorage. Works in the browser
  * (as `window.PunnagaiProductsModel`) and under Node/Jest (via `module.exports`).

@@ -1,5 +1,5 @@
 /**
- * admin-coupons.js — Admin discount & coupon management (Punnagai / Kamaal Toy Store)
+ * admin-coupons.js — Admin discount & coupon management (Punnagai / Punnagai Toy Store)
  *
  * Implements Requirement 11 (Admin Panel — Discount and Coupon Management):
  *  - 11.1/11.2/11.3: Create product discounts (percentage | fixed) and derive

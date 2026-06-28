@@ -1,5 +1,5 @@
 /**
- * validation.js — Pure form-validation logic (Punnagai / Kamaal Toy Store)
+ * validation.js — Pure form-validation logic (Punnagai / Punnagai Toy Store)
  *
  * Pure-logic module: NO DOM, NO Firebase, NO localStorage. Works in the browser
  * (as `window.PunnagaiValidation`) and under Node/Jest (via `module.exports`),

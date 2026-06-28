@@ -1,5 +1,5 @@
 /**
- * Firebase Configuration — Kamaal Toy Store
+ * Firebase Configuration — Punnagai Toy Store
  *
  * ⚠️  SETUP REQUIRED BEFORE THE WEBSITE WORKS
  * =============================================
@@ -7,11 +7,11 @@
  *
  * STEP 1 — Create a Firebase Project
  *   a. Go to https://console.firebase.google.com/
- *   b. Click "Add project" → name it "kamaal-toy-store" → Continue → Create project
+ *   b. Click "Add project" → name it "punnagai-toy-store" → Continue → Create project
  *
  * STEP 2 — Add a Web App
  *   a. In your project, click the </> (Web) icon
- *   b. App nickname: "Kamaal Toy Store Web" → Register app
+ *   b. App nickname: "Punnagai Toy Store Web" → Register app
  *   c. Copy the firebaseConfig object and paste it below (replacing the placeholders)
  *
  * STEP 3 — Enable Firestore Database
@@ -106,12 +106,12 @@ if (!window.USE_LOCAL_MODE) {
       db.useEmulator(hosts.firestore.host, hosts.firestore.port);
       auth.useEmulator(hosts.auth.url, { disableWarnings: true });
       if (storage) storage.useEmulator(hosts.storage.host, hosts.storage.port);
-      console.log('🧪 Firebase Emulator Suite connected — Kamaal Toy Store');
+      console.log('🧪 Firebase Emulator Suite connected — Punnagai Toy Store');
     } catch (err) {
       console.error('Failed to connect to Firebase Emulator Suite:', err);
     }
   } else {
-    console.log('🔥 Firebase initialized — Kamaal Toy Store');
+    console.log('🔥 Firebase initialized — Punnagai Toy Store');
   }
 } else {
   console.log('⚡ Local Mode Activated — Using LocalStorage instead of Firebase');

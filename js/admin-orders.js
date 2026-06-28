@@ -1,5 +1,5 @@
 /**
- * admin-orders.js — Admin order management & refunds (Punnagai / Kamaal Toy Store)
+ * admin-orders.js — Admin order management & refunds (Punnagai / Punnagai Toy Store)
  *
  * Implements Requirement 10 (Admin Panel — Order Management):
  *  - 10.1: list all orders with id, date, customer name, total, status.

@@ -103,7 +103,7 @@ const invalidPhoneArb = fc.oneof(
     })
     .map(({ lead, rest }) => lead + rest),
   // wrong length: too long (11+ digits, no recognized prefix)
-  fc.array(digitChar, { minLength: 11, maxLength: 14 }).map((d) => d.join('')),
+  fc.array(digitChar, { minLength: 11, maxLength: 14 }).map((d) => d.join('')).filter(s => !/^0/.test(s) && !/^91/.test(s)),
   // valid length but subscriber leads with 0-5 (disallowed)
   fc
     .record({

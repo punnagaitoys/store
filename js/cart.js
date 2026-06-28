@@ -134,19 +134,21 @@ function saveCart(cart) {
 // CART OPERATIONS
 // ============================================================
 
-function addToCart(product, quantity = 1) {
+function addToCart(product, quantity = 1, variant = null) {
   const snapshot = {
     productId: product.id,
-    variantId: product.variantId || '',
-    name: product.name,
-    price: product.price,
+    variantId: (variant && variant.variantId) ? variant.variantId : (product.variantId || ''),
+    name: product.name + (variant && variant.size ? ` - ${variant.size}` : '') + (variant && variant.color ? ` - ${variant.color}` : ''),
+    price: (variant && variant.price !== undefined) ? variant.price : product.price,
     imageUrl: product.imageUrl,
     category: product.category,
     ageGroup: product.ageGroup,
     quantity,
   };
   // Carry numeric stock through to the cart for the max-quantity rule, if known.
-  if (Number.isFinite(Number(product.stock))) {
+  if (variant && Number.isFinite(Number(variant.stock))) {
+    snapshot.stock = Number(variant.stock);
+  } else if (Number.isFinite(Number(product.stock))) {
     snapshot.stock = Number(product.stock);
   }
 
@@ -208,7 +210,7 @@ function buildWhatsAppMessage() {
 
   const subtotal = getCartSubtotal();
 
-  let message = `Hello! 👋 I'd like to *pre-book* the following toys from *Kamaal Toy Store, Mylapore* 🎉\n\n`;
+  let message = `Hello! 👋 I'd like to *pre-book* the following toys from *Punnagai Toy Store, Mylapore* 🎉\n\n`;
   message += `*My Order:*\n`;
 
   cart.forEach((item, index) => {

@@ -120,8 +120,8 @@ describe('data.js — product cache (1 hour)', () => {
 
     // A new write that bypasses cache invalidation should NOT appear until refresh,
     // proving the cached snapshot is being reused.
-    global.localStorage.setItem('kamaal_mock_products', JSON.stringify([
-      ...JSON.parse(global.localStorage.getItem('kamaal_mock_products')),
+    global.localStorage.setItem('punnagai_mock_products', JSON.stringify([
+      ...JSON.parse(global.localStorage.getItem('punnagai_mock_products')),
       { id: 'sneaky', name: 'Sneaky', description: '', price: 1, category: 'x', ageGroup: '0-2', imageUrl: '', inStock: true, featured: false, createdAt: Date.now() }
     ]));
 

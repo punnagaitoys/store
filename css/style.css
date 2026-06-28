@@ -7,20 +7,20 @@
    1. CSS VARIABLES & TOKENS
    ============================================================ */
 :root {
-  --primary: #15803D;
-  --primary-light: #22C55E;
-  --primary-dark: #14532D;
-  --accent: #F59E0B;
-  --accent-light: #FCD34D;
-  --bg: #F0FDF4;
+  --primary: #DC2626;
+  --primary-light: #EF4444;
+  --primary-dark: #991B1B;
+  --accent: #B91C1C;
+  --accent-light: #F87171;
+  --bg: #FEF2F2;
   --bg-white: #FFFFFF;
   --bg-card: #FFFFFF;
-  --text-primary: #14532D;
+  --text-primary: #450A0A;
   --text-secondary: #374151;
   --text-muted: #6B7280;
-  --border: #D1FAE5;
-  --border-dark: #BBF7D0;
-  --shadow-color: rgba(21, 128, 61, 0.1);
+  --border: #FEE2E2;
+  --border-dark: #FECACA;
+  --shadow-color: rgba(220, 38, 38, 0.1);
   --font-heading: 'Fredoka', sans-serif;
   --font-body: 'Nunito', sans-serif;
   --navbar-height: 72px;
@@ -29,9 +29,9 @@
   --radius-md: 16px;
   --radius-lg: 24px;
   --radius-xl: 40px;
-  --shadow-sm: 0 2px 8px rgba(21, 128, 61, 0.08);
-  --shadow-md: 0 4px 24px rgba(21, 128, 61, 0.12);
-  --shadow-lg: 0 8px 48px rgba(21, 128, 61, 0.18);
+  --shadow-sm: 0 2px 8px rgba(220, 38, 38, 0.08);
+  --shadow-md: 0 4px 24px rgba(220, 38, 38, 0.12);
+  --shadow-lg: 0 8px 48px rgba(220, 38, 38, 0.18);
   --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -693,7 +693,7 @@ p {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(21, 128, 61, 0.1);
+  background: rgba(220, 38, 38, 0.1);
   color: var(--primary);
   border-radius: var(--radius-xl);
   padding: 6px 16px;
@@ -701,7 +701,7 @@ p {
   font-weight: 600;
   font-family: var(--font-body);
   margin-bottom: 16px;
-  border: 1px solid rgba(21, 128, 61, 0.2);
+  border: 1px solid rgba(220, 38, 38, 0.2);
 }
 
 .hero-title {
@@ -741,7 +741,7 @@ p {
   width: 100%;
   max-width: 520px;
   border-radius: var(--radius-lg);
-  filter: drop-shadow(0 24px 48px rgba(21, 128, 61, 0.22));
+  filter: drop-shadow(0 24px 48px rgba(220, 38, 38, 0.22));
   animation: heroFloat 4s ease-in-out infinite;
 }
 
@@ -799,7 +799,7 @@ p {
 }
 
 .section-header .badge.badge-green {
-  background: rgba(21, 128, 61, 0.1);
+  background: rgba(220, 38, 38, 0.1);
   color: var(--primary);
 }
 
@@ -844,7 +844,7 @@ p {
 .age-icon {
   width: 56px;
   height: 56px;
-  background: rgba(21, 128, 61, 0.1);
+  background: rgba(220, 38, 38, 0.1);
   border-radius: 50%;
   margin: 0 auto 12px;
   display: flex;
@@ -1363,7 +1363,7 @@ p {
 
 .search-input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.1);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
 }
 
 .search-input::placeholder { color: var(--text-muted); }
@@ -1451,7 +1451,7 @@ p {
   letter-spacing: 0.05em;
 }
 
-.info-badge-cat { background: rgba(21, 128, 61, 0.1); color: var(--primary); }
+.info-badge-cat { background: rgba(220, 38, 38, 0.1); color: var(--primary); }
 .info-badge-age { background: rgba(245, 158, 11, 0.15); color: var(--accent); }
 
 .product-info-title {
@@ -1537,7 +1537,7 @@ p {
 .qty-btn:hover {
   border-color: var(--primary);
   color: var(--primary);
-  background: rgba(21, 128, 61, 0.05);
+  background: rgba(220, 38, 38, 0.05);
 }
 
 .qty-value {
@@ -1576,7 +1576,7 @@ p {
 .meta-icon {
   width: 36px;
   height: 36px;
-  background: rgba(21, 128, 61, 0.08);
+  background: rgba(220, 38, 38, 0.08);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -1879,7 +1879,7 @@ p {
 .coupon-input:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.12);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
 }
 
 .coupon-apply-btn {
@@ -1910,7 +1910,7 @@ p {
 .cart-note {
   margin-top: 16px;
   padding: 12px 16px;
-  background: rgba(21, 128, 61, 0.06);
+  background: rgba(220, 38, 38, 0.06);
   border-radius: var(--radius-sm);
   font-family: var(--font-body);
   font-size: 0.82rem;
@@ -1927,7 +1927,7 @@ p {
 .empty-cart-icon {
   width: 100px;
   height: 100px;
-  background: rgba(21, 128, 61, 0.08);
+  background: rgba(220, 38, 38, 0.08);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -2073,7 +2073,7 @@ p {
   flex-shrink: 0;
 }
 
-.stat-card-icon.green { background: rgba(21, 128, 61, 0.1); color: var(--primary); }
+.stat-card-icon.green { background: rgba(220, 38, 38, 0.1); color: var(--primary); }
 .stat-card-icon.blue { background: rgba(59, 130, 246, 0.1); color: #3B82F6; }
 .stat-card-icon.amber { background: rgba(245, 158, 11, 0.1); color: var(--accent); }
 .stat-card-icon.red { background: rgba(239, 68, 68, 0.1); color: #EF4444; }
@@ -2177,7 +2177,7 @@ p {
 .table-action-btn.edit:hover {
   border-color: var(--primary);
   color: var(--primary);
-  background: rgba(21, 128, 61, 0.05);
+  background: rgba(220, 38, 38, 0.05);
 }
 
 .table-action-btn.delete:hover {
@@ -2278,7 +2278,7 @@ p {
 
 .form-control:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.1);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
 }
 
 .form-select {
@@ -2303,7 +2303,7 @@ p {
 
 .form-select:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.1);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
 }
 
 .form-textarea {
@@ -2324,7 +2324,7 @@ p {
 
 .form-textarea:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.1);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
 }
 
 .form-grid-2 {
@@ -2693,7 +2693,7 @@ p {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: rgba(21, 128, 61, 0.1);
+  background: rgba(220, 38, 38, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3100,7 +3100,7 @@ p {
   font-size: 0.75rem;
   font-weight: 700;
   font-family: var(--font-body);
-  background: rgba(21, 128, 61, 0.1);
+  background: rgba(220, 38, 38, 0.1);
   color: var(--primary);
 }
 
@@ -3142,7 +3142,7 @@ input[type="range"]::-webkit-slider-thumb {
   border-radius: 50%;
   background: var(--primary);
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(21, 128, 61, 0.3);
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.3);
 }
 
 input[type="range"]::-moz-range-thumb {
@@ -3152,7 +3152,7 @@ input[type="range"]::-moz-range-thumb {
   background: var(--primary);
   cursor: pointer;
   border: none;
-  box-shadow: 0 2px 6px rgba(21, 128, 61, 0.3);
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.3);
 }
 
 input[type="checkbox"] { accent-color: var(--primary); cursor: pointer; }

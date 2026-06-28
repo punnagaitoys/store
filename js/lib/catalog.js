@@ -1,6 +1,6 @@
 /**
  * catalog.js — Pure product catalog filtering / search / sort engine
- * (Punnagai / Kamaal Toy Store)
+ * (Punnagai / Punnagai Toy Store)
  *
  * Pure-logic module: NO DOM, NO Firebase, NO localStorage. Works in the browser
  * (as `window.PunnagaiCatalog`) and under Node/Jest (via `module.exports`).

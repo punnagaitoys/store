@@ -1,5 +1,5 @@
 /**
- * order.js — Pure order logic (Punnagai / Kamaal Toy Store)
+ * order.js — Pure order logic (Punnagai / Punnagai Toy Store)
  *
  * Pure-logic module: NO DOM, NO Firebase, NO localStorage, NO direct network.
  * Works in the browser (as `window.PunnagaiOrder`) and under Node/Jest (via

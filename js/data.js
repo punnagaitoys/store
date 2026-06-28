@@ -20,19 +20,19 @@ const COLLECTIONS = {
 };
 
 // Products keep their legacy key for backwards compatibility with existing data.
-const LOCAL_STORAGE_KEY = 'kamaal_mock_products';
+const LOCAL_STORAGE_KEY = 'punnagai_mock_products';
 
 // LocalStorage keys for each Firestore collection (hybrid local mode).
 const LOCAL_STORAGE_KEYS = {
   [COLLECTIONS.PRODUCTS]: LOCAL_STORAGE_KEY,
-  [COLLECTIONS.USERS]: 'kamaal_mock_users',
-  [COLLECTIONS.ORDERS]: 'kamaal_mock_orders',
-  [COLLECTIONS.COUPONS]: 'kamaal_mock_coupons',
-  [COLLECTIONS.CATEGORIES]: 'kamaal_mock_categories',
-  [COLLECTIONS.BANNERS]: 'kamaal_mock_banners',
-  [COLLECTIONS.INVENTORY_LOGS]: 'kamaal_mock_inventory_logs',
-  [COLLECTIONS.SHIPPING_INTEGRATIONS]: 'kamaal_mock_shipping_integrations',
-  [COLLECTIONS.AUDIT_LOGS]: 'kamaal_mock_audit_logs'
+  [COLLECTIONS.USERS]: 'punnagai_mock_users',
+  [COLLECTIONS.ORDERS]: 'punnagai_mock_orders',
+  [COLLECTIONS.COUPONS]: 'punnagai_mock_coupons',
+  [COLLECTIONS.CATEGORIES]: 'punnagai_mock_categories',
+  [COLLECTIONS.BANNERS]: 'punnagai_mock_banners',
+  [COLLECTIONS.INVENTORY_LOGS]: 'punnagai_mock_inventory_logs',
+  [COLLECTIONS.SHIPPING_INTEGRATIONS]: 'punnagai_mock_shipping_integrations',
+  [COLLECTIONS.AUDIT_LOGS]: 'punnagai_mock_audit_logs'
 };
 
 // ============================================================
@@ -444,7 +444,7 @@ if (typeof window !== 'undefined' && window.USE_LOCAL_MODE) {
 // ============================================================
 
 function getLocalCollection(collectionName) {
-  const key = LOCAL_STORAGE_KEYS[collectionName] || ('kamaal_mock_' + collectionName);
+  const key = LOCAL_STORAGE_KEYS[collectionName] || ('punnagai_mock_' + collectionName);
   try {
     return JSON.parse(localStorage.getItem(key)) || [];
   } catch {
@@ -453,7 +453,7 @@ function getLocalCollection(collectionName) {
 }
 
 function saveLocalCollection(collectionName, records) {
-  const key = LOCAL_STORAGE_KEYS[collectionName] || ('kamaal_mock_' + collectionName);
+  const key = LOCAL_STORAGE_KEYS[collectionName] || ('punnagai_mock_' + collectionName);
   localStorage.setItem(key, JSON.stringify(records));
 }
 

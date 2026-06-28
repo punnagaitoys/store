@@ -1,5 +1,5 @@
 /**
- * admin-inventory.js — Admin bulk inventory upload (Punnagai / Kamaal Toy Store)
+ * admin-inventory.js — Admin bulk inventory upload (Punnagai / Punnagai Toy Store)
  *
  * Parses `.csv` (built-in) and `.xlsx` (via an injectable / CDN-loaded parser)
  * inventory files, validates SKU format and non-negative quantities, produces a

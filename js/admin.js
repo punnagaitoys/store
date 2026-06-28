@@ -1,5 +1,5 @@
 /**
- * admin.js — Admin Panel Controller (Punnagai / Kamaal Toy Store)
+ * admin.js — Admin Panel Controller (Punnagai / Punnagai Toy Store)
  *
  * Drives admin.html: authentication/session, dashboard stats, the products
  * table, and the add/edit product form. Implements Requirement 8 (Admin Panel —

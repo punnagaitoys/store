@@ -22,7 +22,7 @@
  * function guards against a missing/throwing store so it never crashes.
  *
  * This module is intentionally SEPARATE from `js/cart.js`, which uses its own
- * `kamaal_cart_v2` key for the WhatsApp pre-booking cart. The two do not share
+ * `punnagai_cart_v2` key for the WhatsApp pre-booking cart. The two do not share
  * state and must not interfere with each other.
  *
  * Requirements covered:

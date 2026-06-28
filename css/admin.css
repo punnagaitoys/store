@@ -8,13 +8,13 @@
    ---------------------------------------------------------------- */
 :root {
   --admin-sidebar-width: 260px;
-  --admin-primary:       #14532D;
-  --admin-primary-mid:   #15803D;
-  --admin-primary-light: #D1FAE5;
-  --admin-primary-pale:  #F0FDF4;
+  --admin-primary:       #991B1B;
+  --admin-primary-mid:   #DC2626;
+  --admin-primary-light: #FEE2E2;
+  --admin-primary-pale:  #FEF2F2;
   --admin-surface:       #ffffff;
   --admin-bg:            #F8FAFC;
-  --admin-border:        #D1FAE5;
+  --admin-border:        #FEE2E2;
   --admin-text:          #374151;
   --admin-text-muted:    #6B7280;
   --admin-danger:        #EF4444;
@@ -124,7 +124,7 @@
 
 .login-form-group input:focus {
   border-color: var(--admin-primary-mid);
-  box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.1);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
 }
 
 .error-text {
@@ -598,7 +598,7 @@
   gap: 3px;
 }
 
-.stat-change.positive { color: #15803D; }
+.stat-change.positive { color: #DC2626; }
 .stat-change.negative { color: var(--admin-danger); }
 .stat-change.neutral  { color: var(--admin-text-muted); }
 
@@ -787,7 +787,7 @@
 
 .admin-search:focus {
   border-color: var(--admin-primary-mid);
-  box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.08);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
 }
 
 .admin-search::placeholder {
@@ -1118,7 +1118,7 @@
 
 .form-control:focus {
   border-color: var(--admin-primary-mid);
-  box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.08);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
 }
 
 .form-control::placeholder {
@@ -1250,7 +1250,7 @@
 .image-upload-area.drag-over {
   border-color: var(--admin-primary-mid);
   background: #ECFDF5;
-  box-shadow: 0 0 0 4px rgba(21, 128, 61, 0.1);
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
 }
 
 .image-upload-area input[type="file"] {

@@ -76,11 +76,11 @@ function renderNavbar(activePage = '') {
         <div class="navbar-inner">
           <a href="index.html" class="navbar-logo">
             <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="20" cy="20" r="20" fill="#15803D"/>
+              <circle cx="20" cy="20" r="20" fill="#DC2626"/>
               <text x="20" y="26" text-anchor="middle" font-size="20" fill="white" font-family="Fredoka">K</text>
             </svg>
             <div class="logo-text-group">
-              <span class="logo-text">Kamaal</span>
+              <span class="logo-text">Punnagai</span>
               <span class="logo-sub">Toy Store</span>
             </div>
           </a>
@@ -165,7 +165,7 @@ function renderFooter() {
                 <circle cx="20" cy="20" r="20" fill="#22C55E"/>
                 <text x="20" y="26" text-anchor="middle" font-size="20" fill="white" font-family="Fredoka">K</text>
               </svg>
-              <span class="footer-brand-name">Kamaal Toy Store</span>
+              <span class="footer-brand-name">Punnagai Toy Store</span>
             </div>
             <p class="footer-tagline">Bringing joy and wonder to children across Mylapore and beyond. Quality toys for every age, every imagination.</p>
             <div class="footer-socials">
@@ -237,7 +237,7 @@ function renderFooter() {
         </div>
 
         <div class="footer-bottom">
-          <p>© 2025 Kamaal Toy Store, Mylapore, Chennai. All rights reserved.</p>
+          <p>© 2025 Punnagai Toy Store, Mylapore, Chennai. All rights reserved.</p>
           <div class="footer-bottom-links">
             <a href="privacy.html">Privacy</a>
             <a href="terms.html">Terms</a>
@@ -372,6 +372,18 @@ async function initHomePage() {
     newArrivalsContainer.innerHTML = newest.length
       ? renderGrid(newest)
       : '<p class="text-muted">No new arrivals available right now.</p>';
+  }
+
+  // Initialize YouTube Player (Req 19)
+  if (typeof window.PunnagaiYouTube !== 'undefined') {
+    const ytPlayer = new window.PunnagaiYouTube();
+    ytPlayer.render();
+  }
+
+  // Initialize Floating Reviews (Req 20)
+  if (typeof window.PunnagaiFloatingReviews !== 'undefined') {
+    window.PunnagaiFloatingReviewsInst = new window.PunnagaiFloatingReviews();
+    window.PunnagaiFloatingReviewsInst.loadReviews();
   }
 }
 
@@ -685,6 +697,9 @@ async function initShopPage() {
   render();
 }
 
+let currentProduct = null;
+let currentVariantSelection = { size: null, color: null };
+
 async function initProductPage() {
   renderNavbar('shop');
   renderFooter();
@@ -704,13 +719,92 @@ async function initProductPage() {
   }
 
   productCache[product.id] = product;
+  currentProduct = product;
+  currentVariantSelection = { size: null, color: null };
 
-  // Update Breadcrumb
+  if (window.PunnagaiProductDetail && window.PunnagaiProductDetail.hasVariants(product)) {
+    const firstVariant = window.PunnagaiProductDetail.getVariants(product)[0];
+    if (firstVariant) {
+      currentVariantSelection.size = firstVariant.size;
+      currentVariantSelection.color = firstVariant.color;
+    }
+  }
+
   const breadcrumbName = document.getElementById('breadcrumb-product-name');
   if (breadcrumbName) breadcrumbName.textContent = product.name;
 
-  const isOnSale = product.originalPrice && product.originalPrice > product.price;
-  const discount = isOnSale ? Math.round((1 - product.price / product.originalPrice) * 100) : 0;
+  renderProductDetailsUI();
+
+  const relatedContainer = document.getElementById('related-products-grid');
+  if (relatedContainer) {
+    let filtered = [];
+    if (window.PunnagaiProductDetail) {
+      const allProducts = await getAllProductsCached();
+      filtered = window.PunnagaiProductDetail.getRelatedProducts(allProducts, product, { limit: 4 });
+    } else {
+      const related = await getProducts({ category: product.category });
+      filtered = related.filter(p => p.id !== product.id).slice(0, 4);
+    }
+    
+    if (filtered.length > 0) {
+      document.getElementById('related-section').style.display = 'block';
+      relatedContainer.innerHTML = filtered.map(p => { productCache[p.id] = p; return renderProductCard(p); }).join('');
+    }
+  }
+}
+
+function renderProductDetailsUI() {
+  const product = currentProduct;
+  if (!product) return;
+
+  let displayInfo;
+  if (window.PunnagaiProductDetail) {
+    displayInfo = window.PunnagaiProductDetail.getDisplayPriceInfo(product, currentVariantSelection);
+  } else {
+    const isOnSale = product.originalPrice && product.originalPrice > product.price;
+    displayInfo = {
+      original: product.originalPrice || product.price,
+      discounted: product.price,
+      hasDiscount: isOnSale,
+      stock: { inStock: product.inStock !== false, stock: 1, status: 'in-stock' }
+    };
+  }
+
+  const discountPct = displayInfo.original > 0 
+    ? Math.round((1 - displayInfo.discounted / displayInfo.original) * 100) 
+    : 0;
+
+  let selectorsHtml = '';
+  if (window.PunnagaiProductDetail && window.PunnagaiProductDetail.hasVariants(product)) {
+    const variants = window.PunnagaiProductDetail.getVariants(product);
+    const sizes = [...new Set(variants.map(v => v.size).filter(Boolean))];
+    const colors = [...new Set(variants.map(v => v.color).filter(Boolean))];
+
+    if (sizes.length > 0) {
+      selectorsHtml += `<div class="variant-selector" style="margin-bottom: 12px;">
+        <label style="display:block; margin-bottom:4px; font-weight:600; font-size:14px; color:var(--text-secondary)">Size</label>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          ${sizes.map(sz => `
+            <button class="btn ${currentVariantSelection.size === sz ? 'btn-primary' : 'btn-outline'}" 
+                    style="padding: 4px 12px; font-size: 14px;"
+                    onclick="handleVariantSelect('size', '${sz}')">${sz}</button>
+          `).join('')}
+        </div>
+      </div>`;
+    }
+    if (colors.length > 0) {
+      selectorsHtml += `<div class="variant-selector" style="margin-bottom: 16px;">
+        <label style="display:block; margin-bottom:4px; font-weight:600; font-size:14px; color:var(--text-secondary)">Color</label>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          ${colors.map(col => `
+            <button class="btn ${currentVariantSelection.color === col ? 'btn-primary' : 'btn-outline'}" 
+                    style="padding: 4px 12px; font-size: 14px;"
+                    onclick="handleVariantSelect('color', '${col}')">${col}</button>
+          `).join('')}
+        </div>
+      </div>`;
+    }
+  }
 
   const html = `
     <div class="product-detail-layout">
@@ -728,11 +822,14 @@ async function initProductPage() {
         <h1 class="detail-title">${product.name}</h1>
         <div class="detail-price-box">
           <div style="display:flex;align-items:center;margin-bottom:8px">
-            <span class="detail-current-price">₹${product.price.toLocaleString('en-IN')}</span>
-            ${isOnSale ? `<span class="detail-original-price">₹${product.originalPrice.toLocaleString('en-IN')}</span>` : ''}
+            <span class="detail-current-price">₹${displayInfo.discounted.toLocaleString('en-IN')}</span>
+            ${displayInfo.hasDiscount ? `<span class="detail-original-price">₹${displayInfo.original.toLocaleString('en-IN')}</span>` : ''}
           </div>
-          ${isOnSale ? `<div class="discount-tag" style="display:inline-block">You save ${discount}%!</div>` : ''}
+          ${displayInfo.hasDiscount ? `<div class="discount-tag" style="display:inline-block">You save ${discountPct}%!</div>` : ''}
         </div>
+        
+        ${selectorsHtml}
+
         <div class="detail-description">
           <p>${product.description}</p>
         </div>
@@ -740,11 +837,11 @@ async function initProductPage() {
         <div class="add-to-cart-box">
           <div class="qty-selector">
             <button class="qty-btn" onclick="let inp=document.getElementById('detail-qty'); if(inp.value>1)inp.value--">-</button>
-            <input type="number" id="detail-qty" class="qty-input" value="1" min="1" max="10">
-            <button class="qty-btn" onclick="let inp=document.getElementById('detail-qty'); if(inp.value<10)inp.value++">+</button>
+            <input type="number" id="detail-qty" class="qty-input" value="1" min="1" max="${displayInfo.stock.inStock ? Math.min(10, displayInfo.stock.stock) : 10}">
+            <button class="qty-btn" onclick="let inp=document.getElementById('detail-qty'); let max=parseInt(inp.getAttribute('max'))||10; if(inp.value<max)inp.value++">+</button>
           </div>
-          ${product.inStock 
-            ? `<button class="btn btn-primary btn-lg" style="flex-grow:1" onclick="handleDetailAddToCart('${product.id}')">Add to Cart</button>`
+          ${displayInfo.stock.inStock 
+            ? `<button class="btn btn-primary btn-lg" style="flex-grow:1" onclick="handleDetailAddToCart()">Add to Cart</button>`
             : `<button class="btn btn-disabled btn-lg" style="flex-grow:1" disabled>Out of Stock</button>`
           }
         </div>
@@ -757,23 +854,26 @@ async function initProductPage() {
   `;
 
   document.getElementById('product-detail-content').innerHTML = html;
-
-  // Load related
-  const relatedContainer = document.getElementById('related-products-grid');
-  if (relatedContainer) {
-    const related = await getProducts({ category: product.category });
-    const filtered = related.filter(p => p.id !== product.id).slice(0, 4);
-    if (filtered.length > 0) {
-      document.getElementById('related-section').style.display = 'block';
-      relatedContainer.innerHTML = filtered.map(p => { productCache[p.id] = p; return renderProductCard(p); }).join('');
-    }
-  }
 }
 
-window.handleDetailAddToCart = function(id) {
+window.handleVariantSelect = function(type, value) {
+  currentVariantSelection[type] = value;
+  renderProductDetailsUI();
+};
+
+window.handleDetailAddToCart = function() {
   const qty = parseInt(document.getElementById('detail-qty').value) || 1;
-  const product = productCache[id];
-  if (product) addToCart(product, qty);
+  const product = currentProduct;
+  if (!product) return;
+
+  let variant = null;
+  if (window.PunnagaiProductDetail) {
+    variant = window.PunnagaiProductDetail.resolveVariant(product, currentVariantSelection);
+  }
+  
+  if (typeof addToCart === 'function') {
+    addToCart(product, qty, variant);
+  }
 };
 
 async function initCartPage() {

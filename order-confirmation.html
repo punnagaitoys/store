@@ -209,7 +209,7 @@
   <script>
   'use strict';
 
-  const WHATSAPP_NUMBER = '916381801640';
+  const TRACKING_WHATSAPP_NUMBER = '916381801640';
 
   function escHtml(str) {
     return String(str == null ? '' : str)
@@ -225,7 +225,7 @@
     const msg = encodeURIComponent(
       `Hello! 👋 I'd like to track my order from Punnagai Toy Store.\n\n*Order ID:* ${orderId}\n\nCould you please share the current status? Thank you! 🙏`
     );
-    return `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
+    return `https://wa.me/${TRACKING_WHATSAPP_NUMBER}?text=${msg}`;
   }
 
   function statusBadgeColor(status) {

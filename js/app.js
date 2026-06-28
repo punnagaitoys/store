@@ -269,7 +269,7 @@ function renderProductCard(product) {
   // a rendered card is always purchasable. We never render an "Out of Stock"
   // label or overlay.
   return `
-    <div class="product-card" data-id="${product.id}" onclick="window.location='product.html?id=${product.id}'">
+    <div class="product-card" data-id="${product.id}" onclick="window.location='product?id=${product.id}'">
       <div class="product-card-image">
         <img src="${product.imageUrl || 'https://via.placeholder.com/400x400?text=Toy'}" alt="${product.name}" loading="lazy"/>
         ${badgeHtml}
@@ -645,7 +645,7 @@ async function initShopPage() {
     autocompleteBox.querySelectorAll('.autocomplete-item').forEach(item => {
       item.addEventListener('mousedown', (e) => {
         e.preventDefault();
-        window.location = 'product.html?id=' + item.dataset.id;
+        window.location = 'product?id=' + item.dataset.id;
       });
     });
   }
@@ -955,11 +955,11 @@ function renderWishlistCard(product) {
       <button class="wishlist-remove-btn" type="button" aria-label="Remove from wishlist" onclick="event.stopPropagation(); handleRemoveFromWishlist('${product.id}')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
-      <div class="product-card-image" onclick="window.location='product.html?id=${product.id}'">
+      <div class="product-card-image" onclick="window.location='product?id=${product.id}'">
         <img src="${product.imageUrl || 'https://via.placeholder.com/400x400?text=Toy'}" alt="${product.name}" loading="lazy"/>
         ${badgeHtml}
       </div>
-      <div class="product-card-body" onclick="window.location='product.html?id=${product.id}'">
+      <div class="product-card-body" onclick="window.location='product?id=${product.id}'">
         <p class="product-category">${product.category}</p>
         <h3 class="product-name">${product.name}</h3>
         <p class="product-age">Age: ${product.ageGroup} yrs</p>
@@ -1045,22 +1045,23 @@ async function initWishlistPage() {
   await renderWishlistPage();
 }
 
-// Router dispatcher based on filename
+// Router dispatcher based on filename / clean URL path
 document.addEventListener('DOMContentLoaded', () => {
-  const path = window.location.pathname;
-  if (path.includes('index.html') || path === '/' || path.endsWith('/')) {
-    if(typeof initHomePage === 'function') initHomePage();
-  } else if (path.includes('shop.html')) {
-    if(typeof initShopPage === 'function') initShopPage();
-  } else if (path.includes('product.html')) {
-    if(typeof initProductPage === 'function') initProductPage();
-  } else if (path.includes('cart.html')) {
-    if(typeof initCartPage === 'function') initCartPage();
-  } else if (path.includes('wishlist.html')) {
-    if(typeof initWishlistPage === 'function') initWishlistPage();
-  } else if (path.includes('privacy.html') || path.includes('terms.html') || path.includes('returns.html')) {
-    renderNavbar('');
-    renderFooter();
+  const path = window.location.pathname.toLowerCase();
+  
+  if (path.includes('index') || path === '/' || path.endsWith('/')) {
+    if (typeof initHomePage === 'function') initHomePage();
+  } else if (path.includes('shop')) {
+    if (typeof initShopPage === 'function') initShopPage();
+  } else if (path.includes('product')) {
+    if (typeof initProductPage === 'function') initProductPage();
+  } else if (path.includes('cart')) {
+    if (typeof initCartPage === 'function') initCartPage();
+  } else if (path.includes('wishlist')) {
+    if (typeof initWishlistPage === 'function') initWishlistPage();
+  } else if (path.includes('privacy') || path.includes('terms') || path.includes('returns') || path.includes('delivery') || path.includes('payments')) {
+    if (typeof renderNavbar === 'function') renderNavbar('');
+    if (typeof renderFooter === 'function') renderFooter();
   }
 
   // Keep the navbar wishlist count in sync once the page is ready (Req 4.8).

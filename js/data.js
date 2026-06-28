@@ -434,9 +434,57 @@ async function seedProductsIfEmpty() {
   }
 }
 
+async function seedCouponsIfEmpty() {
+  try {
+    if (window.USE_LOCAL_MODE) {
+      const coupons = getLocalCollection(COLLECTIONS.COUPONS);
+      if (coupons.length === 0) {
+        console.log('Seeding initial coupons to LocalStorage...');
+        const seeded = [
+          {
+            id: 'coupon_seed_0',
+            code: 'PUNNAGAI10',
+            discountType: 'percentage',
+            discountValue: 10,
+            expiryDate: null,
+            usageLimit: 0,
+            usageCount: 0,
+            minOrderValue: 0,
+            applicableCategories: [],
+            active: true,
+            createdAt: Date.now()
+          },
+          {
+            id: 'coupon_seed_1',
+            code: 'WELCOME50',
+            discountType: 'fixed',
+            discountValue: 50,
+            expiryDate: null,
+            usageLimit: 0,
+            usageCount: 0,
+            minOrderValue: 200,
+            applicableCategories: [],
+            active: true,
+            createdAt: Date.now()
+          }
+        ];
+        const key = LOCAL_STORAGE_KEYS[COLLECTIONS.COUPONS] || 'punnagai_mock_coupons';
+        localStorage.setItem(key, JSON.stringify(seeded));
+        console.log('Coupons seed complete!');
+        return true;
+      }
+      return false;
+    }
+  } catch (err) {
+    console.error('Coupons seed error:', err);
+    return false;
+  }
+}
+
 // Auto-seed in local mode when file loads so home page has data instantly
 if (typeof window !== 'undefined' && window.USE_LOCAL_MODE) {
   seedProductsIfEmpty();
+  seedCouponsIfEmpty();
 }
 
 // ============================================================

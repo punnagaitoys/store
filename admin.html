@@ -80,6 +80,11 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       Admin access only. If you are a customer, <a href="index.html">go to the store</a>.
     </p>
+    <div id="local-mode-admin-hint" class="local-mode-admin-hint" style="display:none; margin-top:20px; padding:12px; background:var(--bg-alt); border:1px dashed var(--border); border-radius:8px; font-size:12px; line-height:1.5; color:var(--text-secondary); text-align:left;">
+      <strong>Local Mode Active:</strong> Set your local password once by opening the browser console and running:
+      <pre style="margin:6px 0; background:rgba(0,0,0,0.05); padding:6px; border-radius:4px; font-family:monospace; white-space:pre-wrap; overflow-x:auto;">localStorage.setItem('__punnagai_admin_env', JSON.stringify({ password: 'admin' }))</pre>
+      Then login with <code style="font-family:monospace; font-weight:bold;">admin@punnaagitoystore.com</code> and <code style="font-family:monospace; font-weight:bold;">admin</code>.
+    </div>
   </div>
 </div>
 

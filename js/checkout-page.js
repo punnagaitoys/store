@@ -446,7 +446,7 @@ async function handlePlaceOrder() {
       showPaymentOverlay('<span style="color:var(--success)">✓ Payment confirmed! Redirecting...</span>');
 
       setTimeout(() => {
-        window.location.href = `order-confirmation.html?orderId=${encodeURIComponent(persistedOrderId)}`;
+        window.location.href = `order-confirmation?orderId=${encodeURIComponent(persistedOrderId)}`;
       }, 1200);
 
     } else {
@@ -459,7 +459,7 @@ async function handlePlaceOrder() {
 
       showPaymentOverlay('<span style="color:var(--success)">✓ Order placed! Redirecting...</span>');
       setTimeout(() => {
-        window.location.href = `order-confirmation.html?orderId=${encodeURIComponent(persistedOrderId)}`;
+        window.location.href = `order-confirmation?orderId=${encodeURIComponent(persistedOrderId)}`;
       }, 1200);
     }
 

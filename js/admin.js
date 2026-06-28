@@ -88,6 +88,8 @@ function resolveAuthState() {
       enterAdminApp(ADMIN_LOCAL_EMAIL + ' (Local)');
     } else {
       showLoginScreen();
+      const localHint = document.getElementById('local-mode-admin-hint');
+      if (localHint) localHint.style.display = 'block';
     }
     return;
   }

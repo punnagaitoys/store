@@ -62,12 +62,14 @@ function renderNavbar(activePage = '') {
   const pages = [
     { href: 'index.html', label: 'Home', id: 'home' },
     { href: 'shop.html', label: 'Shop', id: 'shop' },
-    { href: 'shop.html?sale=true', label: '🏷️ Sale', id: 'sale' },
+    { href: 'shop?sale=true', label: 'Sale', id: 'sale' },
     { href: 'index.html#contact', label: 'Contact', id: 'contact' }
   ];
 
-  const navLinks = pages.map(p => 
-    `<li><a href="${p.href}" class="nav-link ${activePage === p.id ? 'active' : ''}">${p.label}</a></li>`
+  const navLinks = pages.map(p =>
+    `<li><a href="${p.href}" class="nav-link ${activePage === p.id ? 'active' : ''}">${p.label}${
+      p.id === 'sale' ? ' <span style="font-size:0.68rem;background:linear-gradient(135deg,#EF4444,#DC2626);color:white;padding:2px 7px;border-radius:99px;font-weight:800;letter-spacing:0.03em;vertical-align:middle">HOT</span>' : ''
+    }</a></li>`
   ).join('');
 
   const html = `
@@ -75,10 +77,11 @@ function renderNavbar(activePage = '') {
       <div class="container">
         <div class="navbar-inner">
           <a href="index.html" class="navbar-logo">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="20" cy="20" r="20" fill="#DC2626"/>
-              <text x="20" y="26" text-anchor="middle" font-size="20" fill="white" font-family="Fredoka">K</text>
-            </svg>
+            <div class="navbar-logo-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+            </div>
             <div class="logo-text-group">
               <span class="logo-text">Punnagai</span>
               <span class="logo-sub">Toy Store</span>
@@ -91,20 +94,23 @@ function renderNavbar(activePage = '') {
 
           <div class="navbar-actions">
             <a href="wishlist.html" class="wishlist-btn ${activePage === 'wishlist' ? 'active' : ''}" aria-label="Wishlist">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
               </svg>
               <span class="wishlist-badge" style="display:${wishlistCount > 0 ? 'flex' : 'none'}">${wishlistCount}</span>
             </a>
+            <button class="search-trigger-btn" id="global-search-btn" aria-label="Search toys" onclick="openGlobalSearch()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            </button>
             <a href="cart.html" class="cart-btn" aria-label="Shopping Cart">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
               </svg>
               <span class="cart-badge" style="display:${cartCount > 0 ? 'flex' : 'none'}">${cartCount}</span>
             </a>
-            <button class="hamburger" id="hamburger" aria-label="Menu">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
                 <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
               </svg>
             </button>
@@ -113,8 +119,8 @@ function renderNavbar(activePage = '') {
 
         <div class="mobile-menu" id="mobile-menu">
           ${pages.map(p => `<a href="${p.href}" class="mobile-nav-link ${activePage === p.id ? 'active' : ''}">${p.label}</a>`).join('')}
-          <a href="wishlist.html" class="mobile-nav-link ${activePage === 'wishlist' ? 'active' : ''}">❤️ Wishlist (<span class="wishlist-badge-mobile">${wishlistCount}</span>)</a>
-          <a href="cart.html" class="mobile-nav-link">🛒 Cart (<span class="cart-badge-mobile">${cartCount}</span>)</a>
+          <a href="wishlist.html" class="mobile-nav-link ${activePage === 'wishlist' ? 'active' : ''}">Wishlist (<span class="wishlist-badge-mobile">${wishlistCount}</span>)</a>
+          <a href="cart.html" class="mobile-nav-link">Cart (<span class="cart-badge-mobile">${cartCount}</span>)</a>
         </div>
       </div>
     </nav>
@@ -132,7 +138,8 @@ function renderNavbar(activePage = '') {
   const mobileMenu = document.getElementById('mobile-menu');
   if (hamburger && mobileMenu) {
     hamburger.addEventListener('click', () => {
-      mobileMenu.classList.toggle('open');
+      const isOpen = mobileMenu.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', isOpen);
     });
   }
 
@@ -140,11 +147,7 @@ function renderNavbar(activePage = '') {
   window.addEventListener('scroll', () => {
     const navbar = document.getElementById('main-navbar');
     if (navbar) {
-      if (window.scrollY > 20) {
-        navbar.classList.add('scrolled');
-      } else {
-        navbar.classList.remove('scrolled');
-      }
+      navbar.classList.toggle('scrolled', window.scrollY > 20);
     }
   });
 }
@@ -161,22 +164,23 @@ function renderFooter() {
           <!-- Brand -->
           <div class="footer-brand">
             <div class="footer-logo">
-              <svg width="36" height="36" viewBox="0 0 40 40" fill="none">
-                <circle cx="20" cy="20" r="20" fill="#22C55E"/>
-                <text x="20" y="26" text-anchor="middle" font-size="20" fill="white" font-family="Fredoka">K</text>
-              </svg>
+              <div class="footer-logo-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+              </div>
               <span class="footer-brand-name">Punnagai Toy Store</span>
             </div>
             <p class="footer-tagline">Bringing joy and wonder to children across Mylapore and beyond. Quality toys for every age, every imagination.</p>
             <div class="footer-socials">
               <a href="#" class="social-btn" aria-label="Instagram">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
               </a>
               <a href="#" class="social-btn" aria-label="Facebook">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
               </a>
-              <a href="https://wa.me/916381801640" class="social-btn" aria-label="WhatsApp" target="_blank">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+              <a href="https://wa.me/917550132101" class="social-btn" aria-label="WhatsApp" target="_blank" rel="noopener">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
               </a>
             </div>
           </div>
@@ -187,57 +191,57 @@ function renderFooter() {
             <ul class="footer-links">
               <li><a href="index.html">Home</a></li>
               <li><a href="shop.html">All Toys</a></li>
-              <li><a href="shop.html?sale=true">Sale & Offers</a></li>
-              <li><a href="shop.html?ageGroup=0-2">Baby Toys (0–2)</a></li>
-              <li><a href="shop.html?ageGroup=3-5">Toddler Toys (3–5)</a></li>
-              <li><a href="shop.html?ageGroup=6-8">Kids Toys (6–8)</a></li>
+              <li><a href="shop?sale=true">Sale &amp; Offers</a></li>
+              <li><a href="shop?ageGroup=0-2">Baby Toys (0–2)</a></li>
+              <li><a href="shop?ageGroup=3-5">Toddler Toys (3–5)</a></li>
+              <li><a href="shop?ageGroup=6-8">Kids Toys (6–8)</a></li>
             </ul>
           </div>
 
           <!-- Categories -->
           <div>
-            <h4 class="footer-col-title">Shop by Category</h4>
+            <h4 class="footer-col-title">Categories</h4>
             <ul class="footer-links">
-              <li><a href="shop.html?category=Educational+%26+Learning">Educational</a></li>
-              <li><a href="shop.html?category=Building+Blocks">Building Blocks</a></li>
-              <li><a href="shop.html?category=Board+Games+%26+Puzzles">Board Games</a></li>
-              <li><a href="shop.html?category=Outdoor+%26+Sports">Outdoor & Sports</a></li>
-              <li><a href="shop.html?category=Arts+%26+Crafts">Arts & Crafts</a></li>
-              <li><a href="shop.html?category=Remote+Control">Remote Control</a></li>
+              <li><a href="shop?category=Educational+%26+Learning">Educational</a></li>
+              <li><a href="shop?category=Building+Blocks">Building Blocks</a></li>
+              <li><a href="shop?category=Board+Games+%26+Puzzles">Board Games</a></li>
+              <li><a href="shop?category=Outdoor+%26+Sports">Outdoor &amp; Sports</a></li>
+              <li><a href="shop?category=Arts+%26+Crafts">Arts &amp; Crafts</a></li>
+              <li><a href="shop?category=Remote+Control">Remote Control</a></li>
             </ul>
           </div>
 
-          <!-- Contact & Policies -->
+          <!-- Help -->
           <div>
-            <h4 class="footer-col-title">Help & Info</h4>
+            <h4 class="footer-col-title">Help &amp; Info</h4>
             <ul class="footer-links">
-              <li><a href="privacy.html">Privacy & Cookies</a></li>
-              <li><a href="terms.html">Terms & Conditions</a></li>
-              <li><a href="sale-terms.html">Sale Terms</a></li>
+              <li><a href="privacy.html">Privacy &amp; Cookies</a></li>
+              <li><a href="terms.html">Terms &amp; Conditions</a></li>
               <li><a href="delivery.html">Delivery Policy</a></li>
-              <li><a href="returns.html">Returns & Refunds</a></li>
-              <li><a href="payments.html">Fees & Payment</a></li>
+              <li><a href="returns.html">Returns &amp; Refunds</a></li>
+              <li><a href="payments.html">Fees &amp; Payment</a></li>
+              <li><a href="admin.html" style="color:rgba(255,255,255,0.25);font-size:0.75rem">Admin</a></li>
             </ul>
           </div>
         </div>
 
         <div class="footer-contact-strip">
           <div class="footer-contact-item">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span>[STORE-ADDRESS-PLACEHOLDER], Mylapore, Chennai – 600 004</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai – 600 004</span>
           </div>
           <div class="footer-contact-item">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6.29 6.29l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2.02z"/></svg>
-            <span>[PHONE-PLACEHOLDER]</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6.29 6.29l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2.02z"/></svg>
+            <span>+91 75501 32101</span>
           </div>
           <div class="footer-contact-item">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             <span>Mon–Sat 10AM–10PM &nbsp;|&nbsp; Sun 11AM–6PM</span>
           </div>
         </div>
 
         <div class="footer-bottom">
-          <p>© ${new Date().getFullYear()} Punnagai Toy Store, Mylapore, Chennai. All rights reserved.</p>
+          <p>&copy; ${new Date().getFullYear()} Punnagai Toy Store, Mylapore, Chennai. All rights reserved.</p>
           <div class="footer-bottom-links">
             <a href="privacy.html">Privacy</a>
             <a href="terms.html">Terms</a>
@@ -257,44 +261,239 @@ function renderFooter() {
 }
 
 // ============================================================
-// PRODUCT CARD RENDERER
+// GLOBAL SEARCH OVERLAY
 // ============================================================
+
+function renderSearchOverlay() {
+  if (document.getElementById('global-search-overlay')) return;
+  const el = document.createElement('div');
+  el.id = 'global-search-overlay';
+  el.className = 'search-overlay';
+  el.setAttribute('role', 'dialog');
+  el.setAttribute('aria-label', 'Search toys');
+  el.setAttribute('aria-modal', 'true');
+  el.innerHTML = `
+    <div class="search-overlay-box" id="search-overlay-box">
+      <div class="search-overlay-input-row">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input id="global-search-input" class="search-overlay-input" type="text"
+               placeholder="Search for toys, categories…"
+               autocomplete="off" aria-label="Search toys" role="combobox"
+               aria-expanded="false" aria-controls="global-search-results"/>
+        <button class="search-overlay-close" onclick="closeGlobalSearch()" aria-label="Close search">Esc</button>
+      </div>
+      <div id="global-search-results" class="search-overlay-results" role="listbox"></div>
+    </div>`;
+  // Close on backdrop click
+  el.addEventListener('click', (e) => { if (e.target === el) closeGlobalSearch(); });
+  document.body.appendChild(el);
+}
+
+window.openGlobalSearch = function() {
+  renderSearchOverlay();
+  const overlay = document.getElementById('global-search-overlay');
+  if (!overlay) return;
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  const inp = document.getElementById('global-search-input');
+  if (inp) { inp.value = ''; inp.focus(); }
+  initGlobalSearch();
+};
+
+window.closeGlobalSearch = function() {
+  const overlay = document.getElementById('global-search-overlay');
+  if (overlay) overlay.classList.remove('open');
+  document.body.style.overflow = '';
+};
+
+function initGlobalSearch() {
+  const inp = document.getElementById('global-search-input');
+  const resultsBox = document.getElementById('global-search-results');
+  if (!inp || !resultsBox) return;
+  if (inp._searchInited) return; // avoid double-binding
+  inp._searchInited = true;
+
+  const catEmoji = {
+    'Educational & Learning': '📚', 'Building Blocks': '🧱',
+    'Board Games & Puzzles': '♟️', 'Outdoor & Sports': '⚽',
+    'Arts & Crafts': '🎨', 'Remote Control': '🚗',
+    'Dolls & Fashion': '🪆', 'Soft Toys & Plush': '🧸',
+    'Musical Toys': '🎵', 'Action & Adventure': '⚡'
+  };
+
+  let debounceTimer;
+  inp.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async () => {
+      const term = inp.value.trim();
+      if (!term) { resultsBox.innerHTML = ''; inp.setAttribute('aria-expanded', 'false'); return; }
+
+      const allProducts = await (typeof getAllProductsCached === 'function' ? getAllProductsCached() : Promise.resolve([]));
+      const available = filterAvailableProducts(allProducts);
+
+      // Fuzzy match: score by position of term in name/category/description
+      const lower = term.toLowerCase();
+      const matches = available
+        .map(p => {
+          const haystack = `${p.name} ${p.category} ${p.description || ''}`.toLowerCase();
+          const score = haystack.indexOf(lower);
+          return score >= 0 ? { p, score } : null;
+        })
+        .filter(Boolean)
+        .sort((a, b) => a.score - b.score)
+        .slice(0, 6)
+        .map(x => x.p);
+
+      if (!matches.length) {
+        resultsBox.innerHTML = `<div class="search-overlay-empty">No toys found for "${term}" — try a different word.</div>`;
+        inp.setAttribute('aria-expanded', 'false');
+        return;
+      }
+
+      const items = matches.map(p => {
+        const emoji = catEmoji[p.category] || '🎁';
+        const imgEl = p.imageUrl
+          ? `<img src="${p.imageUrl}" alt="" loading="lazy" class="search-result-img" onerror="this.style.display='none'">`
+          : `<div class="search-result-img-placeholder">${emoji}</div>`;
+        return `<a href="product?id=${p.id}" class="search-result-item" role="option" onclick="closeGlobalSearch()">
+          ${imgEl}
+          <div class="search-result-info">
+            <div class="search-result-name">${p.name}</div>
+            <div class="search-result-cat">${p.category}</div>
+          </div>
+          <span class="search-result-price">&#8377;${p.price.toLocaleString('en-IN')}</span>
+        </a>`;
+      }).join('');
+
+      const footer = `<div class="search-results-footer"><a href="shop?search=${encodeURIComponent(term)}" onclick="closeGlobalSearch()">See all results for "${term}" →</a></div>`;
+      resultsBox.innerHTML = items + footer;
+      inp.setAttribute('aria-expanded', 'true');
+    }, 220);
+  });
+
+  // Escape key closes
+  inp.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeGlobalSearch();
+    if (e.key === 'Enter') {
+      const term = inp.value.trim();
+      if (term) { closeGlobalSearch(); window.location = 'shop?search=' + encodeURIComponent(term); }
+    }
+  });
+}
+
+// Global Escape listener
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeGlobalSearch(); });
+
+function getProductStockLevel(product) {
+  if (!product) return null;
+  if (Array.isArray(product.variants) && product.variants.length > 0) {
+    return product.variants.reduce((sum, v) => {
+      const s = Number(v && v.stock);
+      return sum + (Number.isFinite(s) && s > 0 ? Math.floor(s) : 0);
+    }, 0);
+  }
+  return product.inStock ? null : 0; // null = in stock but count unknown
+}
 
 function renderProductCard(product) {
   const isOnSale = product.originalPrice && product.originalPrice > product.price;
   const discount = isOnSale ? Math.round((1 - product.price / product.originalPrice) * 100) : 0;
-  const badgeHtml = product.badge ? `<span class="product-badge badge-${product.badge.toLowerCase().replace(' ', '-')}">${product.badge}</span>` : '';
 
-  // Business rule (Req 1.8 / 9.7): out-of-stock items are HIDDEN by callers, so
-  // a rendered card is always purchasable. We never render an "Out of Stock"
-  // label or overlay.
+  // Badge determination
+  let badgeHtml = '';
+  if (product.badge && product.badge.trim()) {
+    const badgeClass = product.badge.toLowerCase().replace(/[^a-z0-9]/g, '-');
+    badgeHtml = `<span class="product-badge badge-${badgeClass}">${product.badge}</span>`;
+  } else if (product.newArrival) {
+    badgeHtml = `<span class="product-badge badge-new">New</span>`;
+  } else if (isOnSale) {
+    badgeHtml = `<span class="product-badge badge-sale">Sale</span>`;
+  }
+
+  // Category to emoji map for placeholder
+  const catEmoji = {
+    'Educational & Learning': '📚', 'Building Blocks': '🧱',
+    'Board Games & Puzzles': '♟️', 'Outdoor & Sports': '⚽',
+    'Arts & Crafts': '🎨', 'Remote Control': '🚗',
+    'Dolls & Fashion': '🪆', 'Soft Toys & Plush': '🧸',
+    'Musical Toys': '🎵', 'Action & Adventure': '⚡'
+  };
+  const emoji = catEmoji[product.category] || '🎁';
+
+  // Image or placeholder
+  const imgHtml = product.imageUrl
+    ? `<img src="${product.imageUrl}" alt="${product.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+       <div class="product-img-placeholder" style="display:none">
+         <span class="cat-emoji">${emoji}</span>
+         <span class="cat-label">${product.category}</span>
+       </div>`
+    : `<div class="product-img-placeholder">
+         <span class="cat-emoji">${emoji}</span>
+         <span class="cat-label">${product.category}</span>
+       </div>`;
+
+  const videoBadge = product.videoUrl
+    ? `<span class="product-video-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg> Video</span>`
+    : '';
+
+  // Scarcity badge
+  const stockLevel = getProductStockLevel(product);
+  let scarcityHtml = '';
+  if (stockLevel !== null && stockLevel > 0 && stockLevel <= 5) {
+    const cls = stockLevel === 1 ? 'last-one' : 'low';
+    const msg = stockLevel === 1 ? 'Last one left!' : `Only ${stockLevel} left!`;
+    scarcityHtml = `<div class="stock-scarcity ${cls}"><span class="scarcity-dot" aria-hidden="true"></span>${msg}</div>`;
+  }
+
+  // Mini star rating (if product has rating data)
+  let miniStarsHtml = '';
+  if (product.rating && product.reviewCount) {
+    const starSvgs = typeof renderStars === 'function' ? renderStars(product.rating, '12') : '';
+    miniStarsHtml = `<div class="product-mini-stars" aria-label="Rated ${product.rating} out of 5">
+      ${starSvgs}
+      <span class="review-count-mini">(${product.reviewCount})</span>
+    </div>`;
+  }
+
   return `
-    <div class="product-card" data-id="${product.id}" onclick="window.location='product?id=${product.id}'">
+    <div class="product-card" data-id="${product.id}"
+         onclick="window.location='product?id=${product.id}'"
+         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location='product?id=${product.id}'}"
+         tabindex="0" role="article"
+         aria-label="${product.name}, &#8377;${product.price.toLocaleString('en-IN')}"
+         style="cursor:pointer">
       <div class="product-card-image">
-        <img src="${product.imageUrl || 'https://via.placeholder.com/400x400?text=Toy'}" alt="${product.name}" loading="lazy"/>
+        ${imgHtml}
         ${badgeHtml}
+        ${videoBadge}
+        <button class="product-wishlist-btn" onclick="event.stopPropagation(); handleWishlistToggle && handleWishlistToggle('${product.id}')" aria-label="Add ${product.name} to wishlist">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
       </div>
       <div class="product-card-body">
         <p class="product-category">${product.category}</p>
         <h3 class="product-name">${product.name}</h3>
-        <p class="product-age">Age: ${product.ageGroup} yrs</p>
+        <p class="product-age">Ages ${product.ageGroup} yrs</p>
+        ${miniStarsHtml}
         <div class="product-price-row">
           <div class="price-group">
-            <span class="product-price">₹${product.price.toLocaleString('en-IN')}</span>
-            ${isOnSale ? `<span class="product-original-price">₹${product.originalPrice.toLocaleString('en-IN')}</span>` : ''}
+            <span class="product-price">&#8377;${product.price.toLocaleString('en-IN')}</span>
+            ${isOnSale ? `<span class="product-original-price">&#8377;${product.originalPrice.toLocaleString('en-IN')}</span>` : ''}
           </div>
-          ${isOnSale ? `<span class="discount-tag">−${discount}%</span>` : ''}
+          ${isOnSale ? `<span class="discount-tag">&minus;${discount}%</span>` : ''}
         </div>
+        ${scarcityHtml}
       </div>
       <div class="product-card-footer">
-        <button class="btn-cart" onclick="event.stopPropagation(); handleAddToCart('${product.id}')">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <button class="btn-cart" onclick="event.stopPropagation(); handleAddToCart('${product.id}')" aria-label="Add ${product.name} to cart">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
           Add to Cart
         </button>
       </div>
     </div>
   `;
 }
+
 
 // ============================================================
 // AVAILABILITY (Req 1.8, 9.7) — hide out-of-stock, no label
@@ -336,6 +535,106 @@ async function handleAddToCart(productId) {
   if (product && isProductAvailable(product)) {
     addToCart(product);
   }
+}
+
+// ============================================================
+// SEO: OpenGraph / Twitter Meta Update (product.html)
+// ============================================================
+
+function updateProductPageMeta(product) {
+  if (!product) return;
+  const desc = (product.description || '').slice(0, 160);
+  const img  = product.imageUrl || 'https://punnagaitoys.com/logo.png';
+  const url  = window.location.href;
+
+  document.title = `${product.name} | Punnagai Toy Store`;
+
+  function setMeta(sel, val) {
+    let el = document.querySelector(sel);
+    if (!el) { el = document.createElement('meta'); document.head.appendChild(el); }
+    el.setAttribute(sel.includes('[property') ? 'property' : 'name', sel.match(/["']([^"']+)["']/)[1]);
+    el.setAttribute('content', val);
+  }
+
+  setMeta('meta[name="description"]', desc);
+  setMeta('meta[property="og:title"]', product.name);
+  setMeta('meta[property="og:description"]', desc);
+  setMeta('meta[property="og:image"]', img);
+  setMeta('meta[property="og:url"]', url);
+  setMeta('meta[property="og:type"]', 'product');
+  setMeta('meta[name="twitter:card"]', 'summary_large_image');
+  setMeta('meta[name="twitter:title"]', product.name);
+  setMeta('meta[name="twitter:description"]', desc);
+  setMeta('meta[name="twitter:image"]', img);
+}
+
+// ============================================================
+// SEO: JSON-LD Structured Data
+// ============================================================
+
+function injectProductStructuredData(product, reviewCount, avgRating) {
+  if (!product) return;
+  const availability = isProductAvailable(product)
+    ? 'https://schema.org/InStock'
+    : 'https://schema.org/OutOfStock';
+
+  const ld = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    description: product.description || '',
+    image: product.imageUrl ? [product.imageUrl] : [],
+    brand: { '@type': 'Brand', name: 'Punnagai Toy Store' },
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'INR',
+      price: product.price,
+      availability,
+      seller: { '@type': 'Organization', name: 'Punnagai Toy Store' }
+    }
+  };
+  if (reviewCount > 0 && avgRating > 0) {
+    ld.aggregateRating = {
+      '@type': 'AggregateRating',
+      ratingValue: Math.round(avgRating * 10) / 10,
+      reviewCount
+    };
+  }
+
+  let el = document.getElementById('ld-product');
+  if (!el) { el = document.createElement('script'); el.id = 'ld-product'; el.type = 'application/ld+json'; document.head.appendChild(el); }
+  el.textContent = JSON.stringify(ld);
+}
+
+function injectLocalBusinessStructuredData() {
+  if (document.getElementById('ld-local-business')) return;
+  const ld = {
+    '@context': 'https://schema.org',
+    '@type': 'ToyStore',
+    name: 'Punnagai Toy Store',
+    description: 'Mylapore\'s favourite toy destination. Quality toys for every age from babies to teens.',
+    url: 'https://punnagaitoys.com',
+    telephone: '+917550132101',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: '4/7 Luz Bazar Complex, R.K. Mutt Road',
+      addressLocality: 'Mylapore',
+      addressRegion: 'Tamil Nadu',
+      postalCode: '600004',
+      addressCountry: 'IN'
+    },
+    geo: { '@type': 'GeoCoordinates', latitude: 13.0337, longitude: 80.2671 },
+    openingHoursSpecification: [
+      { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'], opens: '10:00', closes: '22:00' },
+      { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Sunday'], opens: '11:00', closes: '18:00' }
+    ],
+    priceRange: '₹₹'
+  };
+  const el = document.createElement('script');
+  el.id = 'ld-local-business';
+  el.type = 'application/ld+json';
+  el.textContent = JSON.stringify(ld);
+  document.head.appendChild(el);
 }
 
 // ============================================================
@@ -385,6 +684,9 @@ async function initHomePage() {
     window.PunnagaiFloatingReviewsInst = new window.PunnagaiFloatingReviews();
     window.PunnagaiFloatingReviewsInst.loadReviews();
   }
+
+  // JSON-LD: LocalBusiness structured data
+  injectLocalBusinessStructuredData();
 }
 
 async function initShopPage() {
@@ -735,6 +1037,15 @@ async function initProductPage() {
 
   renderProductDetailsUI();
 
+  // SEO: Update OG meta + product JSON-LD
+  updateProductPageMeta(product);
+  injectProductStructuredData(product, 0, 0); // Reviews count injected later
+
+  // Reviews section
+  if (typeof window.initReviewsSection === 'function') {
+    window.initReviewsSection(product.id);
+  }
+
   const relatedContainer = document.getElementById('related-products-grid');
   if (relatedContainer) {
     let filtered = [];
@@ -745,7 +1056,7 @@ async function initProductPage() {
       const related = await getProducts({ category: product.category });
       filtered = related.filter(p => p.id !== product.id).slice(0, 4);
     }
-    
+
     if (filtered.length > 0) {
       document.getElementById('related-section').style.display = 'block';
       relatedContainer.innerHTML = filtered.map(p => { productCache[p.id] = p; return renderProductCard(p); }).join('');
@@ -889,7 +1200,7 @@ window.handleDetailWhatsApp = function() {
   if (!product) return;
 
   const qty = parseInt(document.getElementById('detail-qty')?.value) || 1;
-  const WHATSAPP_NUMBER = '916381801640';
+  const WHATSAPP_NUMBER = '917550132101';
 
   let variantLine = '';
   if (window.PunnagaiProductDetail && window.PunnagaiProductDetail.hasVariants(product)) {

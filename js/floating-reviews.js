@@ -52,13 +52,13 @@ class FloatingReviews {
         bottom: 20px; 
         right: 20px; 
         width: 320px; 
-        background: white; 
+        background: var(--bg-card, white); 
         border-radius: 12px; 
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); 
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05); 
         padding: 16px; 
         z-index: 50;
         transition: transform 0.3s ease, opacity 0.3s ease;
-        border: 1px solid var(--border, #E5E7EB);
+        border: 1px solid var(--border-gray, #e5e7eb);
       "
       onmouseenter="window.PunnagaiFloatingReviewsInst.pauseAutoScroll()"
       onmouseleave="window.PunnagaiFloatingReviewsInst.startAutoScroll()">
@@ -68,9 +68,10 @@ class FloatingReviews {
             <div style="font-weight: 600; font-size: 0.95rem; color: var(--text-primary, #111827);">${review.author}</div>
             <div style="color: #FBBF24; font-size: 0.9rem; letter-spacing: 1px;">${stars}</div>
           </div>
-          <div style="display: flex; gap: 4px;">
+          <div style="display: flex; gap: 4px; align-items: center;">
             <button onclick="window.PunnagaiFloatingReviewsInst.prev()" style="background: none; border: none; cursor: pointer; color: #9CA3AF; padding: 4px;">‹</button>
             <button onclick="window.PunnagaiFloatingReviewsInst.next()" style="background: none; border: none; cursor: pointer; color: #9CA3AF; padding: 4px;">›</button>
+            <button onclick="window.PunnagaiFloatingReviewsInst.close()" style="background: none; border: none; cursor: pointer; color: #9CA3AF; padding: 4px; font-size: 1.2rem; margin-left: 4px;" title="Close">×</button>
           </div>
         </div>
         
@@ -105,6 +106,15 @@ class FloatingReviews {
     if (this.intervalId) {
       clearInterval(this.intervalId);
       this.intervalId = null;
+    }
+  }
+
+  close() {
+    this.pauseAutoScroll();
+    const container = document.getElementById(this.containerId);
+    if (container) {
+      container.style.display = 'none';
+      container.innerHTML = '';
     }
   }
 }

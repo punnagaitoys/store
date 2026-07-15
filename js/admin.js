@@ -54,6 +54,7 @@ let adminProducts = [];      // last-loaded product list (for table + filtering)
 let editingProductId = null; // non-null while editing an existing product
 let selectedImageFile = null;// File chosen via the upload input (if any)
 let deletingProductId = null;// product queued for deletion in the confirm modal
+let quillEditor = null;      // Quill.js instance for rich text product descriptions
 
 // ============================================================
 // PAGE INIT & AUTH
@@ -78,6 +79,29 @@ function wireAdminEvents() {
 
   const productForm = document.getElementById('product-form');
   if (productForm) productForm.addEventListener('submit', handleProductSubmit);
+
+  if (typeof Quill !== 'undefined') {
+    const editorContainer = document.getElementById('editor-container');
+    if (editorContainer) {
+      quillEditor = new Quill('#editor-container', {
+        theme: 'snow',
+        placeholder: 'Describe the toy, its features, materials, educational benefits, what makes it special...',
+        modules: {
+          toolbar: [
+            ['bold', 'italic', 'underline'],
+            [{ 'list': 'bullet' }],
+            ['link', 'clean']
+          ]
+        }
+      });
+      quillEditor.on('text-change', function() {
+        const hiddenDesc = document.getElementById('f-description');
+        if (hiddenDesc) {
+           hiddenDesc.value = quillEditor.root.innerHTML;
+        }
+      });
+    }
+  }
 }
 
 /** Show the login screen or the admin panel depending on auth/session. */
@@ -143,28 +167,18 @@ function handleAdminLogin(e) {
   setLoginLoading(true);
 
   if (window.USE_LOCAL_MODE) {
-    // Read the local admin password from runtime config (never stored in source)
-    let localAdminPassword = '';
-    try {
-      const envRaw = localStorage.getItem('__punnagai_admin_env');
-      if (envRaw) {
-        const envData = JSON.parse(envRaw);
-        localAdminPassword = envData && envData.password ? String(envData.password) : '';
-      }
-    } catch (e) { /* ignore parse errors */ }
-
+    // Demo mode: accept any email with password '123'
+    const DEMO_PASSWORD = '123';
     setTimeout(() => {
-      if (email === ADMIN_LOCAL_EMAIL && pass === localAdminPassword && localAdminPassword !== '') {
+      if (pass === DEMO_PASSWORD) {
         sessionStorage.setItem(ADMIN_SESSION_KEY, 'true');
         setLoginLoading(false);
-        enterAdminApp(ADMIN_LOCAL_EMAIL + ' (Local)');
+        enterAdminApp('Admin');
       } else {
         setLoginLoading(false);
-        if (errEl) errEl.textContent = localAdminPassword === ''
-          ? 'Local admin password not configured. Set it via: localStorage.setItem(\'__punnagai_admin_env\', JSON.stringify({ password: \'your-password\' })) in the browser console.'
-          : 'Invalid credentials. Please try again.';
+        if (errEl) errEl.textContent = 'Incorrect password. Use: 123';
       }
-    }, 500);
+    }, 400);
   } else {
     window.auth.signInWithEmailAndPassword(email, pass)
       .then(() => setLoginLoading(false))
@@ -221,6 +235,21 @@ function showSection(name) {
   } else if (name === 'dashboard') {
     updateDashboardStats(adminProducts);
     renderRecentProducts(adminProducts);
+    if (window.AdminUI) {
+      window.AdminUI.loadDashboardCharts();
+      window.AdminUI.loadLowStock(adminProducts);
+    }
+  } else if (name === 'orders') {
+    if (window.AdminUI) window.AdminUI.loadOrders();
+  } else if (name === 'coupons') {
+    if (window.AdminUI) window.AdminUI.loadCoupons();
+  } else if (name === 'categories') {
+    if (window.AdminUI) {
+      window.AdminUI.loadCategories();
+      window.AdminUI.loadBanners();
+    }
+  } else if (name === 'audit') {
+    if (window.AdminUI) window.AdminUI.loadAuditLogs();
   }
 
   // Collapse the mobile sidebar after navigating.
@@ -362,6 +391,9 @@ function resetProductForm() {
   if (stockField) stockField.value = '0';
   const cancelBtn = document.getElementById('cancel-edit-btn');
   if (cancelBtn) cancelBtn.style.display = 'none';
+  if (quillEditor) {
+    quillEditor.root.innerHTML = '';
+  }
   clearImagePreviewSafe();
   updateVariantPreview();
 }
@@ -386,11 +418,16 @@ function openEditProduct(id) {
   setValue('f-product-id', id);
   setValue('f-name', product.name || '');
   setValue('f-category', product.category || '');
-  setValue('f-description', product.description || '');
+  if (quillEditor) {
+    quillEditor.root.innerHTML = product.description || '';
+  } else {
+    setValue('f-description', product.description || '');
+  }
   setValue('f-price', product.price != null ? product.price : '');
   setValue('f-original-price', product.originalPrice != null ? product.originalPrice : '');
   setValue('f-age', product.ageGroup || '');
   setValue('f-image-url', product.imageUrl || '');
+  setValue('f-video-url', product.videoUrl || '');
   setValue('f-badge', product.badge || '');
   setChecked('f-in-stock', !!product.inStock);
   setChecked('f-featured', !!product.featured);
@@ -413,14 +450,16 @@ function openEditProduct(id) {
 
 /** Read the product form into a plain object. */
 function readProductForm() {
+  const descValue = quillEditor ? quillEditor.root.innerHTML : (getValue('f-description') || '');
   return {
     name: (getValue('f-name') || '').trim(),
     category: getValue('f-category') || '',
-    description: (getValue('f-description') || '').trim(),
+    description: descValue.trim(),
     price: getValue('f-price'),
     originalPrice: getValue('f-original-price') || null,
     ageGroup: getValue('f-age') || '',
     imageUrl: (getValue('f-image-url') || '').trim(),
+    videoUrl: (getValue('f-video-url') || '').trim(),
     badge: getValue('f-badge') || '',
     inStock: getChecked('f-in-stock'),
     featured: getChecked('f-featured'),
@@ -575,6 +614,7 @@ function assembleProductData(form, variants, sequence, thumbnails) {
     category: form.category,
     ageGroup: form.ageGroup,
     imageUrl: form.imageUrl,
+    videoUrl: form.videoUrl,
     inStock: form.inStock,
     featured: form.featured,
     badge: form.badge,

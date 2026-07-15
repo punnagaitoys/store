@@ -19,7 +19,7 @@
  * 3.6 (real-time total on quantity/coupon change), 3.8 (proceed to checkout).
  */
 
-const WHATSAPP_NUMBER = '916381801640';
+const WHATSAPP_NUMBER = '917550132101';
 
 // ============================================================
 // LIB ACCESSORS (prefer pure logic; fall back when not loaded)

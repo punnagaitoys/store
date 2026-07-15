@@ -4,6 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Shop all toys at Punnagai Toy Store, Mylapore, Chennai. Filter by age group and category. Educational toys, board games, outdoor toys and more.">
+  <!-- OpenGraph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Punnagai Toy Store">
+  <meta property="og:title" content="Shop All Toys | Punnagai Toy Store — Mylapore, Chennai">
+  <meta property="og:description" content="Browse 500+ quality toys at Punnagai Toy Store. Filter by age, category, and price. Educational, outdoor, board games & more.">
+  <meta property="og:image" content="https://punnagaitoys.com/logo.png">
+  <meta property="og:url" content="https://punnagaitoys.com/shop.html">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Shop All Toys | Punnagai Toy Store">
+  <meta name="twitter:description" content="Browse 500+ quality toys at Punnagai Toy Store, Mylapore.">
+  <meta name="twitter:image" content="https://punnagaitoys.com/logo.png">
   <title>Shop All Toys | Punnagai Toy Store — Mylapore, Chennai</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -64,28 +76,28 @@
               Shop by Age
             </h4>
             <div class="filter-options">
-              <label class="filter-option">
-                <input type="checkbox" data-age="0-2">
+              <label class="filter-option" for="filter-age-0-2">
+                <input type="checkbox" id="filter-age-0-2" data-age="0-2">
                 <span class="filter-checkmark"></span>
                 <span>Baby (0–2 years)</span>
               </label>
-              <label class="filter-option">
-                <input type="checkbox" data-age="3-5">
+              <label class="filter-option" for="filter-age-3-5">
+                <input type="checkbox" id="filter-age-3-5" data-age="3-5">
                 <span class="filter-checkmark"></span>
                 <span>Toddler (3–5 years)</span>
               </label>
-              <label class="filter-option">
-                <input type="checkbox" data-age="6-8">
+              <label class="filter-option" for="filter-age-6-8">
+                <input type="checkbox" id="filter-age-6-8" data-age="6-8">
                 <span class="filter-checkmark"></span>
                 <span>Kids (6–8 years)</span>
               </label>
-              <label class="filter-option">
-                <input type="checkbox" data-age="9-12">
+              <label class="filter-option" for="filter-age-9-12">
+                <input type="checkbox" id="filter-age-9-12" data-age="9-12">
                 <span class="filter-checkmark"></span>
                 <span>Tween (9–12 years)</span>
               </label>
-              <label class="filter-option">
-                <input type="checkbox" data-age="12+">
+              <label class="filter-option" for="filter-age-12p">
+                <input type="checkbox" id="filter-age-12p" data-age="12+">
                 <span class="filter-checkmark"></span>
                 <span>Teen (12+ years)</span>
               </label>
@@ -222,7 +234,7 @@
           <!-- Toolbar -->
           <div class="shop-toolbar">
             <div class="shop-results-info">
-              <span id="product-count">Loading...</span>
+                <span id="product-count" role="status" aria-live="polite">Loading...</span>
             </div>
             <div class="shop-toolbar-right">
               <button class="filter-toggle-btn" onclick="toggleFilterSidebar()" type="button" aria-label="Toggle filters">

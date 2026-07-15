@@ -8,19 +8,19 @@
    ---------------------------------------------------------------- */
 :root {
   --admin-sidebar-width: 260px;
-  --admin-primary:       #991B1B;
-  --admin-primary-mid:   #DC2626;
-  --admin-primary-light: #FEE2E2;
-  --admin-primary-pale:  #FEF2F2;
+  --admin-primary:       #2563eb;
+  --admin-primary-mid:   #3b82f6;
+  --admin-primary-light: #dbeafe;
+  --admin-primary-pale:  #eff6ff;
   --admin-surface:       #ffffff;
-  --admin-bg:            #F8FAFC;
-  --admin-border:        #FEE2E2;
-  --admin-text:          #374151;
-  --admin-text-muted:    #6B7280;
+  --admin-bg:            #f8fafc;
+  --admin-border:        #e2e8f0;
+  --admin-text:          #0f172a;
+  --admin-text-muted:    #64748b;
   --admin-danger:        #EF4444;
   --admin-danger-bg:     #FEE2E2;
-  --admin-warning:       #D97706;
-  --admin-warning-bg:    #FEF3C7;
+  --admin-warning:       #f59e0b;
+  --admin-warning-bg:    #fef3c7;
   --admin-radius-sm:     8px;
   --admin-radius-md:     10px;
   --admin-radius-lg:     16px;
@@ -598,7 +598,7 @@
   gap: 3px;
 }
 
-.stat-change.positive { color: #DC2626; }
+.stat-change.positive { color: #10b981; }
 .stat-change.negative { color: var(--admin-danger); }
 .stat-change.neutral  { color: var(--admin-text-muted); }
 
@@ -1165,23 +1165,26 @@
 }
 
 /* Form Toggles / Switches */
-.form-toggles {
+.form-toggles-row {
   display: flex;
-  gap: 32px;
-  align-items: center;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 12px;
 }
 
 .toggle-label {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  align-items: flex-start;
+  gap: 16px;
   cursor: pointer;
-  font-family: 'Nunito', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--admin-text);
   user-select: none;
+}
+
+.toggle-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-top: 2px;
 }
 
 .toggle-label input[type="checkbox"] {
@@ -1189,9 +1192,10 @@
 }
 
 .toggle-slider {
+  display: block;
   width: 44px;
   height: 24px;
-  background: var(--admin-primary-light);
+  background: var(--admin-border);
   border-radius: 50px;
   position: relative;
   transition: background 0.25s ease;
@@ -1208,7 +1212,7 @@
   top: 3px;
   left: 3px;
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .toggle-label input:checked + .toggle-slider {
@@ -1217,6 +1221,26 @@
 
 .toggle-label input:checked + .toggle-slider::before {
   transform: translateX(20px);
+}
+
+.toggle-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.toggle-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--admin-text);
+}
+
+.toggle-desc {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--admin-text-muted);
 }
 
 /* Form Actions */

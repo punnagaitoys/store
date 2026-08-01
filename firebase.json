@@ -5,6 +5,9 @@
   "storage": {
     "rules": "storage.rules"
   },
+  "functions": {
+    "source": "functions"
+  },
   "emulators": {
     "singleProjectMode": true,
     "firestore": {
@@ -18,6 +21,10 @@
     "storage": {
       "host": "127.0.0.1",
       "port": 9199
+    },
+    "functions": {
+      "host": "127.0.0.1",
+      "port": 5001
     },
     "ui": {
       "enabled": false

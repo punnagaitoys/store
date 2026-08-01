@@ -155,3 +155,11 @@ class PunnagaiYouTube {
 
 window.PunnagaiYouTube = PunnagaiYouTube;
 window.DEFAULT_HOME_VIDEOS = DEFAULT_HOME_VIDEOS;
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', function(e) {
+    if (e.key === 'Punnagai_HomeVideos' && window.PunnagaiYouTubeInstance) {
+      window.PunnagaiYouTubeInstance.render();
+    }
+  });
+}

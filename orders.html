@@ -132,6 +132,12 @@
     document.addEventListener('DOMContentLoaded', () => {
       setTimeout(loadOrders, 500);
     });
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'punnagai_mock_orders') {
+        loadOrders();
+      }
+    });
   </script>
 </body>
 </html>

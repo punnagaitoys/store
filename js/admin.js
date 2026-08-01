@@ -443,9 +443,10 @@ function openEditProduct(id) {
   // Pre-fill the variant editor from existing variants (distinct sizes/colors).
   const sizes = uniqueValues((product.variants || []).map((v) => v.size));
   const colors = uniqueValues((product.variants || []).map((v) => v.color));
-  setValue('f-sizes', sizes.join(', '));
-  setValue('f-colors', colors.join(', '));
-  setValue('f-variant-stock', '0');
+  const existingStock = (Array.isArray(product.variants) && product.variants.length > 0 && product.variants[0].stock != null)
+    ? product.variants[0].stock
+    : (product.inStock ? '10' : '0');
+  setValue('f-variant-stock', String(existingStock));
 
   const cancelBtn = document.getElementById('cancel-edit-btn');
   if (cancelBtn) cancelBtn.style.display = 'inline-flex';

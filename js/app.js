@@ -641,6 +641,23 @@ async function initHomePage() {
   renderNavbar('home');
   renderFooter();
 
+  // Load dynamic Hero Banner from Admin if available (Req 12)
+  if (typeof getBanners === 'function') {
+    getBanners({ active: true }).then(activeBanners => {
+      if (activeBanners && activeBanners.length > 0) {
+        const primaryBanner = activeBanners.sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0))[0];
+        const imgEl = document.querySelector('.hero-main-img');
+        const titleEl = document.querySelector('.hero-title');
+        if (imgEl && primaryBanner.imageUrl) {
+          imgEl.src = primaryBanner.imageUrl;
+        }
+        if (titleEl && primaryBanner.title) {
+          titleEl.innerHTML = window.escapeHtml ? window.escapeHtml(primaryBanner.title) : primaryBanner.title;
+        }
+      }
+    }).catch(e => console.warn('Error loading dynamic Hero Banner:', e));
+  }
+
   const featuredContainer = document.getElementById('featured-products');
   const newArrivalsContainer = document.getElementById('new-arrivals');
 
@@ -1115,12 +1132,37 @@ function renderProductDetailsUI() {
     }
   }
 
+  let videoEmbedHtml = '';
+  if (product.videoUrl) {
+    const match = String(product.videoUrl).match(/(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    const videoId = match ? match[1] : (product.videoUrl.length === 11 ? product.videoUrl : null);
+    if (videoId) {
+      videoEmbedHtml = `
+        <div class="product-video-section" style="margin-top: 24px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: white;">
+          <h3 style="font-size: 1.1rem; margin-bottom: 12px; display:flex; align-items:center; gap:8px;">
+            <span style="font-size:1.4rem;">🎬</span> Product Demonstration
+          </h3>
+          <div style="position: relative; width: 100%; padding-bottom: 56.25%; border-radius: 8px; overflow: hidden; background: #000; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <iframe 
+              src="https://www.youtube.com/embed/${videoId}?rel=0" 
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+              title="${product.name} Video" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+      `;
+    }
+  }
+
   const html = `
     <div class="product-detail-layout">
       <div class="product-gallery">
         <div class="main-image-container">
           <img src="${product.imageUrl || 'https://via.placeholder.com/600x600?text=Toy'}" alt="${product.name}" id="main-product-image">
         </div>
+        ${videoEmbedHtml}
       </div>
       <div class="product-info-wrapper">
         <div class="detail-meta">
@@ -1384,6 +1426,33 @@ document.addEventListener('DOMContentLoaded', () => {
       showToast('Running in Local/Offline Mode (Data not synced to cloud)', 'warning');
     }, 1000);
   }
+
+  // Live Cross-Tab / Real-time Sync: auto-refresh storefront when products are mutated in Admin
+  function _refreshCurrentPage() {
+    const p = window.location.pathname.toLowerCase();
+    if (p.includes('index') || p === '/' || p.endsWith('/')) {
+      if (typeof initHomePage === 'function') initHomePage();
+    } else if (p.includes('shop')) {
+      if (typeof initShopPage === 'function') initShopPage();
+    } else if (p.includes('product')) {
+      if (typeof initProductPage === 'function') initProductPage();
+    } else if (p.includes('cart')) {
+      if (typeof initCartPage === 'function') initCartPage();
+    } else if (p.includes('wishlist')) {
+      if (typeof initWishlistPage === 'function') initWishlistPage();
+    }
+  }
+  window.addEventListener('punnagai:cache_invalidated', function(e) {
+    if (!e.detail || !e.detail.slot || e.detail.slot === 'products' || e.detail.slot === 'categories') {
+      _refreshCurrentPage();
+    }
+  });
+  window.addEventListener('storage', function(e) {
+    if (e.key && (e.key.startsWith('punnagai_mock_') || e.key === 'Punnagai_HomeVideos')) {
+      if (typeof invalidateCache === 'function') invalidateCache(null, true);
+      _refreshCurrentPage();
+    }
+  });
 });
 
 // ============================================================

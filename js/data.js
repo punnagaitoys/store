@@ -491,10 +491,18 @@ async function addProduct(productData) {
       createdAt: getServerTimestamp()
     };
 
-    if (productData.variants !== undefined && Array.isArray(productData.variants)) {
+    if (productData.inStock !== undefined) {
+      data.inStock = Boolean(productData.inStock);
+    } else if (productData.variants !== undefined && Array.isArray(productData.variants)) {
       data.inStock = productData.variants.some(function(v) {
         return (typeof v.stock === 'number' ? v.stock : Number(v.stock) || 0) > 0;
       });
+    }
+    if (data.inStock && Array.isArray(data.variants) && data.variants.length > 0) {
+      const hasStock = data.variants.some(v => (Number(v.stock) || 0) > 0);
+      if (!hasStock && data.variants[0]) {
+        data.variants[0].stock = 10;
+      }
     }
 
     if (window.USE_LOCAL_MODE) {
@@ -527,10 +535,18 @@ async function updateProduct(id, updates) {
     if (updates.price !== undefined) updateData.price = Number(updates.price);
     if (updates.originalPrice !== undefined) updateData.originalPrice = updates.originalPrice ? Number(updates.originalPrice) : null;
 
-    if (updates.variants !== undefined && Array.isArray(updates.variants)) {
+    if (updates.inStock !== undefined) {
+      updateData.inStock = Boolean(updates.inStock);
+    } else if (updates.variants !== undefined && Array.isArray(updates.variants)) {
       updateData.inStock = updates.variants.some(function(v) {
         return (typeof v.stock === 'number' ? v.stock : Number(v.stock) || 0) > 0;
       });
+    }
+    if (updateData.inStock && Array.isArray(updateData.variants) && updateData.variants.length > 0) {
+      const hasStock = updateData.variants.some(v => (Number(v.stock) || 0) > 0);
+      if (!hasStock && updateData.variants[0]) {
+        updateData.variants[0].stock = 10;
+      }
     }
 
     if (window.USE_LOCAL_MODE) {
@@ -721,13 +737,43 @@ function _cacheSet(slot, data, ttlMs) {
  * Invalidate cached data. Call after any product/category mutation.
  * @param {('products'|'categories')} [slot] - omit to clear all caches.
  */
-function invalidateCache(slot) {
+function invalidateCache(slot, skipNotify = false) {
   if (slot) {
     _memoryCache[slot] = null;
   } else {
     _memoryCache.products = null;
     _memoryCache.categories = null;
   }
+  if (!skipNotify) {
+    try {
+      if (typeof BroadcastChannel !== 'undefined') {
+        const bc = new BroadcastChannel('punnagai_store_channel');
+        bc.postMessage({ type: 'CACHE_INVALIDATE', slot: slot, timestamp: Date.now() });
+        bc.close();
+      }
+      if (typeof window !== 'undefined' && window.dispatchEvent) {
+        window.dispatchEvent(new CustomEvent('punnagai:cache_invalidated', { detail: { slot: slot } }));
+      }
+    } catch (e) { /* ignore */ }
+  }
+}
+
+if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+  window.addEventListener('storage', function(e) {
+    if (e.key === LOCAL_STORAGE_KEY || e.key === 'punnagai_mock_categories') {
+      invalidateCache(null, true);
+    }
+  });
+  try {
+    if (typeof BroadcastChannel !== 'undefined') {
+      const bc = new BroadcastChannel('punnagai_store_channel');
+      bc.onmessage = function(event) {
+        if (event.data && event.data.type === 'CACHE_INVALIDATE') {
+          invalidateCache(event.data.slot, true);
+        }
+      };
+    }
+  } catch (e) { /* ignore */ }
 }
 
 /**

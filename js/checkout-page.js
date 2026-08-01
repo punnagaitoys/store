@@ -44,14 +44,16 @@ async function initCheckoutPage() {
 
     // userId (not uid) per auth.js session schema
     if (typeof getUserById === 'function' && user.userId) {
-      getUserById(user.userId).then(profile => {
-        if (profile) {
-          const nameField = document.getElementById('fullName');
-          const phoneField = document.getElementById('phone');
-          if (nameField && !nameField.value) nameField.value = profile.name || '';
-          if (phoneField && !phoneField.value) phoneField.value = profile.phone || '';
-        }
-      }).catch(e => console.warn('Could not fetch user profile:', e));
+      getUserById(user.userId)
+        .then((profile) => {
+          if (profile) {
+            const nameField = document.getElementById('fullName');
+            const phoneField = document.getElementById('phone');
+            if (nameField && !nameField.value) nameField.value = profile.name || '';
+            if (phoneField && !phoneField.value) phoneField.value = profile.phone || '';
+          }
+        })
+        .catch((e) => console.warn('Could not fetch user profile:', e));
     }
   }
 
@@ -62,19 +64,24 @@ async function initCheckoutPage() {
       appliedCouponCode = savedCoupon.code || '';
       appliedCouponDiscount = savedCoupon.discount || 0;
     }
-  } catch (e) { /* ignore */ }
+  } catch (e) {
+    /* ignore */
+  }
 
   renderOrderSummary(cart);
 
   // Wire PIN code → shipping methods
   const pinInput = document.getElementById('postalCode');
   if (pinInput) {
-    pinInput.addEventListener('input', debounce(async (e) => {
-      const pin = e.target.value.trim();
-      if (pin.length === 6 && /^\d{6}$/.test(pin)) {
-        await loadShippingMethods(pin);
-      }
-    }, 500));
+    pinInput.addEventListener(
+      'input',
+      debounce(async (e) => {
+        const pin = e.target.value.trim();
+        if (pin.length === 6 && /^\d{6}$/.test(pin)) {
+          await loadShippingMethods(pin);
+        }
+      }, 500)
+    );
   }
 
   // Wire Place Order
@@ -105,7 +112,9 @@ function loadCart() {
   try {
     const parsed = JSON.parse(localStorage.getItem('punnagai_cart'));
     return parsed && Array.isArray(parsed.cart) ? parsed.cart : [];
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 function getCurrentSessionUser() {
@@ -116,7 +125,10 @@ function getCurrentSessionUser() {
 }
 
 function computeCartSubtotal(cart) {
-  return cart.reduce((sum, item) => sum + (Number(item.price) || 0) * (Number(item.quantity) || 1), 0);
+  return cart.reduce(
+    (sum, item) => sum + (Number(item.price) || 0) * (Number(item.quantity) || 1),
+    0
+  );
 }
 
 function formatPriceINR(amount) {
@@ -145,30 +157,46 @@ function renderOrderSummary(cart) {
 
   // Use the pure order total logic if available
   let total = subtotal + shipping - discount;
-  if (typeof PunnagaiOrder !== 'undefined' && typeof PunnagaiOrder.computeOrderTotal === 'function') {
-    total = PunnagaiOrder.computeOrderTotal({ subtotal, shippingFee: shipping, taxAmount: 0, discount });
+  if (
+    typeof PunnagaiOrder !== 'undefined' &&
+    typeof PunnagaiOrder.computeOrderTotal === 'function'
+  ) {
+    total = PunnagaiOrder.computeOrderTotal({
+      subtotal,
+      shippingFee: shipping,
+      taxAmount: 0,
+      discount
+    });
   }
   total = Math.max(0, total);
 
-  const discountRow = discount > 0
-    ? `<div style="display:flex; justify-content:space-between; margin-bottom:8px; color:var(--success);">
+  const discountRow =
+    discount > 0
+      ? `<div style="display:flex; justify-content:space-between; margin-bottom:8px; color:var(--success);">
          <span>Discount (${escapeHtml(appliedCouponCode)})</span>
          <span>−${formatPriceINR(discount)}</span>
        </div>`
-    : '';
+      : '';
 
-  const shippingText = currentShippingCost === 0
-    ? (selectedShippingMethod ? '<span style="color:var(--success)">Free</span>' : '<span id="summary-shipping" style="color:var(--text-secondary); font-size:0.85rem">Enter PIN code</span>')
-    : `<span id="summary-shipping">${formatPriceINR(currentShippingCost)}</span>`;
+  const shippingText =
+    currentShippingCost === 0
+      ? selectedShippingMethod
+        ? '<span style="color:var(--success)">Free</span>'
+        : '<span id="summary-shipping" style="color:var(--text-secondary); font-size:0.85rem">Enter PIN code</span>'
+      : `<span id="summary-shipping">${formatPriceINR(currentShippingCost)}</span>`;
 
   const html = `
     <div class="summary-items">
-      ${cart.map(item => `
+      ${cart
+        .map(
+          (item) => `
         <div class="summary-item" style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:14px;">
           <div style="flex:1; padding-right:8px;">${Number(item.quantity)}× ${escapeHtml(item.name || '')}</div>
           <div style="font-weight:600; white-space:nowrap;">${formatPriceINR((Number(item.price) || 0) * (Number(item.quantity) || 1))}</div>
         </div>
-      `).join('')}
+      `
+        )
+        .join('')}
     </div>
     <div style="border-top:1px solid var(--border); padding-top:12px; margin-top:12px;">
       <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
@@ -211,7 +239,8 @@ async function loadShippingMethods(pin) {
   const container = document.getElementById('shipping-methods');
   if (!container) return;
 
-  container.innerHTML = '<div class="loading-spinner"></div><p style="margin-top:8px; color:var(--text-secondary);">Calculating shipping options...</p>';
+  container.innerHTML =
+    '<div class="loading-spinner"></div><p style="margin-top:8px; color:var(--text-secondary);">Calculating shipping options...</p>';
 
   let methods = [];
 
@@ -220,7 +249,8 @@ async function loadShippingMethods(pin) {
   }
 
   if (!methods || methods.length === 0) {
-    container.innerHTML = '<p style="color:var(--danger); font-size:14px;">Sorry, we do not currently ship to this PIN code.</p>';
+    container.innerHTML =
+      '<p style="color:var(--danger); font-size:14px;">Sorry, we do not currently ship to this PIN code.</p>';
     document.getElementById('place-order-btn').disabled = true;
     selectedShippingMethod = null;
     currentShippingCost = 0;
@@ -231,7 +261,9 @@ async function loadShippingMethods(pin) {
   selectedShippingMethod = methods[0];
   currentShippingCost = selectedShippingMethod.cost;
 
-  container.innerHTML = methods.map((m, idx) => `
+  container.innerHTML = methods
+    .map(
+      (m, idx) => `
     <label class="shipping-option ${idx === 0 ? 'selected' : ''}" style="display:flex; align-items:center; gap:12px; border:1px solid var(--border); border-radius:var(--radius); padding:12px 16px; margin-bottom:8px; cursor:pointer; transition:border-color .2s;">
       <input type="radio" name="shipping" value="${m.id}" data-cost="${m.cost}" data-label="${escapeHtml(m.label)}" ${idx === 0 ? 'checked' : ''} style="accent-color:var(--primary);">
       <div style="flex:1;">
@@ -240,16 +272,20 @@ async function loadShippingMethods(pin) {
       </div>
       <div style="font-weight:700; color:var(--primary);">${m.cost === 0 ? '<span style="color:var(--success)">Free</span>' : formatPriceINR(m.cost)}</div>
     </label>
-  `).join('');
+  `
+    )
+    .join('');
 
   // Wire radio change
-  container.querySelectorAll('input[name="shipping"]').forEach(radio => {
+  container.querySelectorAll('input[name="shipping"]').forEach((radio) => {
     radio.addEventListener('change', () => {
       const cost = Number(radio.dataset.cost) || 0;
       selectedShippingMethod = { id: radio.value, name: radio.dataset.label, cost };
       currentShippingCost = cost;
       // Highlight selected
-      container.querySelectorAll('.shipping-option').forEach(el => el.classList.remove('selected'));
+      container
+        .querySelectorAll('.shipping-option')
+        .forEach((el) => el.classList.remove('selected'));
       radio.closest('.shipping-option').classList.add('selected');
       updateSummaryTotals();
     });
@@ -298,7 +334,8 @@ async function handlePlaceOrder() {
 
   // 2. Require shipping method
   if (!selectedShippingMethod) {
-    if (typeof showToast === 'function') showToast('Please enter your PIN code to select a shipping method.', 'error');
+    if (typeof showToast === 'function')
+      showToast('Please enter your PIN code to select a shipping method.', 'error');
     document.getElementById('postalCode')?.focus();
     return;
   }
@@ -345,7 +382,7 @@ async function handlePlaceOrder() {
     // 4. Build the order document
     const orderData = {
       userId: user ? user.userId : 'guest',
-      items: cart.map(item => ({
+      items: cart.map((item) => ({
         productId: item.productId || item.id,
         variantId: item.variantId || '',
         name: item.name,
@@ -428,41 +465,51 @@ async function handlePlaceOrder() {
           if (typeof PunnagaiCartStorage !== 'undefined') {
             return PunnagaiCartStorage.clearCart();
           }
-          try { localStorage.removeItem('punnagai_cart'); } catch (_) {}
+          try {
+            localStorage.removeItem('punnagai_cart');
+          } catch (_) {}
           return true;
         }
       });
 
       if (!result.success || !result.confirmed) {
-        showPaymentError((result.error === 'payment_failed' || result.error === 'payment_not_verified')
-          ? 'Payment could not be verified. Please try again.'
-          : (result.error || 'Payment failed. Please try again.'));
+        showPaymentError(
+          result.error === 'payment_failed' || result.error === 'payment_not_verified'
+            ? 'Payment could not be verified. Please try again.'
+            : result.error || 'Payment failed. Please try again.'
+        );
         return;
       }
 
       // 7. Success — clean up coupon state and redirect to confirmation
-      try { sessionStorage.removeItem('punnagai_checkout_coupon'); } catch (_) {}
+      try {
+        sessionStorage.removeItem('punnagai_checkout_coupon');
+      } catch (_) {}
 
-      showPaymentOverlay('<span style="color:var(--success)">✓ Payment confirmed! Redirecting...</span>');
+      showPaymentOverlay(
+        '<span style="color:var(--success)">✓ Payment confirmed! Redirecting...</span>'
+      );
 
       setTimeout(() => {
         window.location.href = `order-confirmation?orderId=${encodeURIComponent(persistedOrderId)}`;
       }, 1200);
-
     } else {
       // PunnagaiCheckout not loaded — minimal fallback
       if (typeof PunnagaiCartStorage !== 'undefined') {
         PunnagaiCartStorage.clearCart();
       } else {
-        try { localStorage.removeItem('punnagai_cart'); } catch (_) {}
+        try {
+          localStorage.removeItem('punnagai_cart');
+        } catch (_) {}
       }
 
-      showPaymentOverlay('<span style="color:var(--success)">✓ Order placed! Redirecting...</span>');
+      showPaymentOverlay(
+        '<span style="color:var(--success)">✓ Order placed! Redirecting...</span>'
+      );
       setTimeout(() => {
         window.location.href = `order-confirmation?orderId=${encodeURIComponent(persistedOrderId)}`;
       }, 1200);
     }
-
   } catch (err) {
     console.error('[Checkout] Error placing order:', err);
     showPaymentError('Something went wrong. Please try again.');

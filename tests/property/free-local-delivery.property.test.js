@@ -24,13 +24,11 @@ const {
   REGION_METHODS,
   DEFAULT_QUOTES,
   LOCAL_PIN_MIN,
-  LOCAL_PIN_MAX,
+  LOCAL_PIN_MAX
 } = shipping;
 
 // PINs inside the local free-delivery band (Chennai 600001..600100).
-const localPinArb = fc
-  .integer({ min: LOCAL_PIN_MIN, max: LOCAL_PIN_MAX })
-  .map(String);
+const localPinArb = fc.integer({ min: LOCAL_PIN_MIN, max: LOCAL_PIN_MAX }).map(String);
 
 describe('Property 18: Local Delivery Cost is Free (Req 7.5)', () => {
   test('Local shipping methods always have cost === 0 (invariant)', () => {
@@ -66,7 +64,7 @@ describe('Property 18: Local Delivery Cost is Free (Req 7.5)', () => {
       { baseCost: -100, estimatedDays: 1, provider: 'negative-pricing' }, // negative cost
       { baseCost: null, estimatedDays: 1, provider: 'null-cost' }, // null cost
       { cost: 500, estimatedDays: 2, provider: 'wrong-schema' }, // wrong field name
-      { baseCost: undefined, estimatedDays: 1, provider: 'undefined-cost' }, // undefined
+      { baseCost: undefined, estimatedDays: 1, provider: 'undefined-cost' } // undefined
     ];
 
     for (const cachedDefault of malformedCachedDefaults) {
@@ -90,7 +88,7 @@ describe('Property 18: Local Delivery Cost is Free (Req 7.5)', () => {
       { subtotal: 0, items: [] }, // empty order edge case
       { subtotal: 50, items: [{ price: 50, quantity: 1 }] }, // small order
       { subtotal: 999, items: [{ price: 999, quantity: 1 }] }, // large single item
-      { subtotal: 10000, items: [{ price: 100, quantity: 100 }] }, // bulk order
+      { subtotal: 10000, items: [{ price: 100, quantity: 100 }] } // bulk order
     ];
 
     for (const scenario of orderScenarios) {

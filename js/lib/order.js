@@ -81,7 +81,7 @@
    */
   function toNumber(value, fallback) {
     const n = Number(value);
-    return isFinite(n) ? n : (fallback || 0);
+    return isFinite(n) ? n : fallback || 0;
   }
 
   /**
@@ -212,9 +212,7 @@
     opts = opts || {};
     const from = order.orderStatus;
     if (!canTransition(from, to)) {
-      throw new Error(
-        'Illegal order status transition: ' + String(from) + ' \u2192 ' + String(to)
-      );
+      throw new Error('Illegal order status transition: ' + String(from) + ' \u2192 ' + String(to));
     }
     const now = typeof opts.now === 'number' ? opts.now : Date.now();
     const next = Object.assign({}, order, { orderStatus: to });
@@ -385,9 +383,8 @@
       return false;
     }
     opts = opts || {};
-    const windowMs = opts.windowMs !== undefined
-      ? toNonNegative(opts.windowMs)
-      : DEFAULT_DUPLICATE_WINDOW_MS;
+    const windowMs =
+      opts.windowMs !== undefined ? toNonNegative(opts.windowMs) : DEFAULT_DUPLICATE_WINDOW_MS;
     const list = Array.isArray(existingOrders) ? existingOrders : [];
 
     const refNow = typeof opts.now === 'number' ? opts.now : Date.now();

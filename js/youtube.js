@@ -8,7 +8,8 @@ const DEFAULT_HOME_VIDEOS = [
     id: 'hv_1',
     videoId: 'dQw4w9WgXcQ',
     title: 'Welcome to Punnagai Toy Store Mylapore',
-    description: 'Take a virtual tour of Mylapore\'s favorite toy destination and discover our magical range.'
+    description:
+      "Take a virtual tour of Mylapore's favorite toy destination and discover our magical range."
   },
   {
     id: 'hv_2',
@@ -157,7 +158,7 @@ window.PunnagaiYouTube = PunnagaiYouTube;
 window.DEFAULT_HOME_VIDEOS = DEFAULT_HOME_VIDEOS;
 
 if (typeof window !== 'undefined') {
-  window.addEventListener('storage', function(e) {
+  window.addEventListener('storage', function (e) {
     if (e.key === 'Punnagai_HomeVideos' && window.PunnagaiYouTubeInstance) {
       window.PunnagaiYouTubeInstance.render();
     }

@@ -208,9 +208,12 @@
     const target = String(categoryId);
     return toArray(products).reduce(function (acc, product) {
       if (!product || typeof product !== 'object') return acc;
-      const pid = product.categoryId !== undefined && product.categoryId !== null
-        ? String(product.categoryId)
-        : (product.category !== undefined && product.category !== null ? String(product.category) : null);
+      const pid =
+        product.categoryId !== undefined && product.categoryId !== null
+          ? String(product.categoryId)
+          : product.category !== undefined && product.category !== null
+            ? String(product.category)
+            : null;
       return pid === target ? acc + 1 : acc;
     }, 0);
   }
@@ -224,19 +227,25 @@
    */
   function reconcileCategoryWithProducts(category, products) {
     const cat = category || {};
-    const target = cat.categoryId !== undefined && cat.categoryId !== null
-      ? String(cat.categoryId)
-      : null;
+    const target =
+      cat.categoryId !== undefined && cat.categoryId !== null ? String(cat.categoryId) : null;
     const assignedIds = [];
     if (target !== null) {
       toArray(products).forEach(function (product) {
         if (!product || typeof product !== 'object') return;
-        const pid = product.categoryId !== undefined && product.categoryId !== null
-          ? String(product.categoryId)
-          : (product.category !== undefined && product.category !== null ? String(product.category) : null);
+        const pid =
+          product.categoryId !== undefined && product.categoryId !== null
+            ? String(product.categoryId)
+            : product.category !== undefined && product.category !== null
+              ? String(product.category)
+              : null;
         if (pid !== target) return;
-        const productId = product.productId !== undefined ? product.productId
-          : (product.id !== undefined ? product.id : null);
+        const productId =
+          product.productId !== undefined
+            ? product.productId
+            : product.id !== undefined
+              ? product.id
+              : null;
         if (productId !== null) assignedIds.push(productId);
       });
     }
@@ -292,7 +301,10 @@
    */
   function normalizeImageFormat(format) {
     if (typeof format !== 'string') return '';
-    return format.trim().toLowerCase().replace(/^image\//, '');
+    return format
+      .trim()
+      .toLowerCase()
+      .replace(/^image\//, '');
   }
 
   /**
@@ -312,7 +324,8 @@
     const format = normalizeImageFormat(img.format);
 
     if (!Number.isFinite(width) || width <= 0) errors.push('image width must be a positive number');
-    if (!Number.isFinite(height) || height <= 0) errors.push('image height must be a positive number');
+    if (!Number.isFinite(height) || height <= 0)
+      errors.push('image height must be a positive number');
     if (!format || ALLOWED_IMAGE_FORMATS.indexOf(format) === -1) {
       errors.push('unsupported image format: ' + (format || 'unknown'));
     }
@@ -347,7 +360,9 @@
     const sourceWidth = Math.max(1, Math.round(toFiniteNumber(img.width, 1)));
     const sourceHeight = Math.max(1, Math.round(toFiniteNumber(img.height, 1)));
     const aspectRatio = sourceWidth / sourceHeight;
-    const format = isNonEmptyString(options.format) ? options.format.toLowerCase() : OPTIMIZED_FORMAT;
+    const format = isNonEmptyString(options.format)
+      ? options.format.toLowerCase()
+      : OPTIMIZED_FORMAT;
     const renditionTargets = toArray(options.renditions).length
       ? options.renditions
       : RESPONSIVE_RENDITIONS;
@@ -358,7 +373,7 @@
       const width = Math.min(sourceWidth, maxWidth);
       const height = Math.max(1, Math.round(width / aspectRatio));
       return {
-        label: target.label !== undefined ? String(target.label) : ('w' + width),
+        label: target.label !== undefined ? String(target.label) : 'w' + width,
         width: width,
         height: height,
         format: format
@@ -418,7 +433,9 @@
     const targetKey = bannerId === undefined || bannerId === null ? null : String(bannerId);
     const list = toArray(banners);
 
-    const target = list.find(function (b) { return bannerKey(b) === targetKey; });
+    const target = list.find(function (b) {
+      return bannerKey(b) === targetKey;
+    });
     if (target && isActive(target)) return true; // already active, no net change
 
     return countActiveBanners(list) < cap;
@@ -441,9 +458,13 @@
     const cap = toFiniteNumber(max, MAX_ACTIVE_BANNERS);
     const desired = Boolean(active);
     const targetKey = bannerId === undefined || bannerId === null ? null : String(bannerId);
-    const list = toArray(banners).map(function (b) { return Object.assign({}, b); });
+    const list = toArray(banners).map(function (b) {
+      return Object.assign({}, b);
+    });
 
-    const target = list.find(function (b) { return bannerKey(b) === targetKey; });
+    const target = list.find(function (b) {
+      return bannerKey(b) === targetKey;
+    });
     if (!target) {
       return { success: false, error: 'banner not found', banners: list, banner: null };
     }
@@ -477,7 +498,9 @@
    */
   function enforceMaxActiveBanners(banners, max) {
     const cap = Math.max(0, toFiniteNumber(max, MAX_ACTIVE_BANNERS));
-    const list = toArray(banners).map(function (b) { return Object.assign({}, b); });
+    const list = toArray(banners).map(function (b) {
+      return Object.assign({}, b);
+    });
 
     const active = list.filter(isActive);
     if (active.length <= cap) return list;

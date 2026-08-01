@@ -1,16 +1,34 @@
+# Dependencies
 node_modules/
-.vscode/
+functions/node_modules/
+
+# Firebase & Local Emulators
 .firebase/
-*.log
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
 
-# Python
-__pycache__/
-*.pyc
+# Environment & Config
+.env
+.env.local
+.env.*.local
 
-# OS
+# IDE & OS Files
+.vscode/
+.idea/
 .DS_Store
 Thumbs.db
+*.swp
 
-# Agent Context
+# Testing & Coverage
+coverage/
+.jest/
+
+# Logs & Temporary Files
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Agent & Workspace Metadata
 .agents/
 .antigravity/

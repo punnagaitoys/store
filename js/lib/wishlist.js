@@ -208,7 +208,7 @@
     }
     const payload = JSON.stringify({
       wishlist: Array.isArray(wishlist) ? wishlist : [],
-      updatedAt: now(),
+      updatedAt: now()
     });
     try {
       store.setItem(STORAGE_KEY, payload);
@@ -407,6 +407,6 @@
     removeFromWishlist: removeFromWishlist,
     addWishlistItemToCart: addWishlistItemToCart,
     clearWishlist: clearWishlist,
-    clearOnLogout: clearOnLogout,
+    clearOnLogout: clearOnLogout
   };
 });

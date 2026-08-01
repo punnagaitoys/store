@@ -72,10 +72,10 @@
         typeof globalThis !== 'undefined'
           ? globalThis
           : typeof self !== 'undefined'
-          ? self
-          : typeof window !== 'undefined'
-          ? window
-          : null;
+            ? self
+            : typeof window !== 'undefined'
+              ? window
+              : null;
       if (g && g.localStorage) {
         return g.localStorage;
       }
@@ -106,7 +106,7 @@
     const cart = Array.isArray(items) ? items : [];
     const payload = {
       cart: cart,
-      updatedAt: Date.now(),
+      updatedAt: Date.now()
     };
 
     try {
@@ -184,6 +184,6 @@
     getStorage,
     saveCartToLocalStorage,
     loadCartFromLocalStorage,
-    clearCart,
+    clearCart
   };
 });

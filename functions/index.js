@@ -7,7 +7,7 @@ admin.initializeApp();
 /**
  * Triggered when a new order is created in Firestore.
  * Sends an automated order receipt via WhatsApp Business API.
- * 
+ *
  * Requires the following environment variables to be set in Firebase Functions:
  * - WHATSAPP_API_TOKEN (Your permanent System User token from Meta)
  * - WHATSAPP_PHONE_ID (The ID of your registered WhatsApp Business number)
@@ -28,7 +28,7 @@ exports.sendWhatsAppReceipt = functions.firestore
     // Clean up the phone number for WhatsApp API (digits only, include country code)
     // WhatsApp requires numbers to start with country code but without '+' or '00'
     let phoneStr = String(phone).replace(/\D/g, '');
-    
+
     // If it's a 10 digit Indian number, prefix with 91 automatically.
     // Adjust this logic if you serve multiple countries without strict validation.
     if (phoneStr.length === 10) {
@@ -85,15 +85,14 @@ exports.sendWhatsAppReceipt = functions.firestore
         payload,
         {
           headers: {
-            'Authorization': `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
         }
       );
-      
+
       console.log(`WhatsApp receipt sent successfully for order ${orderId}:`, response.data);
       return response.data;
-
     } catch (error) {
       console.error(`Error sending WhatsApp receipt for order ${orderId}:`);
       if (error.response) {

@@ -46,7 +46,7 @@ describe('Property 1: Category Filter Produces Correct Subset (Req 1.2)', () => 
       fc.property(catalogArb, selectedCategoryArb, (products, selectedCategory) => {
         const filtered = filterProductsByCategory(products, selectedCategory);
 
-        const allMatch = filtered.every(p => p.category === selectedCategory);
+        const allMatch = filtered.every((p) => p.category === selectedCategory);
         const countCorrect = filtered.length <= products.length;
 
         expect(allMatch).toBe(true);

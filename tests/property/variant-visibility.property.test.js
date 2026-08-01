@@ -22,7 +22,7 @@ const { isVariantVisible, visibleVariants, getStock } = inventory;
 // across the full (normalized) input space.
 const variantArb = fc.record({
   sku: fc.string(),
-  stock: fc.integer({ min: -50, max: 50 }),
+  stock: fc.integer({ min: -50, max: 50 })
 });
 
 describe('Property 20: Variant Stock Visibility Rule (Req 9.5)', () => {

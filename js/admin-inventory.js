@@ -54,13 +54,7 @@
   // ----------------------------------------------------------------------
 
   /** Required template columns, in canonical order (Requirement 9.6). */
-  const TEMPLATE_COLUMNS = Object.freeze([
-    'SKU',
-    'Product_Name',
-    'Size',
-    'Color',
-    'Quantity'
-  ]);
+  const TEMPLATE_COLUMNS = Object.freeze(['SKU', 'Product_Name', 'Size', 'Color', 'Quantity']);
 
   /**
    * SKU format rule. Accepts the shapes produced by products-model
@@ -261,7 +255,9 @@
    */
   function validateHeader(header) {
     const present = Array.isArray(header)
-      ? header.map(function (h) { return String(h).trim(); })
+      ? header.map(function (h) {
+          return String(h).trim();
+        })
       : [];
     const missing = TEMPLATE_COLUMNS.filter(function (col) {
       return present.indexOf(col) === -1;
@@ -306,9 +302,10 @@
 
     let knownSet = null;
     if (options.knownSKUs) {
-      knownSet = (options.knownSKUs instanceof Set)
-        ? options.knownSKUs
-        : new Set(Array.prototype.slice.call(options.knownSKUs));
+      knownSet =
+        options.knownSKUs instanceof Set
+          ? options.knownSKUs
+          : new Set(Array.prototype.slice.call(options.knownSKUs));
     }
 
     const errors = [];
@@ -323,9 +320,7 @@
         errors.push({
           row: rowNumber,
           sku: rawSku,
-          message: rawSku === ''
-            ? 'Missing SKU'
-            : 'Invalid SKU format: "' + rawSku + '"'
+          message: rawSku === '' ? 'Missing SKU' : 'Invalid SKU format: "' + rawSku + '"'
         });
         continue;
       }
@@ -335,7 +330,9 @@
         errors.push({
           row: rowNumber,
           sku: rawSku,
-          message: 'Invalid quantity: "' + String(row.Quantity == null ? '' : row.Quantity) +
+          message:
+            'Invalid quantity: "' +
+            String(row.Quantity == null ? '' : row.Quantity) +
             '" (must be a non-negative whole number)'
         });
         continue;
@@ -380,7 +377,7 @@
    * @returns {Object<string, number>} a new per-SKU stock map.
    */
   function applyUpdates(inventory, updates) {
-    const next = Object.assign({}, (inventory && typeof inventory === 'object') ? inventory : {});
+    const next = Object.assign({}, inventory && typeof inventory === 'object' ? inventory : {});
     const list = Array.isArray(updates) ? updates : [];
     for (let i = 0; i < list.length; i++) {
       const update = list[i];
@@ -416,7 +413,9 @@
    */
   function buildTemplateCSV() {
     const header = TEMPLATE_COLUMNS.join(',');
-    const example = ['SKU-001-0-SMALL-0-RED', 'Wooden Rainbow Stacker', 'Small', 'Red', '25'].join(',');
+    const example = ['SKU-001-0-SMALL-0-RED', 'Wooden Rainbow Stacker', 'Small', 'Red', '25'].join(
+      ','
+    );
     return header + '\r\n' + example + '\r\n';
   }
 
@@ -461,7 +460,13 @@
         return Object.assign({ _rowNumber: idx + 2 }, r);
       });
     } else {
-      return { success: false, error: 'No file content provided', errors: [], validUpdates: [], rows: [] };
+      return {
+        success: false,
+        error: 'No file content provided',
+        errors: [],
+        validUpdates: [],
+        rows: []
+      };
     }
 
     const headerCheck = validateHeader(header);
@@ -472,7 +477,9 @@
     const validation = validateRows(rows, { knownSKUs: input.knownSKUs });
     return {
       success: validation.success,
-      error: validation.success ? undefined : 'Validation failed for ' + validation.errors.length + ' row(s)',
+      error: validation.success
+        ? undefined
+        : 'Validation failed for ' + validation.errors.length + ' row(s)',
       errors: validation.errors,
       validUpdates: validation.validUpdates,
       rows: rows
@@ -493,8 +500,12 @@
   function readFileAsText(file) {
     return new Promise(function (resolve, reject) {
       const reader = new FileReader();
-      reader.onload = function () { resolve(String(reader.result || '')); };
-      reader.onerror = function () { reject(reader.error || new Error('Failed to read file')); };
+      reader.onload = function () {
+        resolve(String(reader.result || ''));
+      };
+      reader.onerror = function () {
+        reject(reader.error || new Error('Failed to read file'));
+      };
       reader.readAsText(file);
     });
   }
@@ -507,8 +518,12 @@
   function readFileAsArrayBuffer(file) {
     return new Promise(function (resolve, reject) {
       const reader = new FileReader();
-      reader.onload = function () { resolve(reader.result); };
-      reader.onerror = function () { reject(reader.error || new Error('Failed to read file')); };
+      reader.onload = function () {
+        resolve(reader.result);
+      };
+      reader.onerror = function () {
+        reject(reader.error || new Error('Failed to read file'));
+      };
       reader.readAsArrayBuffer(file);
     });
   }
@@ -538,11 +553,17 @@
       if (!matrix || matrix.length === 0) {
         return { success: false, error: 'File is empty' };
       }
-      const header = matrix[0].map(function (h) { return String(h == null ? '' : h).trim(); });
+      const header = matrix[0].map(function (h) {
+        return String(h == null ? '' : h).trim();
+      });
       const rows = [];
       for (let r = 1; r < matrix.length; r++) {
         const record = matrix[r] || [];
-        if (record.every(function (c) { return String(c == null ? '' : c).trim() === ''; })) {
+        if (
+          record.every(function (c) {
+            return String(c == null ? '' : c).trim() === '';
+          })
+        ) {
           continue;
         }
         const obj = { _rowNumber: r + 1 };
@@ -554,7 +575,10 @@
       }
       return { success: true, header: header, rows: rows };
     } catch (err) {
-      return { success: false, error: 'Failed to parse xlsx file: ' + (err && err.message ? err.message : String(err)) };
+      return {
+        success: false,
+        error: 'Failed to parse xlsx file: ' + (err && err.message ? err.message : String(err))
+      };
     }
   }
 
@@ -595,12 +619,13 @@
     const list = Array.isArray(products) ? products : [];
     for (let p = 0; p < list.length; p++) {
       const product = list[p];
-      const variants = (product && Array.isArray(product.variants)) ? product.variants : [];
+      const variants = product && Array.isArray(product.variants) ? product.variants : [];
       for (let v = 0; v < variants.length; v++) {
         const variant = variants[v];
         if (!variant || typeof variant.skuId !== 'string') continue;
         index[variant.skuId] = { product: product, variantIndex: v };
-        const current = (typeof variant.stock === 'number') ? variant.stock : Number(variant.stock) || 0;
+        const current =
+          typeof variant.stock === 'number' ? variant.stock : Number(variant.stock) || 0;
         stockMap[variant.skuId] = current;
         knownSKUs.push(variant.skuId);
       }
@@ -626,15 +651,22 @@
    */
   async function uploadInventoryFile(file, deps) {
     deps = deps || {};
-    const getProductsFn = deps.getProducts || (typeof window !== 'undefined' ? window.getProducts : null);
-    const updateProductFn = deps.updateProduct || (typeof window !== 'undefined' ? window.updateProduct : null);
-    const createInventoryLogFn = deps.createInventoryLog || (typeof window !== 'undefined' ? window.createInventoryLog : null);
-    const inventoryModel = deps.inventoryModel || (typeof window !== 'undefined' ? window.PunnagaiInventoryModel : null);
+    const getProductsFn =
+      deps.getProducts || (typeof window !== 'undefined' ? window.getProducts : null);
+    const updateProductFn =
+      deps.updateProduct || (typeof window !== 'undefined' ? window.updateProduct : null);
+    const createInventoryLogFn =
+      deps.createInventoryLog || (typeof window !== 'undefined' ? window.createInventoryLog : null);
+    const inventoryModel =
+      deps.inventoryModel || (typeof window !== 'undefined' ? window.PunnagaiInventoryModel : null);
     const audit = deps.audit || (typeof window !== 'undefined' ? window.PunnagaiAudit : null);
     const adminUserId = deps.adminUserId || null;
 
     if (typeof getProductsFn !== 'function' || typeof updateProductFn !== 'function') {
-      return { success: false, error: 'Data layer unavailable (getProducts/updateProduct not found)' };
+      return {
+        success: false,
+        error: 'Data layer unavailable (getProducts/updateProduct not found)'
+      };
     }
 
     // 1. Parse.
@@ -670,17 +702,23 @@
       if (!productsToUpdate[pid]) {
         productsToUpdate[pid] = {
           product: product,
-          variants: product.variants.map(function (v) { return Object.assign({}, v); })
+          variants: product.variants.map(function (v) {
+            return Object.assign({}, v);
+          })
         };
       }
       const variants = productsToUpdate[pid].variants;
       const variant = variants[entry.variantIndex];
-      const previousStock = (typeof variant.stock === 'number') ? variant.stock : Number(variant.stock) || 0;
+      const previousStock =
+        typeof variant.stock === 'number' ? variant.stock : Number(variant.stock) || 0;
       const newStock = update.quantity;
 
       // Use inventory-model's adjustStock helper to reach the target safely.
       if (inventoryModel && typeof inventoryModel.adjustStock === 'function') {
-        variants[entry.variantIndex] = inventoryModel.adjustStock(variant, newStock - previousStock);
+        variants[entry.variantIndex] = inventoryModel.adjustStock(
+          variant,
+          newStock - previousStock
+        );
       } else {
         variants[entry.variantIndex] = Object.assign({}, variant, { stock: Math.max(0, newStock) });
       }
@@ -720,7 +758,9 @@
       try {
         await audit.writeAuditLog({
           adminUserId: adminUserId,
-          operationType: audit.OPERATION_TYPES ? audit.OPERATION_TYPES.INVENTORY_UPLOAD : 'inventory_upload',
+          operationType: audit.OPERATION_TYPES
+            ? audit.OPERATION_TYPES.INVENTORY_UPLOAD
+            : 'inventory_upload',
           entity: { type: 'inventory', id: uploadFileId },
           details: {
             uploadFileId: uploadFileId,

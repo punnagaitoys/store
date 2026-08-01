@@ -16,8 +16,22 @@ function variantProduct() {
     category: 'Educational & Learning',
     ageGroup: '0-2',
     variants: [
-      { variantId: 'var_001', skuId: 'SKU-001-S-RED', size: 'Small', color: 'Red', price: 399, stock: 45 },
-      { variantId: 'var_002', skuId: 'SKU-001-L-BLUE', size: 'Large', color: 'Blue', price: 599, stock: 0 }
+      {
+        variantId: 'var_001',
+        skuId: 'SKU-001-S-RED',
+        size: 'Small',
+        color: 'Red',
+        price: 399,
+        stock: 45
+      },
+      {
+        variantId: 'var_002',
+        skuId: 'SKU-001-L-BLUE',
+        size: 'Large',
+        color: 'Blue',
+        price: 599,
+        stock: 0
+      }
     ],
     discount: { type: 'percentage', value: 10, active: true }
   };
@@ -102,7 +116,9 @@ describe('getVariantPrice', () => {
 
 describe('getDiscountedPrice', () => {
   test('applies an active percentage discount (floored)', () => {
-    expect(detail.getDiscountedPrice(399, { type: 'percentage', value: 10, active: true })).toBe(359);
+    expect(detail.getDiscountedPrice(399, { type: 'percentage', value: 10, active: true })).toBe(
+      359
+    );
   });
 
   test('applies an active fixed discount', () => {
@@ -117,7 +133,9 @@ describe('getDiscountedPrice', () => {
 
   test('never goes below 0 and caps percentage at 100', () => {
     expect(detail.getDiscountedPrice(100, { type: 'fixed', value: 999, active: true })).toBe(0);
-    expect(detail.getDiscountedPrice(100, { type: 'percentage', value: 250, active: true })).toBe(0);
+    expect(detail.getDiscountedPrice(100, { type: 'percentage', value: 250, active: true })).toBe(
+      0
+    );
   });
 
   test('ignores unknown discount type and negative values', () => {
@@ -128,12 +146,24 @@ describe('getDiscountedPrice', () => {
 
 describe('getVariantStockStatus', () => {
   test('in stock when stock > 0', () => {
-    expect(detail.getVariantStockStatus({ stock: 5 })).toEqual({ inStock: true, stock: 5, status: 'in-stock' });
+    expect(detail.getVariantStockStatus({ stock: 5 })).toEqual({
+      inStock: true,
+      stock: 5,
+      status: 'in-stock'
+    });
   });
 
   test('out of stock when stock is 0 / missing', () => {
-    expect(detail.getVariantStockStatus({ stock: 0 })).toEqual({ inStock: false, stock: 0, status: 'out-of-stock' });
-    expect(detail.getVariantStockStatus(null)).toEqual({ inStock: false, stock: 0, status: 'out-of-stock' });
+    expect(detail.getVariantStockStatus({ stock: 0 })).toEqual({
+      inStock: false,
+      stock: 0,
+      status: 'out-of-stock'
+    });
+    expect(detail.getVariantStockStatus(null)).toEqual({
+      inStock: false,
+      stock: 0,
+      status: 'out-of-stock'
+    });
   });
 });
 
@@ -166,14 +196,20 @@ describe('getRelatedProducts (Req 2.8)', () => {
 
   test('excludes the product itself and unrelated products', () => {
     const related = detail.getRelatedProducts(all, current, { limit: 6 });
-    const ids = related.map(function (p) { return p.id; });
+    const ids = related.map(function (p) {
+      return p.id;
+    });
     expect(ids).not.toContain('p0');
     expect(ids).not.toContain('p4');
   });
 
   test('orders both-match first, then category-only, then age-only', () => {
     const related = detail.getRelatedProducts(all, current, { limit: 6 });
-    expect(related.map(function (p) { return p.id; })).toEqual(['p1', 'p2', 'p3']);
+    expect(
+      related.map(function (p) {
+        return p.id;
+      })
+    ).toEqual(['p1', 'p2', 'p3']);
   });
 
   test('respects the limit (defaults to 4)', () => {
@@ -192,6 +228,10 @@ describe('getRelatedProducts (Req 2.8)', () => {
   test('matches on categoryId / ageRating fields too', () => {
     const richCurrent = { id: 'r0', categoryId: 'cat_1', ageRating: '3-8' };
     const richAll = [richCurrent, { id: 'r1', categoryId: 'cat_1', ageRating: '3-8' }];
-    expect(detail.getRelatedProducts(richAll, richCurrent).map(function (p) { return p.id; })).toEqual(['r1']);
+    expect(
+      detail.getRelatedProducts(richAll, richCurrent).map(function (p) {
+        return p.id;
+      })
+    ).toEqual(['r1']);
   });
 });

@@ -97,7 +97,8 @@
   /** Resolve the cart persistence module (`js/lib/cart-storage.js`). */
   function resolveCartStorage(deps) {
     if (deps && deps.cartStorage) return deps.cartStorage;
-    if (typeof window !== 'undefined' && window.PunnagaiCartStorage) return window.PunnagaiCartStorage;
+    if (typeof window !== 'undefined' && window.PunnagaiCartStorage)
+      return window.PunnagaiCartStorage;
     return safeRequire('./lib/cart-storage.js');
   }
 
@@ -111,7 +112,9 @@
     if (deps && typeof deps.clearCart === 'function') return deps.clearCart;
     const cs = resolveCartStorage(deps);
     if (cs && typeof cs.clearCart === 'function') return cs.clearCart;
-    return function () { return false; };
+    return function () {
+      return false;
+    };
   }
 
   // --------------------------------------------------------------------------
@@ -155,12 +158,19 @@
     const opts = options || {};
     const secret = opts.secret || 'punnagai_mock_secret';
     const prefix = opts.transactionIdPrefix || 'UPI';
-    const clock = typeof opts.now === 'function' ? opts.now : function () { return Date.now(); };
+    const clock =
+      typeof opts.now === 'function'
+        ? opts.now
+        : function () {
+            return Date.now();
+          };
     let shouldSucceed = opts.shouldSucceed !== false;
 
     return {
       /** Allow tests/UI to flip the simulated outcome between attempts. */
-      setShouldSucceed: function (value) { shouldSucceed = value !== false; },
+      setShouldSucceed: function (value) {
+        shouldSucceed = value !== false;
+      },
 
       /**
        * Begin a payment (Req 6.7). Returns the redirect descriptor a real
@@ -173,8 +183,8 @@
         const txnRef = prefix + '-' + orderId + '-' + clock();
         const upiId = o.upiId || (order && order.upiId) || 'customer@upi';
         // A real gateway returns a hosted checkout URL / UPI intent string.
-        const redirectUrl = 'upi://pay?pa=' + encodeURIComponent(upiId) +
-          '&tr=' + encodeURIComponent(txnRef);
+        const redirectUrl =
+          'upi://pay?pa=' + encodeURIComponent(upiId) + '&tr=' + encodeURIComponent(txnRef);
         return {
           success: true,
           redirectUrl: redirectUrl,
@@ -238,8 +248,11 @@
     const subject = 'Your Punnagai Toys order ' + (orderId ? '#' + orderId : '') + ' is confirmed';
     const body =
       'Thank you for your order!\n\n' +
-      'Order ID: ' + (orderId || 'N/A') + '\n' +
-      trackingLine + '\n\n' +
+      'Order ID: ' +
+      (orderId || 'N/A') +
+      '\n' +
+      trackingLine +
+      '\n\n' +
       'We will notify you when your toys are on the way.';
     return {
       to: to,
@@ -261,7 +274,12 @@
       send: function (email) {
         try {
           if (typeof console !== 'undefined' && console.info) {
-            console.info('[Punnagai] Confirmation email (stub):', email && email.subject, '→', email && email.to);
+            console.info(
+              '[Punnagai] Confirmation email (stub):',
+              email && email.subject,
+              '→',
+              email && email.to
+            );
           }
           return { success: true };
         } catch (e) {
@@ -313,7 +331,10 @@
     }
     const gateway = deps.gateway;
     if (!gateway || typeof gateway.redirect !== 'function') {
-      return { success: false, error: 'initiatePayment: a payment gateway with redirect() is required' };
+      return {
+        success: false,
+        error: 'initiatePayment: a payment gateway with redirect() is required'
+      };
     }
 
     let redirect;
@@ -328,13 +349,14 @@
 
     // Optionally perform the browser redirect (skipped in local mode / tests).
     if (deps.performRedirect === true) {
-      const navigate = typeof deps.navigate === 'function'
-        ? deps.navigate
-        : function (url) {
-            if (typeof window !== 'undefined' && window.location) {
-              window.location.href = url;
-            }
-          };
+      const navigate =
+        typeof deps.navigate === 'function'
+          ? deps.navigate
+          : function (url) {
+              if (typeof window !== 'undefined' && window.location) {
+                window.location.href = url;
+              }
+            };
       try {
         navigate(redirect.redirectUrl);
       } catch (e) {
@@ -384,15 +406,30 @@
     deps = deps || {};
 
     if (!order || typeof order !== 'object') {
-      return { success: false, confirmed: false, error: 'completeCheckout: order is required', canRetry: false };
+      return {
+        success: false,
+        confirmed: false,
+        error: 'completeCheckout: order is required',
+        canRetry: false
+      };
     }
     const gateway = deps.gateway;
     if (!gateway || typeof gateway.verify !== 'function') {
-      return { success: false, confirmed: false, error: 'completeCheckout: a payment gateway with verify() is required', canRetry: false };
+      return {
+        success: false,
+        confirmed: false,
+        error: 'completeCheckout: a payment gateway with verify() is required',
+        canRetry: false
+      };
     }
     const orderLib = resolveOrderLib(deps);
     if (!orderLib || typeof orderLib.applyTransition !== 'function') {
-      return { success: false, confirmed: false, error: 'completeCheckout: order logic (PunnagaiOrder) is unavailable', canRetry: false };
+      return {
+        success: false,
+        confirmed: false,
+        error: 'completeCheckout: order logic (PunnagaiOrder) is unavailable',
+        canRetry: false
+      };
     }
 
     // 1) Verify the payment server-side (Req 6.8). NEVER trust the client.
@@ -444,7 +481,7 @@
     // order always transitions to confirmed after a successful payment.
     let confirmedOrder;
     try {
-      const transitionOpts = (typeof deps.now === 'number') ? { now: deps.now } : undefined;
+      const transitionOpts = typeof deps.now === 'number' ? { now: deps.now } : undefined;
       confirmedOrder = orderLib.applyTransition(order, 'confirmed', transitionOpts);
     } catch (e) {
       // The order was not in a confirmable state (e.g. already shipped). This
@@ -478,9 +515,10 @@
 
     // 5) Send the confirmation email (Req 6.10). A failure here must NOT undo a
     // confirmed payment — it is reported but non-fatal.
-    const emailSender = (deps.emailSender && typeof deps.emailSender.send === 'function')
-      ? deps.emailSender
-      : createConsoleEmailSender();
+    const emailSender =
+      deps.emailSender && typeof deps.emailSender.send === 'function'
+        ? deps.emailSender
+        : createConsoleEmailSender();
     const email = buildConfirmationEmail(confirmedOrder);
     let emailResult;
     try {

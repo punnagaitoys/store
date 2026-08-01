@@ -46,23 +46,42 @@ function advanceClock(ms) {
 // invalidation) — used to prove a cached read is being served.
 async function directAddProduct(name) {
   await db.collection('products').add({
-    name, description: '', price: 100, category: 'Building Blocks',
-    ageGroup: '3-5', imageUrl: '', inStock: true, featured: false,
+    name,
+    description: '',
+    price: 100,
+    category: 'Building Blocks',
+    ageGroup: '3-5',
+    imageUrl: '',
+    inStock: true,
+    featured: false,
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   });
 }
 
 async function directAddCategory(name, displayOrder) {
   await db.collection('categories').add({
-    name, description: '', icon: '', imageUrl: '',
-    productCount: 0, displayOrder,
+    name,
+    description: '',
+    icon: '',
+    imageUrl: '',
+    productCount: 0,
+    displayOrder,
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   });
 }
 
 describe('Product cache (1 hour) over emulator reads', () => {
   test('second read is served from cache (direct write not visible until refresh)', async () => {
-    await data.addProduct({ name: 'Cached A', description: '', price: 100, category: 'Building Blocks', ageGroup: '3-5', imageUrl: '', inStock: true, featured: false });
+    await data.addProduct({
+      name: 'Cached A',
+      description: '',
+      price: 100,
+      category: 'Building Blocks',
+      ageGroup: '3-5',
+      imageUrl: '',
+      inStock: true,
+      featured: false
+    });
 
     const first = await data.getAllProductsCached();
     expect(first).toHaveLength(1);
@@ -80,7 +99,16 @@ describe('Product cache (1 hour) over emulator reads', () => {
   });
 
   test('cache expires after the 1-hour TTL and refetches from the emulator', async () => {
-    await data.addProduct({ name: 'TTL A', description: '', price: 100, category: 'Building Blocks', ageGroup: '3-5', imageUrl: '', inStock: true, featured: false });
+    await data.addProduct({
+      name: 'TTL A',
+      description: '',
+      price: 100,
+      category: 'Building Blocks',
+      ageGroup: '3-5',
+      imageUrl: '',
+      inStock: true,
+      featured: false
+    });
 
     expect(await data.getAllProductsCached()).toHaveLength(1);
 
@@ -96,11 +124,29 @@ describe('Product cache (1 hour) over emulator reads', () => {
   });
 
   test('mutating through the data layer invalidates the cache immediately', async () => {
-    await data.addProduct({ name: 'One', description: '', price: 10, category: 'c', ageGroup: '0-2', imageUrl: '', inStock: true, featured: false });
+    await data.addProduct({
+      name: 'One',
+      description: '',
+      price: 10,
+      category: 'c',
+      ageGroup: '0-2',
+      imageUrl: '',
+      inStock: true,
+      featured: false
+    });
     expect(await data.getAllProductsCached()).toHaveLength(1);
 
     // addProduct calls invalidateCache('products'), so this is visible at once.
-    await data.addProduct({ name: 'Two', description: '', price: 20, category: 'c', ageGroup: '0-2', imageUrl: '', inStock: true, featured: false });
+    await data.addProduct({
+      name: 'Two',
+      description: '',
+      price: 20,
+      category: 'c',
+      ageGroup: '0-2',
+      imageUrl: '',
+      inStock: true,
+      featured: false
+    });
     expect(await data.getAllProductsCached()).toHaveLength(2);
   });
 });
@@ -110,7 +156,7 @@ describe('Category cache (1 day) over emulator reads', () => {
     await data.addCategory({ name: 'Puzzles', icon: '🧩', displayOrder: 1 });
 
     const first = await data.getCategories();
-    expect(first.map(c => c.name)).toEqual(['Puzzles']);
+    expect(first.map((c) => c.name)).toEqual(['Puzzles']);
 
     await directAddCategory('Outdoor', 2);
 
@@ -132,6 +178,6 @@ describe('Category cache (1 day) over emulator reads', () => {
     advanceClock(data.CATEGORY_CACHE_TTL_MS + 1000);
     const refreshed = await data.getCategories();
     expect(refreshed).toHaveLength(2);
-    expect(refreshed.map(c => c.name)).toEqual(['Puzzles', 'Outdoor']);
+    expect(refreshed.map((c) => c.name)).toEqual(['Puzzles', 'Outdoor']);
   });
 });

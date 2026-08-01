@@ -31,7 +31,7 @@ const itemArb = fc.record({
   productId: fc.string({ minLength: 1, maxLength: 6 }),
   variantId: fc.string({ minLength: 0, maxLength: 4 }),
   quantity: fc.integer({ min: 1, max: 50 }),
-  unitPrice: fc.integer({ min: 0, max: 100000 }),
+  unitPrice: fc.integer({ min: 0, max: 100000 })
 });
 
 // A cart of 1..6 lines with UNIQUE keys (so the "other lines unchanged" and

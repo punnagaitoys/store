@@ -147,10 +147,7 @@
       return false;
     }
     try {
-      store.setItem(
-        SESSION_KEY,
-        JSON.stringify({ user: user, sessionToken: sessionToken })
-      );
+      store.setItem(SESSION_KEY, JSON.stringify({ user: user, sessionToken: sessionToken }));
       return true;
     } catch (e) {
       console.error('Failed to store session:', e);
@@ -305,14 +302,16 @@
         }
 
         // Create the users doc (data.js) — its id becomes the userId.
-        const created = await callDataFn('createUser', [{
-          name: name,
-          email: normalizedEmail,
-          phone: normalizedPhone,
-          isAdmin: false,
-          status: 'active',
-          lastLogin: Date.now()
-        }]);
+        const created = await callDataFn('createUser', [
+          {
+            name: name,
+            email: normalizedEmail,
+            phone: normalizedPhone,
+            isAdmin: false,
+            status: 'active',
+            lastLogin: Date.now()
+          }
+        ]);
         if (!created.success) {
           return { success: false, error: created.error || 'Failed to create account' };
         }
@@ -333,10 +332,7 @@
         // Firebase mode: create the Auth account.
         let credential;
         try {
-          credential = await window.auth.createUserWithEmailAndPassword(
-            normalizedEmail,
-            password
-          );
+          credential = await window.auth.createUserWithEmailAndPassword(normalizedEmail, password);
         } catch (err) {
           if (err && err.code === 'auth/email-already-in-use') {
             return { success: false, error: 'Email already exists' };
@@ -346,15 +342,17 @@
         }
 
         // Create the matching users doc (data.js).
-        const created = await callDataFn('createUser', [{
-          name: name,
-          email: normalizedEmail,
-          phone: normalizedPhone,
-          isAdmin: false,
-          status: 'active',
-          lastLogin: Date.now()
-        }]);
-        userId = created && created.success ? created.id : (credential.user && credential.user.uid);
+        const created = await callDataFn('createUser', [
+          {
+            name: name,
+            email: normalizedEmail,
+            phone: normalizedPhone,
+            isAdmin: false,
+            status: 'active',
+            lastLogin: Date.now()
+          }
+        ]);
+        userId = created && created.success ? created.id : credential.user && credential.user.uid;
 
         try {
           sessionToken = await credential.user.getIdToken();
@@ -391,7 +389,9 @@
    * @returns {Promise<{success:boolean, user?:object, error?:string}>}
    */
   async function login(email, password) {
-    const normalizedEmail = String(email || '').trim().toLowerCase();
+    const normalizedEmail = String(email || '')
+      .trim()
+      .toLowerCase();
     const invalidResult = { success: false, error: 'Invalid email or password' };
 
     if (!normalizedEmail || typeof password !== 'string' || password.length === 0) {
@@ -404,9 +404,7 @@
 
       if (isLocalMode()) {
         const mockUsers = getMockAuthUsers();
-        const match = mockUsers.find(
-          (u) => u.email === normalizedEmail && u.password === password
-        );
+        const match = mockUsers.find((u) => u.email === normalizedEmail && u.password === password);
         if (!match) {
           return invalidResult;
         }
@@ -423,15 +421,14 @@
 
         if (userDoc && userDoc.id) {
           // Best-effort lastLogin update; ignore failures.
-          try { await callDataFn('updateUser', [userDoc.id, { lastLogin: Date.now() }]); } catch (e) {}
+          try {
+            await callDataFn('updateUser', [userDoc.id, { lastLogin: Date.now() }]);
+          } catch (e) {}
         }
       } else {
         let credential;
         try {
-          credential = await window.auth.signInWithEmailAndPassword(
-            normalizedEmail,
-            password
-          );
+          credential = await window.auth.signInWithEmailAndPassword(normalizedEmail, password);
         } catch (err) {
           // Map any Firebase auth failure to a single generic message (5.6).
           return invalidResult;
@@ -451,7 +448,9 @@
         }
 
         if (userDoc && userDoc.id) {
-          try { await callDataFn('updateUser', [userDoc.id, { lastLogin: Date.now() }]); } catch (e) {}
+          try {
+            await callDataFn('updateUser', [userDoc.id, { lastLogin: Date.now() }]);
+          } catch (e) {}
         }
       }
 
@@ -476,7 +475,11 @@
   async function logout() {
     try {
       if (!isLocalMode() && window.auth && typeof window.auth.signOut === 'function') {
-        try { await window.auth.signOut(); } catch (e) { /* continue clearing */ }
+        try {
+          await window.auth.signOut();
+        } catch (e) {
+          /* continue clearing */
+        }
       }
 
       // Clear the customer session.

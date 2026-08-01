@@ -142,8 +142,7 @@
       if (!p) {
         return false;
       }
-      return lower(p.name).indexOf(needle) !== -1 ||
-        lower(p.description).indexOf(needle) !== -1;
+      return lower(p.name).indexOf(needle) !== -1 || lower(p.description).indexOf(needle) !== -1;
     });
   }
 

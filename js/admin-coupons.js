@@ -71,7 +71,11 @@
       return window.PunnagaiCartLogic;
     }
     if (typeof require === 'function') {
-      try { return require('./lib/cart-logic'); } catch (e) { /* not available */ }
+      try {
+        return require('./lib/cart-logic');
+      } catch (e) {
+        /* not available */
+      }
     }
     return null;
   }
@@ -81,7 +85,11 @@
       return window.PunnagaiAudit;
     }
     if (typeof require === 'function') {
-      try { return require('./lib/audit'); } catch (e) { /* not available */ }
+      try {
+        return require('./lib/audit');
+      } catch (e) {
+        /* not available */
+      }
     }
     return null;
   }
@@ -109,7 +117,7 @@
 
   function toNumber(value, fallback) {
     const n = Number(value);
-    return Number.isFinite(n) ? n : (fallback || 0);
+    return Number.isFinite(n) ? n : fallback || 0;
   }
 
   /** Normalize a coupon code for comparison/storage (trimmed, upper-cased). */
@@ -343,7 +351,7 @@
    * @returns {{ appliedCodes: Array<string>, discountAmount: number, applied: boolean }}
    */
   function applyCouponOnce(state, code, discountAmount) {
-    const src = (state && typeof state === 'object') ? state : {};
+    const src = state && typeof state === 'object' ? state : {};
     const applied = Array.isArray(src.appliedCodes) ? src.appliedCodes.map(normalizeCode) : [];
     const current = toNumber(src.discountAmount);
     const normalized = normalizeCode(code);
@@ -400,7 +408,12 @@
   async function validateCouponAtCheckout(code, cart, now) {
     const getByCode = dataFn('getCouponByCode');
     if (!getByCode) {
-      return { valid: false, discountAmount: 0, message: 'Coupon code expired or invalid', reason: 'data layer unavailable' };
+      return {
+        valid: false,
+        discountAmount: 0,
+        message: 'Coupon code expired or invalid',
+        reason: 'data layer unavailable'
+      };
     }
 
     const coupon = await getByCode(normalizeCode(code));
@@ -472,12 +485,17 @@
       return { success: false, error: (result && result.error) || 'Failed to update product' };
     }
 
-    await writeAudit(adminUserId, 'CREATE_DISCOUNT', { type: 'product', id: productId }, {
-      discountType: discountUpdate.discountType,
-      discountValue: discountUpdate.discountValue,
-      originalPrice: discountUpdate.originalPrice,
-      discountedPrice: discountUpdate.price
-    });
+    await writeAudit(
+      adminUserId,
+      'CREATE_DISCOUNT',
+      { type: 'product', id: productId },
+      {
+        discountType: discountUpdate.discountType,
+        discountValue: discountUpdate.discountValue,
+        originalPrice: discountUpdate.originalPrice,
+        discountedPrice: discountUpdate.price
+      }
+    );
 
     return { success: true, discounted: discountUpdate };
   }
@@ -544,13 +562,18 @@
       return { success: false, error: (result && result.error) || 'Failed to create coupon' };
     }
 
-    await writeAudit(adminUserId, 'CREATE_COUPON', { type: 'coupon', id: result.id }, {
-      code: code,
-      discountType: data.discountType,
-      discountValue: toNumber(data.discountValue),
-      usageLimit: toNumber(data.usageLimit),
-      expiryDate: data.expiryDate || null
-    });
+    await writeAudit(
+      adminUserId,
+      'CREATE_COUPON',
+      { type: 'coupon', id: result.id },
+      {
+        code: code,
+        discountType: data.discountType,
+        discountValue: toNumber(data.discountValue),
+        usageLimit: toNumber(data.usageLimit),
+        expiryDate: data.expiryDate || null
+      }
+    );
 
     return { success: true, id: result.id, code: code };
   }

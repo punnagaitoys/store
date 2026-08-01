@@ -47,7 +47,7 @@
       tag: 'Local Guide • 8 reviews',
       rating: 5,
       date: '3 weeks ago',
-      text: 'Wonderful collection of non-toxic, safe toys for toddlers. Very polite store owners and quick WhatsApp response. Mylapore\'s favorite toy store!',
+      text: "Wonderful collection of non-toxic, safe toys for toddlers. Very polite store owners and quick WhatsApp response. Mylapore's favorite toy store!",
       likes: 7
     },
     {

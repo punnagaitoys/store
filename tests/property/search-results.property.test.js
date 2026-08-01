@@ -20,7 +20,7 @@ const { searchProducts } = catalog;
 const productArb = fc.record({
   productId: fc.string(),
   name: fc.string(),
-  description: fc.string(),
+  description: fc.string()
 });
 
 const productsArb = fc.array(productArb, { maxLength: 30 });
@@ -43,9 +43,7 @@ describe('Property 2: Search Results Match Query (Req 1.3)', () => {
           // Match: term appears in name OR description, case-insensitively.
           const name = (p.name || '').toLowerCase();
           const description = (p.description || '').toLowerCase();
-          expect(
-            name.indexOf(needle) !== -1 || description.indexOf(needle) !== -1
-          ).toBe(true);
+          expect(name.indexOf(needle) !== -1 || description.indexOf(needle) !== -1).toBe(true);
         }
       })
     );

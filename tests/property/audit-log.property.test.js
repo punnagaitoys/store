@@ -17,7 +17,8 @@
 const fc = require('fast-check');
 const audit = require('../../js/lib/audit');
 
-const { ALLOWED_OPERATION_TYPES, buildAuditEntry, isValidOperationType, normalizeOperationType } = audit;
+const { ALLOWED_OPERATION_TYPES, buildAuditEntry, isValidOperationType, normalizeOperationType } =
+  audit;
 
 // Generator: an operationType drawn from the allowed set.
 const allowedOperationType = () => fc.constantFrom(...ALLOWED_OPERATION_TYPES);
@@ -32,7 +33,7 @@ const entityArb = () =>
 // Generator: optional details object with arbitrary primitive values.
 const detailsArb = () =>
   fc.dictionary(
-    fc.string({ minLength: 1, maxLength: 12 }),
+    fc.string({ minLength: 1, maxLength: 12 }).filter((k) => k !== '__proto__'),
     fc.oneof(fc.string(), fc.integer(), fc.boolean())
   );
 
@@ -78,17 +79,13 @@ describe('Property 23 — Admin Operations Create Audit Log (Req 17.8)', () => {
 
   test('buildAuditEntry throws for operationTypes outside the allowed set', () => {
     fc.assert(
-      fc.property(
-        fc.string(),
-        entityArb(),
-        (rawOperationType, entity) => {
-          // Constrain to strings that normalize to something NOT in the allowed set.
-          fc.pre(!isValidOperationType(rawOperationType));
-          expect(() =>
-            buildAuditEntry({ adminUserId: 'admin-1', operationType: rawOperationType, entity })
-          ).toThrow();
-        }
-      )
+      fc.property(fc.string(), entityArb(), (rawOperationType, entity) => {
+        // Constrain to strings that normalize to something NOT in the allowed set.
+        fc.pre(!isValidOperationType(rawOperationType));
+        expect(() =>
+          buildAuditEntry({ adminUserId: 'admin-1', operationType: rawOperationType, entity })
+        ).toThrow();
+      })
     );
   });
 });

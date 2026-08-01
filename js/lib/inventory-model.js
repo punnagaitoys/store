@@ -200,6 +200,6 @@
     clampQuantity,
     adjustStock,
     depleteStock,
-    restoreStock,
+    restoreStock
   };
 });

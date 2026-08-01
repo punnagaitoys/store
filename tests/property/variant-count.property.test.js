@@ -34,9 +34,7 @@ describe('Property 5: Variant Count Matches Display (Req 2.3)', () => {
         const derived = model.deriveVariantCount(sizes, colors);
         const uniqueSkus = model.countUniqueSKUs(model.generateSKUs(sizes, colors));
         const builtVariants = model.buildVariants(sizes, colors).length;
-        const displayed = model.getDisplayedVariantCount(
-          model.buildProduct({ sizes, colors })
-        );
+        const displayed = model.getDisplayedVariantCount(model.buildProduct({ sizes, colors }));
 
         expect(derived).toBe(uniqueSkus);
         expect(derived).toBe(builtVariants);

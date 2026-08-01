@@ -150,9 +150,14 @@
     const inStock = product.inStock === undefined ? true : Boolean(product.inStock);
     return [
       {
-        variantId: product.variantId !== undefined ? product.variantId
-          : (product.id !== undefined ? product.id
-            : (product.productId !== undefined ? product.productId : null)),
+        variantId:
+          product.variantId !== undefined
+            ? product.variantId
+            : product.id !== undefined
+              ? product.id
+              : product.productId !== undefined
+                ? product.productId
+                : null,
         skuId: product.skuId !== undefined ? product.skuId : null,
         size: product.size !== undefined ? product.size : null,
         color: product.color !== undefined ? product.color : null,
@@ -344,7 +349,8 @@
    */
   function getVariantStockStatus(variant) {
     const inv = inventory();
-    const stock = typeof inv.getStock === 'function' ? inv.getStock(variant) : localGetStock(variant);
+    const stock =
+      typeof inv.getStock === 'function' ? inv.getStock(variant) : localGetStock(variant);
     const inStock = typeof inv.isInStock === 'function' ? inv.isInStock(variant) : stock > 0;
     return {
       inStock: inStock,

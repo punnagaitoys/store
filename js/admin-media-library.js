@@ -2,7 +2,7 @@
  * Punnagai Toy Store — WordPress-Style Media Library
  * Enables admins to manage, search, upload, and easily attach images to products & banners.
  */
-(function() {
+(function () {
   const CUSTOM_MEDIA_KEY = 'punnagai_media_library_custom';
 
   const DEFAULT_MEDIA_ITEMS = [
@@ -120,13 +120,14 @@
       // Import any product images from catalog that aren't already in default or custom items
       catalogProducts.forEach((p, idx) => {
         if (p && p.image) {
-          const exists = DEFAULT_MEDIA_ITEMS.some(i => i.url === p.image) ||
-                         customItems.some(i => i.url === p.image) ||
-                         catalogItems.some(i => i.url === p.image);
+          const exists =
+            DEFAULT_MEDIA_ITEMS.some((i) => i.url === p.image) ||
+            customItems.some((i) => i.url === p.image) ||
+            catalogItems.some((i) => i.url === p.image);
           if (!exists) {
             catalogItems.push({
               id: 'cat_med_' + idx + '_' + Date.now().toString().slice(-4),
-              title: p.name || ('Catalog Product ' + (idx + 1)),
+              title: p.name || 'Catalog Product ' + (idx + 1),
               category: 'toys',
               url: p.image,
               date: new Date().toISOString().split('T')[0],
@@ -180,11 +181,11 @@
     }
 
     deleteMediaItem(id) {
-      const idx = this.items.findIndex(i => i.id === id);
+      const idx = this.items.findIndex((i) => i.id === id);
       if (idx > -1) {
         const item = this.items[idx];
         this.items.splice(idx, 1);
-        const customItems = this.getCustomItems().filter(i => i.id !== id);
+        const customItems = this.getCustomItems().filter((i) => i.id !== id);
         this.saveCustomItems(customItems);
         this.renderMediaGrid();
         this.renderModalGrid();
@@ -195,13 +196,14 @@
     getFilteredItems() {
       let filtered = this.items;
       if (this.selectedFilter && this.selectedFilter !== 'all') {
-        filtered = filtered.filter(item => item.category === this.selectedFilter);
+        filtered = filtered.filter((item) => item.category === this.selectedFilter);
       }
       if (this.searchTerm) {
         const query = this.searchTerm.toLowerCase();
-        filtered = filtered.filter(item =>
-          (item.title && item.title.toLowerCase().includes(query)) ||
-          (item.url && item.url.toLowerCase().includes(query))
+        filtered = filtered.filter(
+          (item) =>
+            (item.title && item.title.toLowerCase().includes(query)) ||
+            (item.url && item.url.toLowerCase().includes(query))
         );
       }
       return filtered;
@@ -223,7 +225,9 @@
         return;
       }
 
-      grid.innerHTML = items.map(item => `
+      grid.innerHTML = items
+        .map(
+          (item) => `
         <div class="media-card" data-id="${item.id}" style="border:1px solid #E5E7EB; border-radius:8px; overflow:hidden; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.05); display:flex; flex-direction:column;">
           <div class="media-card-thumb" style="position:relative; aspect-ratio:1/1; background:#F9FAFB; overflow:hidden;">
             <img src="${item.url}" alt="${item.title}" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
@@ -244,7 +248,9 @@
             </div>
           </div>
         </div>
-      `).join('');
+      `
+        )
+        .join('');
     }
 
     renderModalGrid() {
@@ -261,9 +267,10 @@
         return;
       }
 
-      modalGrid.innerHTML = items.map(item => {
-        const isSelected = this.selectedItem && this.selectedItem.url === item.url;
-        return `
+      modalGrid.innerHTML = items
+        .map((item) => {
+          const isSelected = this.selectedItem && this.selectedItem.url === item.url;
+          return `
           <div class="media-modal-item ${isSelected ? 'selected' : ''}" 
                data-id="${item.id}" 
                onclick="window.MediaLibrary.selectModalItem('${item.id}')"
@@ -275,18 +282,23 @@
             <div style="padding:8px; font-size:12px; font-weight:600; color:#374151; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${item.title}">
               ${item.title}
             </div>
-            ${isSelected ? `
+            ${
+              isSelected
+                ? `
               <div style="position:absolute; top:8px; right:8px; background:#DC2626; color:#fff; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.2);">
                 ✓
               </div>
-            ` : ''}
+            `
+                : ''
+            }
           </div>
         `;
-      }).join('');
+        })
+        .join('');
     }
 
     selectModalItem(id) {
-      const item = this.items.find(i => i.id === id);
+      const item = this.items.find((i) => i.id === id);
       if (!item) return;
       this.selectedItem = item;
       this.renderModalGrid();
@@ -300,7 +312,7 @@
 
     confirmSelection(id) {
       if (id) {
-        const item = this.items.find(i => i.id === id);
+        const item = this.items.find((i) => i.id === id);
         if (item) this.selectedItem = item;
       }
       if (!this.selectedItem) return;
@@ -317,7 +329,8 @@
       }
 
       this.closeModal();
-      if (typeof showToast === 'function') showToast('Image connected from Media Library!', 'success');
+      if (typeof showToast === 'function')
+        showToast('Image connected from Media Library!', 'success');
     }
 
     openModal(targetInputId = 'f-image-url') {
@@ -359,8 +372,12 @@
 
     copyUrl(url) {
       if (navigator.clipboard) {
-        navigator.clipboard.writeText(url)
-          .then(() => { if (typeof showToast === 'function') showToast('Image URL copied to clipboard!', 'success'); })
+        navigator.clipboard
+          .writeText(url)
+          .then(() => {
+            if (typeof showToast === 'function')
+              showToast('Image URL copied to clipboard!', 'success');
+          })
           .catch(() => this.fallbackCopy(url));
       } else {
         this.fallbackCopy(url);
@@ -414,7 +431,7 @@
         reader.onload = (event) => {
           const dataUrl = event.target.result;
           this.addMediaItem({
-            title: title || file.name.replace(/\.[^/.]+$/, ""),
+            title: title || file.name.replace(/\.[^/.]+$/, ''),
             url: dataUrl,
             category: category
           });
@@ -429,7 +446,8 @@
         });
         this.closeUploadModal();
       } else {
-        if (typeof showToast === 'function') showToast('Please provide an image URL or choose a file.', 'error');
+        if (typeof showToast === 'function')
+          showToast('Please provide an image URL or choose a file.', 'error');
       }
     }
   }
@@ -437,19 +455,19 @@
   window.MediaLibrary = new MediaLibraryManager();
 
   // Global HTML handlers
-  window.openMediaLibraryModal = function(inputId) {
+  window.openMediaLibraryModal = function (inputId) {
     if (window.MediaLibrary) window.MediaLibrary.openModal(inputId);
   };
-  window.closeMediaLibraryModal = function() {
+  window.closeMediaLibraryModal = function () {
     if (window.MediaLibrary) window.MediaLibrary.closeModal();
   };
-  window.openUploadMediaModal = function() {
+  window.openUploadMediaModal = function () {
     if (window.MediaLibrary) window.MediaLibrary.openUploadModal();
   };
-  window.closeUploadMediaModal = function() {
+  window.closeUploadMediaModal = function () {
     if (window.MediaLibrary) window.MediaLibrary.closeUploadModal();
   };
-  window.filterMediaLibrary = function() {
+  window.filterMediaLibrary = function () {
     if (!window.MediaLibrary) return;
     const searchEl = document.getElementById('media-library-search');
     const filterEl = document.getElementById('media-library-filter');
@@ -457,7 +475,7 @@
     window.MediaLibrary.selectedFilter = filterEl ? filterEl.value : 'all';
     window.MediaLibrary.renderMediaGrid();
   };
-  window.filterModalMediaLibrary = function() {
+  window.filterModalMediaLibrary = function () {
     if (!window.MediaLibrary) return;
     const searchEl = document.getElementById('media-modal-search');
     const filterEl = document.getElementById('media-modal-filter');
@@ -466,4 +484,3 @@
     window.MediaLibrary.renderModalGrid();
   };
 })();
-

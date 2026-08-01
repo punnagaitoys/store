@@ -44,8 +44,7 @@ function makeMockDataLayer() {
       users.push(rec);
       return { success: true, id: rec.id };
     },
-    getUserByEmail: async (email) =>
-      users.find((u) => u.email === email) || null,
+    getUserByEmail: async (email) => users.find((u) => u.email === email) || null,
     updateUser: async (id, updates) => {
       const i = users.findIndex((u) => u.id === id);
       if (i !== -1) users[i] = { ...users[i], ...updates };

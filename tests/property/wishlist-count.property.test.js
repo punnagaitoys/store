@@ -35,15 +35,13 @@ function makeStorage() {
     getItem: (k) => (store.has(k) ? store.get(k) : null),
     setItem: (k, v) => store.set(k, String(v)),
     removeItem: (k) => store.delete(k),
-    clear: () => store.clear(),
+    clear: () => store.clear()
   };
 }
 
 // Non-empty, non-whitespace-only product ids (these are the ids the module
 // considers valid and will actually store).
-const productIdArb = fc
-  .string({ minLength: 1, maxLength: 12 })
-  .filter((s) => s.trim().length > 0);
+const productIdArb = fc.string({ minLength: 1, maxLength: 12 }).filter((s) => s.trim().length > 0);
 
 describe('Property 12: Add to Wishlist Increases Count (Req 4.1, 4.2)', () => {
   test('adding a product increases the count by one and the product appears; duplicates are idempotent', () => {
@@ -62,9 +60,7 @@ describe('Property 12: Add to Wishlist Increases Count (Req 4.1, 4.2)', () => {
         // The trimmed form of idA is what gets stored; compare against that.
         const idANorm = String(idA).trim();
         const occurrencesOf = (id) =>
-          wishlist
-            .getWishlist(storage)
-            .filter((entry) => entry.productId === id).length;
+          wishlist.getWishlist(storage).filter((entry) => entry.productId === id).length;
         expect(occurrencesOf(idANorm)).toBe(1);
 
         // 3. Adding the SAME id again is idempotent: count unchanged, one entry.

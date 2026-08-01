@@ -65,9 +65,11 @@
    * and tests.
    * @type {ReadonlyArray<string>}
    */
-  const ALLOWED_OPERATION_TYPES = Object.freeze(Object.keys(OPERATION_TYPES).map(function (k) {
-    return OPERATION_TYPES[k];
-  }));
+  const ALLOWED_OPERATION_TYPES = Object.freeze(
+    Object.keys(OPERATION_TYPES).map(function (k) {
+      return OPERATION_TYPES[k];
+    })
+  );
 
   /**
    * Normalize a raw operationType into a canonical, comparable form
@@ -118,23 +120,23 @@
   }
 
   function buildAuditEntry(input) {
-    const src = (input && typeof input === 'object') ? input : {};
+    const src = input && typeof input === 'object' ? input : {};
 
     const operationType = normalizeOperationType(src.operationType);
     if (!isValidOperationType(operationType)) {
       throw new Error(
-        'buildAuditEntry: invalid operationType "' + String(src.operationType) +
-        '". Expected one of: ' + ALLOWED_OPERATION_TYPES.join(', ')
+        'buildAuditEntry: invalid operationType "' +
+          String(src.operationType) +
+          '". Expected one of: ' +
+          ALLOWED_OPERATION_TYPES.join(', ')
       );
     }
 
-    const timestamp = (typeof src.timestamp === 'number' && isFinite(src.timestamp))
-      ? src.timestamp
-      : Date.now();
+    const timestamp =
+      typeof src.timestamp === 'number' && isFinite(src.timestamp) ? src.timestamp : Date.now();
 
-    const adminUserId = (src.adminUserId === undefined || src.adminUserId === null)
-      ? null
-      : String(src.adminUserId);
+    const adminUserId =
+      src.adminUserId === undefined || src.adminUserId === null ? null : String(src.adminUserId);
 
     const entity = normalizeEntity(src.entity);
 
@@ -152,7 +154,13 @@
       });
     }
 
-    return { timestamp: timestamp, adminUserId: adminUserId, operationType: operationType, entity: entity, details: details };
+    return {
+      timestamp: timestamp,
+      adminUserId: adminUserId,
+      operationType: operationType,
+      entity: entity,
+      details: details
+    };
   }
 
   /**

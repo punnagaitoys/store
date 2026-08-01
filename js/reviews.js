@@ -31,9 +31,12 @@ function renderStars(rating, size = '16') {
   const emptyColor = '#d1d5db';
   const gradId = 'hg' + Math.random().toString(36).slice(2, 6);
 
-  const filledStar = () => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${starColor}" aria-hidden="true"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>`;
-  const halfStar  = () => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="${gradId}"><stop offset="50%" stop-color="${starColor}"/><stop offset="50%" stop-color="${emptyColor}"/></linearGradient></defs><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="url(#${gradId})"/></svg>`;
-  const emptyStar = () => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${emptyColor}" aria-hidden="true"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>`;
+  const filledStar = () =>
+    `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${starColor}" aria-hidden="true"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>`;
+  const halfStar = () =>
+    `<svg width="${size}" height="${size}" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="${gradId}"><stop offset="50%" stop-color="${starColor}"/><stop offset="50%" stop-color="${emptyColor}"/></linearGradient></defs><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="url(#${gradId})"/></svg>`;
+  const emptyStar = () =>
+    `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${emptyColor}" aria-hidden="true"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>`;
 
   let html = '<span class="star-row">';
   for (let i = 0; i < filled; i++) html += filledStar();
@@ -63,14 +66,14 @@ async function hasUserPurchasedProduct(productId) {
       orders = await getOrdersByUser(user.uid);
     } else if (typeof db !== 'undefined') {
       const snap = await db.collection('orders').where('userId', '==', user.uid).get();
-      orders = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      orders = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
     }
 
     const verifiedStatuses = ['confirmed', 'shipped', 'delivered'];
-    return orders.some(order => {
+    return orders.some((order) => {
       if (!verifiedStatuses.includes(order.orderStatus)) return false;
       const items = Array.isArray(order.items) ? order.items : [];
-      return items.some(item => item.productId === productId || item.id === productId);
+      return items.some((item) => item.productId === productId || item.id === productId);
     });
   } catch (err) {
     console.error('[reviews] hasUserPurchasedProduct error:', err);
@@ -85,11 +88,12 @@ async function hasUserPurchasedProduct(productId) {
 async function fetchReviews(productId) {
   try {
     if (typeof db === 'undefined') return [];
-    const snap = await db.collection('reviews')
+    const snap = await db
+      .collection('reviews')
       .where('productId', '==', productId)
       .orderBy('createdAt', 'desc')
       .get();
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
   } catch (err) {
     console.warn('[reviews] fetchReviews:', err.message);
     return [];
@@ -98,7 +102,11 @@ async function fetchReviews(productId) {
 
 function renderReviewCard(review) {
   const initials = (review.displayName || 'A')
-    .split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+    .split(' ')
+    .map((w) => w[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
 
   const date = review.createdAt
     ? new Date(
@@ -141,19 +149,23 @@ function renderAggregateRating(reviews) {
 function renderStarPicker() {
   return `
     <div class="star-picker" id="star-picker" role="group" aria-label="Choose your rating">
-      ${[1,2,3,4,5].map(n => `
+      ${[1, 2, 3, 4, 5]
+        .map(
+          (n) => `
         <button type="button" class="star-pick-btn" data-value="${n}"
                 aria-label="${n} star${n > 1 ? 's' : ''}"
                 onclick="handleStarPick(${n})">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="#d1d5db" aria-hidden="true">
             <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
           </svg>
-        </button>`).join('')}
+        </button>`
+        )
+        .join('')}
     </div>
     <input type="hidden" id="review-rating-val" value="0">`;
 }
 
-window.handleStarPick = function(value) {
+window.handleStarPick = function (value) {
   document.getElementById('review-rating-val').value = value;
   document.querySelectorAll('.star-pick-btn').forEach((btn, idx) => {
     const svg = btn.querySelector('svg');
@@ -165,11 +177,11 @@ window.handleStarPick = function(value) {
 // SUBMIT REVIEW
 // ============================================================
 
-window.submitReview = async function(productId) {
+window.submitReview = async function (productId) {
   const submitBtn = document.getElementById('review-submit-btn');
-  const errorEl   = document.getElementById('review-error');
-  const rating    = parseInt(document.getElementById('review-rating-val').value) || 0;
-  const comment   = (document.getElementById('review-comment').value || '').trim();
+  const errorEl = document.getElementById('review-error');
+  const rating = parseInt(document.getElementById('review-rating-val').value) || 0;
+  const comment = (document.getElementById('review-comment').value || '').trim();
 
   if (errorEl) errorEl.textContent = '';
 
@@ -184,23 +196,29 @@ window.submitReview = async function(productId) {
     return;
   }
 
-  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Submitting…'; }
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting…';
+  }
 
   try {
     const purchased = await hasUserPurchasedProduct(productId);
     if (!purchased) {
       if (errorEl) errorEl.textContent = 'You can only review products you have purchased.';
-      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Submit Review'; }
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Review';
+      }
       return;
     }
 
     await db.collection('reviews').add({
       productId,
-      userId:      user.uid,
+      userId: user.uid,
       displayName: user.displayName || (user.email ? user.email.split('@')[0] : 'Customer'),
       rating,
       comment,
-      createdAt:   firebase.firestore.FieldValue.serverTimestamp()
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
 
     await initReviewsSection(productId);
@@ -208,7 +226,10 @@ window.submitReview = async function(productId) {
   } catch (err) {
     console.error('[reviews] submitReview error:', err);
     if (errorEl) errorEl.textContent = 'Could not submit review. Please try again.';
-    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Submit Review'; }
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit Review';
+    }
   }
 };
 
@@ -224,15 +245,18 @@ window.initReviewsSection = async function initReviewsSection(productId) {
 
   const reviews = await fetchReviews(productId);
 
-  const user = await new Promise(resolve => {
-    const unsub = firebase.auth().onAuthStateChanged(u => { unsub(); resolve(u); });
+  const user = await new Promise((resolve) => {
+    const unsub = firebase.auth().onAuthStateChanged((u) => {
+      unsub();
+      resolve(u);
+    });
   });
 
   let canReview = false;
   let hasPurchased = false;
   if (user) {
     hasPurchased = await hasUserPurchasedProduct(productId);
-    const alreadyReviewed = reviews.some(r => r.userId === user.uid);
+    const alreadyReviewed = reviews.some((r) => r.userId === user.uid);
     canReview = hasPurchased && !alreadyReviewed;
   }
 

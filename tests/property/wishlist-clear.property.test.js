@@ -38,14 +38,12 @@ function makeStorageShim() {
     },
     removeItem(key) {
       delete map[key];
-    },
+    }
   };
 }
 
 // Non-empty product ids: 1..20 non-empty (post-trim) strings.
-const productIdArb = fc
-  .string({ minLength: 1, maxLength: 12 })
-  .filter((s) => s.trim().length > 0);
+const productIdArb = fc.string({ minLength: 1, maxLength: 12 }).filter((s) => s.trim().length > 0);
 const productIdsArb = fc.array(productIdArb, { minLength: 1, maxLength: 20 });
 
 describe('Property 13: Wishlist Cleared on Logout (Req 4.5)', () => {

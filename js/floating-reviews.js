@@ -12,14 +12,38 @@ class FloatingReviews {
   }
 
   async loadReviews() {
-    if (window.GOOGLE_MAPS_REVIEWS_DATA && Array.isArray(window.GOOGLE_MAPS_REVIEWS_DATA) && window.GOOGLE_MAPS_REVIEWS_DATA.length > 0) {
+    if (
+      window.GOOGLE_MAPS_REVIEWS_DATA &&
+      Array.isArray(window.GOOGLE_MAPS_REVIEWS_DATA) &&
+      window.GOOGLE_MAPS_REVIEWS_DATA.length > 0
+    ) {
       this.reviews = window.GOOGLE_MAPS_REVIEWS_DATA;
     } else {
       this.reviews = [
-        { author: 'Sowmya Ranganathan', rating: 5, text: 'Punnagai Toy Store is a gem in Mylapore! Located right in Luz Bazar Complex, they have an incredible collection of educational & fun toys.', date: '3 days ago' },
-        { author: 'Anand Ramakrishnan', rating: 5, text: 'Best toy shop opposite Mylapore railway station. Staff is super helpful and prices are very reasonable.', date: '1 week ago' },
-        { author: 'Kavitha Sundaram', rating: 5, text: 'Loved the store experience! The pre-order and direct shop pickup option saved me so much time.', date: '2 weeks ago' },
-        { author: 'Deepak Kumar', rating: 5, text: 'Wonderful collection of non-toxic, safe toys for toddlers. Very polite store owners and quick WhatsApp response.', date: '3 weeks ago' }
+        {
+          author: 'Sowmya Ranganathan',
+          rating: 5,
+          text: 'Punnagai Toy Store is a gem in Mylapore! Located right in Luz Bazar Complex, they have an incredible collection of educational & fun toys.',
+          date: '3 days ago'
+        },
+        {
+          author: 'Anand Ramakrishnan',
+          rating: 5,
+          text: 'Best toy shop opposite Mylapore railway station. Staff is super helpful and prices are very reasonable.',
+          date: '1 week ago'
+        },
+        {
+          author: 'Kavitha Sundaram',
+          rating: 5,
+          text: 'Loved the store experience! The pre-order and direct shop pickup option saved me so much time.',
+          date: '2 weeks ago'
+        },
+        {
+          author: 'Deepak Kumar',
+          rating: 5,
+          text: 'Wonderful collection of non-toxic, safe toys for toddlers. Very polite store owners and quick WhatsApp response.',
+          date: '3 weeks ago'
+        }
       ];
     }
     this.render();

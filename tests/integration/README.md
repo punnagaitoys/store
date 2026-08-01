@@ -24,7 +24,7 @@ and runs `jest tests/integration`. The emulator config lives in `firebase.json`
 
 `js/data.js` and `js/firebase-config.js` are written for the browser: they use
 the global `firebase` v9 **compat** SDK, a global `window`, and a free
-`db`/`auth`/`storage` handle. To exercise the *real* Firestore branch under
+`db`/`auth`/`storage` handle. To exercise the _real_ Firestore branch under
 Node/Jest, `helpers/emulator-harness.js`:
 
 1. Loads the firebase **compat** SDK and exposes it as `global.firebase`

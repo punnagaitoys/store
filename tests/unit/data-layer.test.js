@@ -50,8 +50,14 @@ describe('data.js — collection constants', () => {
 describe('data.js — product CRUD (local mode)', () => {
   test('addProduct returns { success, id } and is retrievable', async () => {
     const res = await data.addProduct({
-      name: 'Test Toy', description: 'fun', price: 100, category: 'Building Blocks',
-      ageGroup: '3-5', imageUrl: 'x', inStock: true, featured: false
+      name: 'Test Toy',
+      description: 'fun',
+      price: 100,
+      category: 'Building Blocks',
+      ageGroup: '3-5',
+      imageUrl: 'x',
+      inStock: true,
+      featured: false
     });
     expect(res.success).toBe(true);
     expect(typeof res.id).toBe('string');
@@ -62,7 +68,16 @@ describe('data.js — product CRUD (local mode)', () => {
   });
 
   test('updateProduct and deleteProduct succeed', async () => {
-    const { id } = await data.addProduct({ name: 'A', description: '', price: 10, category: 'c', ageGroup: '0-2', imageUrl: '', inStock: true, featured: false });
+    const { id } = await data.addProduct({
+      name: 'A',
+      description: '',
+      price: 10,
+      category: 'c',
+      ageGroup: '0-2',
+      imageUrl: '',
+      inStock: true,
+      featured: false
+    });
     const upd = await data.updateProduct(id, { price: 50 });
     expect(upd.success).toBe(true);
     expect((await data.getProductById(id)).price).toBe(50);
@@ -75,9 +90,33 @@ describe('data.js — product CRUD (local mode)', () => {
 
 describe('data.js — applyProductFilters (pure helper)', () => {
   const products = [
-    { name: 'Red Car', description: 'fast', category: 'Remote Control', ageGroup: '9-12', price: 300, inStock: true, featured: true },
-    { name: 'Blue Blocks', description: 'build', category: 'Building Blocks', ageGroup: '3-5', price: 100, inStock: false, featured: false },
-    { name: 'Green Doll', description: 'cute', category: 'Dolls & Fashion', ageGroup: '6-8', price: 200, inStock: true, featured: false }
+    {
+      name: 'Red Car',
+      description: 'fast',
+      category: 'Remote Control',
+      ageGroup: '9-12',
+      price: 300,
+      inStock: true,
+      featured: true
+    },
+    {
+      name: 'Blue Blocks',
+      description: 'build',
+      category: 'Building Blocks',
+      ageGroup: '3-5',
+      price: 100,
+      inStock: false,
+      featured: false
+    },
+    {
+      name: 'Green Doll',
+      description: 'cute',
+      category: 'Dolls & Fashion',
+      ageGroup: '6-8',
+      price: 200,
+      inStock: true,
+      featured: false
+    }
   ];
 
   test('category filter returns only matching subset', () => {
@@ -88,7 +127,7 @@ describe('data.js — applyProductFilters (pure helper)', () => {
 
   test('inStock filter excludes out-of-stock items', () => {
     const out = data.applyProductFilters(products, { inStock: true });
-    expect(out.every(p => p.inStock)).toBe(true);
+    expect(out.every((p) => p.inStock)).toBe(true);
     expect(out).toHaveLength(2);
   });
 
@@ -98,9 +137,17 @@ describe('data.js — applyProductFilters (pure helper)', () => {
   });
 
   test('sortBy price-asc / price-desc / name-asc', () => {
-    expect(data.applyProductFilters(products, { sortBy: 'price-asc' }).map(p => p.price)).toEqual([100, 200, 300]);
-    expect(data.applyProductFilters(products, { sortBy: 'price-desc' }).map(p => p.price)).toEqual([300, 200, 100]);
-    expect(data.applyProductFilters(products, { sortBy: 'name-asc' }).map(p => p.name)).toEqual(['Blue Blocks', 'Green Doll', 'Red Car']);
+    expect(data.applyProductFilters(products, { sortBy: 'price-asc' }).map((p) => p.price)).toEqual(
+      [100, 200, 300]
+    );
+    expect(
+      data.applyProductFilters(products, { sortBy: 'price-desc' }).map((p) => p.price)
+    ).toEqual([300, 200, 100]);
+    expect(data.applyProductFilters(products, { sortBy: 'name-asc' }).map((p) => p.name)).toEqual([
+      'Blue Blocks',
+      'Green Doll',
+      'Red Car'
+    ]);
   });
 
   test('does not mutate the input array', () => {
@@ -112,18 +159,50 @@ describe('data.js — applyProductFilters (pure helper)', () => {
 
 describe('data.js — product cache (1 hour)', () => {
   test('getProductsCached serves filtered results from one cached fetch', async () => {
-    await data.addProduct({ name: 'Cached Car', description: '', price: 300, category: 'Remote Control', ageGroup: '9-12', imageUrl: '', inStock: true, featured: false });
-    await data.addProduct({ name: 'Cached Blocks', description: '', price: 100, category: 'Building Blocks', ageGroup: '3-5', imageUrl: '', inStock: true, featured: false });
+    await data.addProduct({
+      name: 'Cached Car',
+      description: '',
+      price: 300,
+      category: 'Remote Control',
+      ageGroup: '9-12',
+      imageUrl: '',
+      inStock: true,
+      featured: false
+    });
+    await data.addProduct({
+      name: 'Cached Blocks',
+      description: '',
+      price: 100,
+      category: 'Building Blocks',
+      ageGroup: '3-5',
+      imageUrl: '',
+      inStock: true,
+      featured: false
+    });
 
     const all = await data.getAllProductsCached();
     expect(all).toHaveLength(2);
 
     // A new write that bypasses cache invalidation should NOT appear until refresh,
     // proving the cached snapshot is being reused.
-    global.localStorage.setItem('punnagai_mock_products', JSON.stringify([
-      ...JSON.parse(global.localStorage.getItem('punnagai_mock_products')),
-      { id: 'sneaky', name: 'Sneaky', description: '', price: 1, category: 'x', ageGroup: '0-2', imageUrl: '', inStock: true, featured: false, createdAt: Date.now() }
-    ]));
+    global.localStorage.setItem(
+      'punnagai_mock_products',
+      JSON.stringify([
+        ...JSON.parse(global.localStorage.getItem('punnagai_mock_products')),
+        {
+          id: 'sneaky',
+          name: 'Sneaky',
+          description: '',
+          price: 1,
+          category: 'x',
+          ageGroup: '0-2',
+          imageUrl: '',
+          inStock: true,
+          featured: false,
+          createdAt: Date.now()
+        }
+      ])
+    );
 
     const cached = await data.getProductsCached({});
     expect(cached).toHaveLength(2); // still the cached snapshot
@@ -133,10 +212,28 @@ describe('data.js — product cache (1 hour)', () => {
   });
 
   test('mutating products invalidates the cache automatically', async () => {
-    await data.addProduct({ name: 'One', description: '', price: 10, category: 'c', ageGroup: '0-2', imageUrl: '', inStock: true, featured: false });
+    await data.addProduct({
+      name: 'One',
+      description: '',
+      price: 10,
+      category: 'c',
+      ageGroup: '0-2',
+      imageUrl: '',
+      inStock: true,
+      featured: false
+    });
     expect(await data.getAllProductsCached()).toHaveLength(1);
 
-    await data.addProduct({ name: 'Two', description: '', price: 20, category: 'c', ageGroup: '0-2', imageUrl: '', inStock: true, featured: false });
+    await data.addProduct({
+      name: 'Two',
+      description: '',
+      price: 20,
+      category: 'c',
+      ageGroup: '0-2',
+      imageUrl: '',
+      inStock: true,
+      featured: false
+    });
     // addProduct calls invalidateCache('products'), so the next read reflects the write.
     expect(await data.getAllProductsCached()).toHaveLength(2);
   });
@@ -152,7 +249,7 @@ describe('data.js — categories cache (1 day) + CRUD', () => {
     expect(res.success).toBe(true);
 
     const cats = await data.getCategories();
-    expect(cats.map(c => c.name)).toContain('Puzzles');
+    expect(cats.map((c) => c.name)).toContain('Puzzles');
   });
 
   test('category cache TTL is 1 day', () => {
@@ -161,13 +258,13 @@ describe('data.js — categories cache (1 day) + CRUD', () => {
 
   test('updateCategory / deleteCategory succeed and refresh cache', async () => {
     const { id } = await data.addCategory({ name: 'Temp', displayOrder: 2 });
-    expect((await data.getCategories()).some(c => c.id === id)).toBe(true);
+    expect((await data.getCategories()).some((c) => c.id === id)).toBe(true);
 
     await data.updateCategory(id, { name: 'Renamed' });
-    expect((await data.getCategories()).find(c => c.id === id).name).toBe('Renamed');
+    expect((await data.getCategories()).find((c) => c.id === id).name).toBe('Renamed');
 
     await data.deleteCategory(id);
-    expect((await data.getCategories()).some(c => c.id === id)).toBe(false);
+    expect((await data.getCategories()).some((c) => c.id === id)).toBe(false);
   });
 });
 
@@ -180,7 +277,12 @@ describe('data.js — users / orders / coupons / banners / inventory / shipping'
   });
 
   test('createOrder defaults status to pending and computes nothing unexpected', async () => {
-    const res = await data.createOrder({ userId: 'u1', items: [{ skuId: 's1', quantity: 2, unitPrice: 100, lineTotal: 200 }], subtotal: 200, total: 200 });
+    const res = await data.createOrder({
+      userId: 'u1',
+      items: [{ skuId: 's1', quantity: 2, unitPrice: 100, lineTotal: 200 }],
+      subtotal: 200,
+      total: 200
+    });
     expect(res.success).toBe(true);
     const o = await data.getOrderById(res.id);
     expect(o.orderStatus).toBe('pending');
@@ -204,7 +306,13 @@ describe('data.js — users / orders / coupons / banners / inventory / shipping'
   });
 
   test('createInventoryLog records audit entry', async () => {
-    const res = await data.createInventoryLog({ skuId: 'SKU-1', previousStock: 10, newStock: 8, changeReason: 'order_placed', quantityChanged: 2 });
+    const res = await data.createInventoryLog({
+      skuId: 'SKU-1',
+      previousStock: 10,
+      newStock: 8,
+      changeReason: 'order_placed',
+      quantityChanged: 2
+    });
     expect(res.success).toBe(true);
     const logs = await data.getInventoryLogs({ skuId: 'SKU-1' });
     expect(logs).toHaveLength(1);
@@ -212,7 +320,12 @@ describe('data.js — users / orders / coupons / banners / inventory / shipping'
   });
 
   test('shipping integration lookup by region', async () => {
-    await data.createShippingIntegration({ provider: 'shiprocket', region: 'local', baseCost: 0, estimatedDays: 1 });
+    await data.createShippingIntegration({
+      provider: 'shiprocket',
+      region: 'local',
+      baseCost: 0,
+      estimatedDays: 1
+    });
     const local = await data.getShippingIntegrationByRegion('local');
     expect(local.provider).toBe('shiprocket');
     expect(local.baseCost).toBe(0);

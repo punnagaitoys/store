@@ -20,8 +20,7 @@ const model = require('../../js/lib/products-model');
 describe('Property 19: SKU Creation for Variants (Requirement 8.3)', () => {
   // Arbitrary that produces arrays of 1..5 label strings. Strings may repeat,
   // which intentionally exercises the "duplicate labels still unique" rule.
-  const labels = () =>
-    fc.array(fc.string(), { minLength: 1, maxLength: 5 });
+  const labels = () => fc.array(fc.string(), { minLength: 1, maxLength: 5 });
 
   test('generateSKUs produces exactly N × M unique SKUs', () => {
     fc.assert(

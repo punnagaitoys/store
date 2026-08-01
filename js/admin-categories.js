@@ -33,7 +33,9 @@
     if (typeof require === 'function') {
       try {
         return require('./lib/category-banner-model');
-      } catch (e) { /* not available */ }
+      } catch (e) {
+        /* not available */
+      }
     }
     return null;
   }
@@ -45,7 +47,9 @@
     if (typeof require === 'function') {
       try {
         return require('./lib/audit');
-      } catch (e) { /* not available */ }
+      } catch (e) {
+        /* not available */
+      }
     }
     return null;
   }
@@ -60,8 +64,8 @@
    * @returns {Function|null}
    */
   function dataFn(name) {
-    const scope = (typeof window !== 'undefined') ? window
-      : (typeof global !== 'undefined') ? global : null;
+    const scope =
+      typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : null;
     if (scope && typeof scope[name] === 'function') return scope[name];
     return null;
   }
@@ -84,14 +88,19 @@
    */
   function getCurrentAdminId() {
     if (typeof window === 'undefined') return null;
-    if (window.currentAdminUser && (window.currentAdminUser.uid || window.currentAdminUser.userId)) {
+    if (
+      window.currentAdminUser &&
+      (window.currentAdminUser.uid || window.currentAdminUser.userId)
+    ) {
       return window.currentAdminUser.uid || window.currentAdminUser.userId;
     }
     try {
       if (window.auth && window.auth.currentUser && window.auth.currentUser.uid) {
         return window.auth.currentUser.uid;
       }
-    } catch (e) { /* ignore */ }
+    } catch (e) {
+      /* ignore */
+    }
     return null;
   }
 
@@ -127,8 +136,8 @@
    * @returns {Promise<Array<Object>>}
    */
   async function listCategoriesWithCounts() {
-    const categories = await callData('getCategories', [true]) || [];
-    const products = await callData('getProducts', [{}]) || [];
+    const categories = (await callData('getCategories', [true])) || [];
+    const products = (await callData('getProducts', [{}])) || [];
     if (!Model) return categories;
     return categories.map(function (cat) {
       const withId = Object.assign({}, cat, {
@@ -154,16 +163,22 @@
       return { success: false, error: 'Category name is required' };
     }
     const category = Model ? Model.buildCategory(input) : input;
-    const result = await callData('addCategory', [{
-      name: category.name,
-      description: category.description,
-      icon: category.icon,
-      imageUrl: category.imageUrl,
-      productCount: category.productCount || 0,
-      displayOrder: category.displayOrder || 0
-    }]);
+    const result = await callData('addCategory', [
+      {
+        name: category.name,
+        description: category.description,
+        icon: category.icon,
+        imageUrl: category.imageUrl,
+        productCount: category.productCount || 0,
+        displayOrder: category.displayOrder || 0
+      }
+    ]);
     if (result && result.success) {
-      await audit(opType('CREATE_CATEGORY'), { type: 'category', id: result.id }, { name: category.name });
+      await audit(
+        opType('CREATE_CATEGORY'),
+        { type: 'category', id: result.id },
+        { name: category.name }
+      );
     }
     return result;
   }
@@ -178,7 +193,11 @@
     if (!categoryId) return { success: false, error: 'categoryId is required' };
     const result = await callData('updateCategory', [categoryId, updates || {}]);
     if (result && result.success) {
-      await audit(opType('UPDATE_CATEGORY'), { type: 'category', id: categoryId }, { fields: Object.keys(updates || {}) });
+      await audit(
+        opType('UPDATE_CATEGORY'),
+        { type: 'category', id: categoryId },
+        { fields: Object.keys(updates || {}) }
+      );
     }
     return result;
   }
@@ -206,7 +225,7 @@
   async function syncCategoryProductCount(categoryId) {
     if (!categoryId) return { success: false, error: 'categoryId is required' };
     if (!Model) return { success: false, error: 'category model unavailable' };
-    const products = await callData('getProducts', [{}]) || [];
+    const products = (await callData('getProducts', [{}])) || [];
     const productCount = Model.countProductsInCategory(products, categoryId);
     const result = await callData('updateCategory', [categoryId, { productCount: productCount }]);
     if (result && result.success) {
@@ -232,9 +251,11 @@
 
     const product = await callData('getProductById', [productId]);
     const current = product
-      ? (product.categoryId !== undefined && product.categoryId !== null
+      ? product.categoryId !== undefined && product.categoryId !== null
         ? String(product.categoryId)
-        : (product.category !== undefined && product.category !== null ? String(product.category) : null))
+        : product.category !== undefined && product.category !== null
+          ? String(product.category)
+          : null
       : null;
 
     // Idempotent no-op: the product is already in this category.
@@ -252,9 +273,11 @@
     const newCount = await syncCategoryProductCount(categoryId);
     if (current) await syncCategoryProductCount(current);
 
-    await audit(opType('ASSIGN_PRODUCT_CATEGORY'),
+    await audit(
+      opType('ASSIGN_PRODUCT_CATEGORY'),
       { type: 'product', id: productId },
-      { categoryId: categoryId, previousCategoryId: current });
+      { categoryId: categoryId, previousCategoryId: current }
+    );
 
     return { success: true, assigned: true, productCount: newCount && newCount.productCount };
   }
@@ -298,7 +321,7 @@
 
     // Enforce the active cap before creating an active banner (Req 12.9).
     if (banner.active && Model) {
-      const existing = await callData('getBanners', [{}]) || [];
+      const existing = (await callData('getBanners', [{}])) || [];
       if (Model.countActiveBanners(existing) >= Model.MAX_ACTIVE_BANNERS) {
         return {
           success: false,
@@ -307,17 +330,23 @@
       }
     }
 
-    const result = await callData('createBanner', [{
-      title: banner.title,
-      imageUrl: banner.imageUrl,
-      linkType: banner.linkType,
-      linkId: banner.linkId,
-      displayOrder: banner.displayOrder,
-      active: banner.active,
-      createdBy: getCurrentAdminId()
-    }]);
+    const result = await callData('createBanner', [
+      {
+        title: banner.title,
+        imageUrl: banner.imageUrl,
+        linkType: banner.linkType,
+        linkId: banner.linkId,
+        displayOrder: banner.displayOrder,
+        active: banner.active,
+        createdBy: getCurrentAdminId()
+      }
+    ]);
     if (result && result.success) {
-      await audit(opType('CREATE_BANNER'), { type: 'banner', id: result.id }, { title: banner.title, active: banner.active });
+      await audit(
+        opType('CREATE_BANNER'),
+        { type: 'banner', id: result.id },
+        { title: banner.title, active: banner.active }
+      );
     }
     return result;
   }
@@ -334,7 +363,7 @@
     updates = updates || {};
 
     if (updates.active === true && Model) {
-      const existing = await callData('getBanners', [{}]) || [];
+      const existing = (await callData('getBanners', [{}])) || [];
       if (!Model.canActivateBanner(existing, bannerId)) {
         return {
           success: false,
@@ -345,7 +374,11 @@
 
     const result = await callData('updateBanner', [bannerId, updates]);
     if (result && result.success) {
-      await audit(opType('UPDATE_BANNER'), { type: 'banner', id: bannerId }, { fields: Object.keys(updates) });
+      await audit(
+        opType('UPDATE_BANNER'),
+        { type: 'banner', id: bannerId },
+        { fields: Object.keys(updates) }
+      );
     }
     return result;
   }
@@ -378,7 +411,7 @@
     const desired = Boolean(active);
 
     if (Model) {
-      const existing = await callData('getBanners', [{}]) || [];
+      const existing = (await callData('getBanners', [{}])) || [];
       // Use the pure model to validate the cap before persisting.
       const outcome = Model.setBannerActive(existing, bannerId, desired);
       if (!outcome.success) {
@@ -400,7 +433,7 @@
    * @returns {Promise<Array<Object>>}
    */
   async function listActiveBanners() {
-    const banners = await callData('getBanners', [{ active: true }]) || [];
+    const banners = (await callData('getBanners', [{ active: true }])) || [];
     if (!Model) return banners;
     return Model.selectDisplayBanners(banners);
   }

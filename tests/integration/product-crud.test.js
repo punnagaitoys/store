@@ -112,12 +112,12 @@ describe('Product CRUD Integration Tests', () => {
 
       const created = await data.getProductById(result.id);
       expect(created.variants).toHaveLength(6); // 2 sizes × 3 colors = 6 variants
-      
+
       // Verify each variant has unique SKU and correct structure
-      const skuIds = created.variants.map(v => v.skuId);
+      const skuIds = created.variants.map((v) => v.skuId);
       expect(new Set(skuIds).size).toBe(6); // All SKUs are unique
-      
-      created.variants.forEach(variant => {
+
+      created.variants.forEach((variant) => {
         expect(variant).toHaveProperty('variantId');
         expect(variant).toHaveProperty('skuId');
         expect(variant).toHaveProperty('size');
@@ -131,7 +131,7 @@ describe('Product CRUD Integration Tests', () => {
 
     test('validates required fields during creation', async () => {
       const incompleteProduct = {
-        name: 'Test Product',
+        name: 'Test Product'
         // Missing required fields: description, category, ageGroup, price
       };
 
@@ -202,9 +202,9 @@ describe('Product CRUD Integration Tests', () => {
     test('retrieves all products without filters', async () => {
       const products = await data.getProducts();
       expect(products).toHaveLength(3);
-      expect(products.map(p => p.name)).toContain('Educational Blocks');
-      expect(products.map(p => p.name)).toContain('Remote Car');
-      expect(products.map(p => p.name)).toContain('Art Set');
+      expect(products.map((p) => p.name)).toContain('Educational Blocks');
+      expect(products.map((p) => p.name)).toContain('Remote Car');
+      expect(products.map((p) => p.name)).toContain('Art Set');
     });
 
     test('filters products by category', async () => {
@@ -220,8 +220,8 @@ describe('Product CRUD Integration Tests', () => {
     test('filters products by age group', async () => {
       const toddlerProducts = await data.getProducts({ ageGroup: '3-5' });
       expect(toddlerProducts).toHaveLength(2);
-      expect(toddlerProducts.map(p => p.name)).toContain('Educational Blocks');
-      expect(toddlerProducts.map(p => p.name)).toContain('Art Set');
+      expect(toddlerProducts.map((p) => p.name)).toContain('Educational Blocks');
+      expect(toddlerProducts.map((p) => p.name)).toContain('Art Set');
 
       const kidsProducts = await data.getProducts({ ageGroup: '6-8' });
       expect(kidsProducts).toHaveLength(1);
@@ -231,13 +231,13 @@ describe('Product CRUD Integration Tests', () => {
     test('filters products by stock status', async () => {
       const inStockProducts = await data.getProducts({ inStock: true });
       expect(inStockProducts).toHaveLength(2);
-      expect(inStockProducts.every(p => p.inStock)).toBe(true);
+      expect(inStockProducts.every((p) => p.inStock)).toBe(true);
     });
 
     test('filters products by featured status', async () => {
       const featuredProducts = await data.getProducts({ featured: true });
       expect(featuredProducts).toHaveLength(2);
-      expect(featuredProducts.every(p => p.featured)).toBe(true);
+      expect(featuredProducts.every((p) => p.featured)).toBe(true);
     });
 
     test('searches products by name and description', async () => {
@@ -267,9 +267,9 @@ describe('Product CRUD Integration Tests', () => {
         featured: true
       });
       expect(filtered).toHaveLength(2);
-      expect(filtered.every(p => p.ageGroup === '3-5')).toBe(true);
-      expect(filtered.every(p => p.inStock)).toBe(true);
-      expect(filtered.every(p => p.featured)).toBe(true);
+      expect(filtered.every((p) => p.ageGroup === '3-5')).toBe(true);
+      expect(filtered.every((p) => p.inStock)).toBe(true);
+      expect(filtered.every((p) => p.featured)).toBe(true);
     });
 
     test('retrieves single product by ID', async () => {
@@ -365,9 +365,9 @@ describe('Product CRUD Integration Tests', () => {
 
       const updated = await data.getProductById(testProductId);
       expect(updated.variants).toHaveLength(4); // 2 sizes × 2 colors = 4 variants
-      
+
       // Verify variant structure
-      updated.variants.forEach(variant => {
+      updated.variants.forEach((variant) => {
         expect(variant).toHaveProperty('skuId');
         expect(variant).toHaveProperty('price');
         expect(variant).toHaveProperty('stock');
@@ -412,13 +412,15 @@ describe('Product CRUD Integration Tests', () => {
       // Create an order containing this product
       const orderResult = await data.createOrder({
         userId: 'test-user',
-        items: [{
-          productId: testProductId,
-          skuId: 'test-sku',
-          quantity: 1,
-          unitPrice: 599,
-          lineTotal: 599
-        }],
+        items: [
+          {
+            productId: testProductId,
+            skuId: 'test-sku',
+            quantity: 1,
+            unitPrice: 599,
+            lineTotal: 599
+          }
+        ],
         subtotal: 599,
         total: 599,
         orderStatus: 'confirmed'
@@ -448,7 +450,7 @@ describe('Product CRUD Integration Tests', () => {
     test('marks product as archived in orders when product is deleted', async () => {
       // Note: The current data layer implementation doesn't handle order archival
       // This test documents the expected behavior per Requirement 8.6
-      
+
       const result = await data.deleteProduct(testProductId);
       expect(result.success).toBe(true);
 
@@ -463,7 +465,7 @@ describe('Product CRUD Integration Tests', () => {
       const order = await data.getOrderById(testOrderId);
       expect(order).not.toBeNull();
       expect(order.items).toHaveLength(1);
-      
+
       // TODO: Implement archival logic in admin.js to mark products as archived in orders
       // This would involve updating order items to include an "archived" flag
     });
@@ -558,7 +560,7 @@ describe('Product CRUD Integration Tests', () => {
       expect(new Set(skus).size).toBe(20);
 
       // SKUs should follow expected format
-      skus.forEach(sku => {
+      skus.forEach((sku) => {
         expect(sku).toMatch(/^TOY-123-\d+-[A-Z]*-\d+-[A-Z]*$/);
       });
     });
@@ -571,18 +573,18 @@ describe('Product CRUD Integration Tests', () => {
 
       const variants = ProductsModel.buildVariants(['Small', 'Large'], ['Red', 'Blue'], {
         sequence: '456',
-        price: (size, color) => size === 'Small' ? 299 : 399,
-        stock: (size, color) => color === 'Red' ? 10 : 5
+        price: (size, color) => (size === 'Small' ? 299 : 399),
+        stock: (size, color) => (color === 'Red' ? 10 : 5)
       });
 
       expect(variants).toHaveLength(4); // 2 × 2 = 4
 
       // Check pricing logic
-      const smallRed = variants.find(v => v.size === 'Small' && v.color === 'Red');
+      const smallRed = variants.find((v) => v.size === 'Small' && v.color === 'Red');
       expect(smallRed.price).toBe(299);
       expect(smallRed.stock).toBe(10);
 
-      const largeBlue = variants.find(v => v.size === 'Large' && v.color === 'Blue');
+      const largeBlue = variants.find((v) => v.size === 'Large' && v.color === 'Blue');
       expect(largeBlue.price).toBe(399);
       expect(largeBlue.stock).toBe(5);
     });
@@ -668,7 +670,7 @@ describe('Product CRUD Integration Tests', () => {
       };
 
       const result = await data.addProduct(malformedData);
-      
+
       // Data layer should handle coercion/defaults
       if (result.success) {
         const created = await data.getProductById(result.id);
@@ -683,7 +685,7 @@ describe('Product CRUD Integration Tests', () => {
     test('handles network/database errors gracefully', async () => {
       // This test would require mocking the database connection to fail
       // For now, we verify the error structure is correct when operations fail
-      
+
       const result = await data.updateProduct('definitely-invalid-id-format', { name: 'Test' });
       if (!result.success) {
         expect(result.error).toBeDefined();
@@ -707,7 +709,7 @@ describe('Firebase Integration Specifics', () => {
 
     const created = await data.getProductById(result.id);
     expect(created.createdAt).toBeDefined();
-    
+
     // In emulator mode, server timestamps resolve to actual timestamp numbers
     if (typeof created.createdAt === 'number') {
       expect(created.createdAt).toBeGreaterThan(0);
@@ -756,9 +758,9 @@ describe('Firebase Integration Specifics', () => {
     );
 
     const results = await Promise.all(createPromises);
-    
+
     // All should succeed
-    results.forEach(result => {
+    results.forEach((result) => {
       expect(result.success).toBe(true);
       expect(typeof result.id).toBe('string');
     });
@@ -768,7 +770,7 @@ describe('Firebase Integration Specifics', () => {
     expect(products).toHaveLength(5);
 
     // All should have unique IDs
-    const ids = products.map(p => p.id);
+    const ids = products.map((p) => p.id);
     expect(new Set(ids).size).toBe(5);
   });
 });

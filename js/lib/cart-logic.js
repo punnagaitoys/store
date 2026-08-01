@@ -56,7 +56,7 @@
    */
   function toNumber(value, fallback) {
     const n = Number(value);
-    return Number.isFinite(n) ? n : (fallback || 0);
+    return Number.isFinite(n) ? n : fallback || 0;
   }
 
   /**
@@ -108,12 +108,14 @@
     if (!item || typeof item !== 'object') {
       return '';
     }
-    const productId = item.productId !== undefined && item.productId !== null
-      ? String(item.productId)
-      : '';
-    const variant = item.variantId !== undefined && item.variantId !== null
-      ? String(item.variantId)
-      : (item.skuId !== undefined && item.skuId !== null ? String(item.skuId) : '');
+    const productId =
+      item.productId !== undefined && item.productId !== null ? String(item.productId) : '';
+    const variant =
+      item.variantId !== undefined && item.variantId !== null
+        ? String(item.variantId)
+        : item.skuId !== undefined && item.skuId !== null
+          ? String(item.skuId)
+          : '';
     return productId + '::' + variant;
   }
 
@@ -167,7 +169,7 @@
       if (!found && itemKey(existing) === key) {
         found = true;
         return Object.assign({}, existing, {
-          quantity: toQuantity(existing.quantity) + addQty,
+          quantity: toQuantity(existing.quantity) + addQty
         });
       }
       return existing;
@@ -388,7 +390,9 @@
       return { valid: false, reason: 'Coupon code not found or expired', discountAmount: 0 };
     }
 
-    const couponCode = (coupon.code === undefined || coupon.code === null ? '' : String(coupon.code)).trim();
+    const couponCode = (
+      coupon.code === undefined || coupon.code === null ? '' : String(coupon.code)
+    ).trim();
     if (couponCode.toUpperCase() !== entered.toUpperCase()) {
       return { valid: false, reason: 'Coupon code not found or expired', discountAmount: 0 };
     }
@@ -420,14 +424,14 @@
       return {
         valid: false,
         reason: 'Add more to your cart to use this coupon (minimum order ₹' + minOrderValue + ')',
-        discountAmount: 0,
+        discountAmount: 0
       };
     }
 
     // Valid — compute the discount amount the coupon would apply.
     const discountAmount = resolveDiscountAmount(subtotal, {
       discountType: coupon.discountType,
-      discountValue: coupon.discountValue,
+      discountValue: coupon.discountValue
     });
 
     return { valid: true, discountAmount: discountAmount, code: couponCode };
@@ -442,6 +446,6 @@
     calculateSubtotal,
     resolveDiscountAmount,
     calculateCartTotal,
-    validateCoupon,
+    validateCoupon
   };
 });

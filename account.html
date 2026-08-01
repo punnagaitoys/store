@@ -1,195 +1,271 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Account | Punnagai Toy Store</title>
-  <link rel="icon" href="logo.png" type="image/png">
-  <link rel="apple-touch-icon" href="logo.png">
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-  <div id="navbar"></div>
-  <div id="toast-container" class="toast-container"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Account | Punnagai Toy Store</title>
+    <link rel="icon" href="logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="logo.png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div id="navbar"></div>
+    <div id="toast-container" class="toast-container"></div>
 
-  <main class="page-wrapper container section">
-    <div class="section-header">
-      <h1 class="section-title">My Account</h1>
-      <div class="section-divider"></div>
-    </div>
-
-    <!-- Login/Register Section -->
-    <div id="auth-section" style="max-width: 400px; margin: 0 auto; display: none;">
-      <div class="card" style="padding: 24px;">
-        <div style="text-align: center; margin-bottom: 16px;">
-          <img src="logo.png" alt="Punnagai Toys Logo" style="width: 64px; height: 64px; border-radius: 50%; object-fit: contain; background: white; padding: 3px; box-shadow: 0 4px 12px rgba(0,0,0,0.12); margin-bottom: 8px;">
-          <h2 style="margin-bottom: 0;" id="auth-title">Login</h2>
-        </div>
-        
-        <form id="auth-form" onsubmit="handleAuthSubmit(event)">
-          <div id="register-fields" style="display: none;">
-            <div class="form-group" style="margin-bottom: 16px;">
-              <label style="display:block; margin-bottom: 8px;">Name</label>
-              <input type="text" id="auth-name" class="form-control" style="width:100%; padding: 8px;" placeholder="Full Name">
-              <span id="err-name" style="color:var(--danger); font-size:12px;"></span>
-            </div>
-            <div class="form-group" style="margin-bottom: 16px;">
-              <label style="display:block; margin-bottom: 8px;">Phone Number</label>
-              <input type="text" id="auth-phone" class="form-control" style="width:100%; padding: 8px;" placeholder="e.g. 9876543210">
-              <span id="err-phone" style="color:var(--danger); font-size:12px;"></span>
-            </div>
-          </div>
-          
-          <div class="form-group" style="margin-bottom: 16px;">
-            <label style="display:block; margin-bottom: 8px;">Email</label>
-            <input type="email" id="auth-email" class="form-control" style="width:100%; padding: 8px;" placeholder="you@example.com" required>
-            <span id="err-email" style="color:var(--danger); font-size:12px;"></span>
-          </div>
-          
-          <div class="form-group" style="margin-bottom: 24px;">
-            <label style="display:block; margin-bottom: 8px;">Password</label>
-            <input type="password" id="auth-password" class="form-control" style="width:100%; padding: 8px;" required>
-            <span id="err-password" style="color:var(--danger); font-size:12px;"></span>
-          </div>
-          
-          <button type="submit" class="btn btn-primary" style="width:100%; margin-bottom: 16px;" id="auth-submit-btn">Login</button>
-        </form>
-        <p class="text-center" style="font-size: 14px; margin-top: 16px;">
-          <a href="javascript:void(0)" onclick="toggleAuthMode()" id="auth-toggle-btn">Don't have an account? Register here.</a>
-        </p>
+    <main class="page-wrapper container section">
+      <div class="section-header">
+        <h1 class="section-title">My Account</h1>
+        <div class="section-divider"></div>
       </div>
-    </div>
 
-    <!-- Account Details Section -->
-    <div id="account-details-section" style="max-width: 600px; margin: 0 auto; display: none;">
-      <div class="card" style="padding: 24px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-          <h2>Profile Details</h2>
-          <button class="btn btn-outline" onclick="handleLogout()">Logout</button>
-        </div>
-        
-        <div style="margin-bottom: 16px;">
-          <label style="color:var(--text-secondary); font-size:14px;">Name</label>
-          <div id="profile-name" style="font-weight: 500; font-size: 18px;">-</div>
-        </div>
-        
-        <div style="margin-bottom: 16px;">
-          <label style="color:var(--text-secondary); font-size:14px;">Email</label>
-          <div id="profile-email" style="font-weight: 500; font-size: 18px;">-</div>
-        </div>
-        
-        <div style="margin-bottom: 32px;">
-          <label style="color:var(--text-secondary); font-size:14px;">Phone Number</label>
-          <div id="profile-phone" style="font-weight: 500; font-size: 18px;">-</div>
-        </div>
+      <!-- Login/Register Section -->
+      <div id="auth-section" style="max-width: 400px; margin: 0 auto; display: none">
+        <div class="card" style="padding: 24px">
+          <div style="text-align: center; margin-bottom: 16px">
+            <img
+              src="logo.png"
+              alt="Punnagai Toys Logo"
+              style="
+                width: 64px;
+                height: 64px;
+                border-radius: 50%;
+                object-fit: contain;
+                background: white;
+                padding: 3px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+                margin-bottom: 8px;
+              "
+            />
+            <h2 style="margin-bottom: 0" id="auth-title">Login</h2>
+          </div>
 
-        <div style="border-top: 1px solid var(--border); padding-top: 24px;">
-          <a href="orders.html" class="btn btn-primary" style="display: inline-block;">View Order History</a>
+          <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+            <div id="register-fields" style="display: none">
+              <div class="form-group" style="margin-bottom: 16px">
+                <label style="display: block; margin-bottom: 8px">Name</label>
+                <input
+                  type="text"
+                  id="auth-name"
+                  class="form-control"
+                  style="width: 100%; padding: 8px"
+                  placeholder="Full Name"
+                />
+                <span id="err-name" style="color: var(--danger); font-size: 12px"></span>
+              </div>
+              <div class="form-group" style="margin-bottom: 16px">
+                <label style="display: block; margin-bottom: 8px">Phone Number</label>
+                <input
+                  type="text"
+                  id="auth-phone"
+                  class="form-control"
+                  style="width: 100%; padding: 8px"
+                  placeholder="e.g. 9876543210"
+                />
+                <span id="err-phone" style="color: var(--danger); font-size: 12px"></span>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 16px">
+              <label style="display: block; margin-bottom: 8px">Email</label>
+              <input
+                type="email"
+                id="auth-email"
+                class="form-control"
+                style="width: 100%; padding: 8px"
+                placeholder="you@example.com"
+                required
+              />
+              <span id="err-email" style="color: var(--danger); font-size: 12px"></span>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 24px">
+              <label style="display: block; margin-bottom: 8px">Password</label>
+              <input
+                type="password"
+                id="auth-password"
+                class="form-control"
+                style="width: 100%; padding: 8px"
+                required
+              />
+              <span id="err-password" style="color: var(--danger); font-size: 12px"></span>
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-primary"
+              style="width: 100%; margin-bottom: 16px"
+              id="auth-submit-btn"
+            >
+              Login
+            </button>
+          </form>
+          <p class="text-center" style="font-size: 14px; margin-top: 16px">
+            <a href="javascript:void(0)" onclick="toggleAuthMode()" id="auth-toggle-btn"
+              >Don't have an account? Register here.</a
+            >
+          </p>
         </div>
       </div>
-    </div>
-  </main>
 
-  <div id="footer"></div>
+      <!-- Account Details Section -->
+      <div id="account-details-section" style="max-width: 600px; margin: 0 auto; display: none">
+        <div class="card" style="padding: 24px">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 24px;
+            "
+          >
+            <h2>Profile Details</h2>
+            <button class="btn btn-outline" onclick="handleLogout()">Logout</button>
+          </div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  
-  <script src="js/firebase-config.js"></script>
-  <script src="js/lib/validation.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/data.js"></script>
-  <script src="js/app.js"></script>
-  
-  <script>
-    let isRegisterMode = false;
+          <div style="margin-bottom: 16px">
+            <label style="color: var(--text-secondary); font-size: 14px">Name</label>
+            <div id="profile-name" style="font-weight: 500; font-size: 18px">-</div>
+          </div>
 
-    function toggleAuthMode() {
-      isRegisterMode = !isRegisterMode;
-      document.getElementById('register-fields').style.display = isRegisterMode ? 'block' : 'none';
-      document.getElementById('auth-title').textContent = isRegisterMode ? 'Register' : 'Login';
-      document.getElementById('auth-submit-btn').textContent = isRegisterMode ? 'Create Account' : 'Login';
-      document.getElementById('auth-toggle-btn').textContent = isRegisterMode ? 'Already have an account? Login here.' : "Don't have an account? Register here.";
-      clearAuthErrors();
-    }
+          <div style="margin-bottom: 16px">
+            <label style="color: var(--text-secondary); font-size: 14px">Email</label>
+            <div id="profile-email" style="font-weight: 500; font-size: 18px">-</div>
+          </div>
 
-    function clearAuthErrors() {
-      document.getElementById('err-name').textContent = '';
-      document.getElementById('err-phone').textContent = '';
-      document.getElementById('err-email').textContent = '';
-      document.getElementById('err-password').textContent = '';
-    }
+          <div style="margin-bottom: 32px">
+            <label style="color: var(--text-secondary); font-size: 14px">Phone Number</label>
+            <div id="profile-phone" style="font-weight: 500; font-size: 18px">-</div>
+          </div>
 
-    async function handleAuthSubmit(e) {
-      e.preventDefault();
-      clearAuthErrors();
-      
-      const email = document.getElementById('auth-email').value;
-      const password = document.getElementById('auth-password').value;
+          <div style="border-top: 1px solid var(--border); padding-top: 24px">
+            <a href="orders.html" class="btn btn-primary" style="display: inline-block"
+              >View Order History</a
+            >
+          </div>
+        </div>
+      </div>
+    </main>
 
-      try {
-        if (isRegisterMode) {
-          const name = document.getElementById('auth-name').value;
-          const phone = document.getElementById('auth-phone').value;
-          
-          if (window.PunnagaiValidation) {
-             const val = window.PunnagaiValidation.validateRegistration({ name, email, phone, password });
-             if (!val.valid) {
-               if (val.errors.name) document.getElementById('err-name').textContent = val.errors.name;
-               if (val.errors.phone) document.getElementById('err-phone').textContent = val.errors.phone;
-               if (val.errors.email) document.getElementById('err-email').textContent = val.errors.email;
-               if (val.errors.password) document.getElementById('err-password').textContent = val.errors.password;
-               return;
-             }
-          }
-          await window.PunnagaiAuth.registerCustomer(email, password, { name, phone });
-          showToast('Account created successfully!', 'success');
-        } else {
-          await window.PunnagaiAuth.loginCustomer(email, password);
-          showToast('Logged in successfully!', 'success');
-        }
-        initAccountPage();
-      } catch (err) {
-        showToast(err.message, 'error');
+    <div id="footer"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+    <script src="js/firebase-config.js"></script>
+    <script src="js/lib/validation.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+      let isRegisterMode = false;
+
+      function toggleAuthMode() {
+        isRegisterMode = !isRegisterMode;
+        document.getElementById('register-fields').style.display = isRegisterMode
+          ? 'block'
+          : 'none';
+        document.getElementById('auth-title').textContent = isRegisterMode ? 'Register' : 'Login';
+        document.getElementById('auth-submit-btn').textContent = isRegisterMode
+          ? 'Create Account'
+          : 'Login';
+        document.getElementById('auth-toggle-btn').textContent = isRegisterMode
+          ? 'Already have an account? Login here.'
+          : "Don't have an account? Register here.";
+        clearAuthErrors();
       }
-    }
 
-    async function handleLogout() {
-      await window.PunnagaiAuth.logoutCustomer();
-      showToast('Logged out successfully.', 'success');
-      initAccountPage();
-    }
+      function clearAuthErrors() {
+        document.getElementById('err-name').textContent = '';
+        document.getElementById('err-phone').textContent = '';
+        document.getElementById('err-email').textContent = '';
+        document.getElementById('err-password').textContent = '';
+      }
 
-    async function initAccountPage() {
-      renderNavbar();
-      renderFooter();
-      
-      const user = window.PunnagaiAuth.getCurrentUser();
-      if (user) {
-        document.getElementById('auth-section').style.display = 'none';
-        document.getElementById('account-details-section').style.display = 'block';
-        
+      async function handleAuthSubmit(e) {
+        e.preventDefault();
+        clearAuthErrors();
+
+        const email = document.getElementById('auth-email').value;
+        const password = document.getElementById('auth-password').value;
+
         try {
-          const profile = await getUserById(user.uid);
-          document.getElementById('profile-name').textContent = profile ? profile.name : user.displayName || 'Customer';
-          document.getElementById('profile-email').textContent = user.email;
-          document.getElementById('profile-phone').textContent = profile ? profile.phone : '-';
-        } catch (e) {
-          document.getElementById('profile-name').textContent = user.displayName || 'Customer';
-          document.getElementById('profile-email').textContent = user.email;
-        }
-      } else {
-        document.getElementById('account-details-section').style.display = 'none';
-        document.getElementById('auth-section').style.display = 'block';
-      }
-    }
+          if (isRegisterMode) {
+            const name = document.getElementById('auth-name').value;
+            const phone = document.getElementById('auth-phone').value;
 
-    document.addEventListener('DOMContentLoaded', () => {
-      // Small delay to let Firebase auth initialize state
-      setTimeout(initAccountPage, 500);
-    });
-  </script>
-</body>
+            if (window.PunnagaiValidation) {
+              const val = window.PunnagaiValidation.validateRegistration({
+                name,
+                email,
+                phone,
+                password
+              });
+              if (!val.valid) {
+                if (val.errors.name)
+                  document.getElementById('err-name').textContent = val.errors.name;
+                if (val.errors.phone)
+                  document.getElementById('err-phone').textContent = val.errors.phone;
+                if (val.errors.email)
+                  document.getElementById('err-email').textContent = val.errors.email;
+                if (val.errors.password)
+                  document.getElementById('err-password').textContent = val.errors.password;
+                return;
+              }
+            }
+            await window.PunnagaiAuth.registerCustomer(email, password, { name, phone });
+            showToast('Account created successfully!', 'success');
+          } else {
+            await window.PunnagaiAuth.loginCustomer(email, password);
+            showToast('Logged in successfully!', 'success');
+          }
+          initAccountPage();
+        } catch (err) {
+          showToast(err.message, 'error');
+        }
+      }
+
+      async function handleLogout() {
+        await window.PunnagaiAuth.logoutCustomer();
+        showToast('Logged out successfully.', 'success');
+        initAccountPage();
+      }
+
+      async function initAccountPage() {
+        renderNavbar();
+        renderFooter();
+
+        const user = window.PunnagaiAuth.getCurrentUser();
+        if (user) {
+          document.getElementById('auth-section').style.display = 'none';
+          document.getElementById('account-details-section').style.display = 'block';
+
+          try {
+            const profile = await getUserById(user.uid);
+            document.getElementById('profile-name').textContent = profile
+              ? profile.name
+              : user.displayName || 'Customer';
+            document.getElementById('profile-email').textContent = user.email;
+            document.getElementById('profile-phone').textContent = profile ? profile.phone : '-';
+          } catch (e) {
+            document.getElementById('profile-name').textContent = user.displayName || 'Customer';
+            document.getElementById('profile-email').textContent = user.email;
+          }
+        } else {
+          document.getElementById('account-details-section').style.display = 'none';
+          document.getElementById('auth-section').style.display = 'block';
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        // Small delay to let Firebase auth initialize state
+        setTimeout(initAccountPage, 500);
+      });
+    </script>
+  </body>
 </html>

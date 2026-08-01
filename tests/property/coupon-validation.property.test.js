@@ -27,29 +27,25 @@ const ONE_DAY = 24 * 60 * 60 * 1000;
 const itemArb = fc.record({
   productId: fc.string({ minLength: 1, maxLength: 6 }),
   quantity: fc.integer({ min: 1, max: 10 }),
-  unitPrice: fc.integer({ min: 1, max: 2000 }),
+  unitPrice: fc.integer({ min: 1, max: 2000 })
 });
 
 // A non-empty cart so the subtotal is strictly positive (discount can be > 0).
 const nonEmptyCartArb = fc.array(itemArb, { minLength: 1, maxLength: 8 });
 
 // Coupon codes: non-empty alnum-ish strings.
-const codeArb = fc
-  .string({ minLength: 1, maxLength: 10 })
-  .filter((s) => s.trim().length > 0);
+const codeArb = fc.string({ minLength: 1, maxLength: 10 }).filter((s) => s.trim().length > 0);
 
 // A coupon code paired with a randomly re-cased version of itself, so we can
 // exercise case-insensitive matching deterministically.
 const codeWithRecasedArb = codeArb.chain((code) =>
-  fc
-    .array(fc.boolean(), { minLength: code.length, maxLength: code.length })
-    .map((flags) => ({
-      code,
-      entered: code
-        .split('')
-        .map((ch, i) => (flags[i] ? ch.toUpperCase() : ch.toLowerCase()))
-        .join(''),
-    }))
+  fc.array(fc.boolean(), { minLength: code.length, maxLength: code.length }).map((flags) => ({
+    code,
+    entered: code
+      .split('')
+      .map((ch, i) => (flags[i] ? ch.toUpperCase() : ch.toLowerCase()))
+      .join('')
+  }))
 );
 
 describe('Property 10: Coupon Validation Consistency (Req 3.7)', () => {
@@ -72,8 +68,7 @@ describe('Property 10: Coupon Validation Consistency (Req 3.7)', () => {
           // A fixed discount larger than the subtotal still clamps to subtotal,
           // so any positive discountValue yields a positive discount on a
           // positive subtotal. Constrain percentage to a sane 1..100.
-          const discountValue =
-            discountType === 'percentage' ? Math.min(rawValue, 100) : rawValue;
+          const discountValue = discountType === 'percentage' ? Math.min(rawValue, 100) : rawValue;
 
           const coupon = {
             code,
@@ -84,7 +79,7 @@ describe('Property 10: Coupon Validation Consistency (Req 3.7)', () => {
             usageCount: usageLimit > 0 ? Math.floor(usageFrac * usageLimit) : 0,
             // min order is met: never above the cart subtotal.
             minOrderValue: 0,
-            active: true,
+            active: true
           };
 
           const result = validateCoupon(code, cart, coupon, NOW);
@@ -110,7 +105,7 @@ describe('Property 10: Coupon Validation Consistency (Req 3.7)', () => {
           usageLimit: 0,
           usageCount: 0,
           minOrderValue: 0,
-          active: true,
+          active: true
         };
         const result = validateCoupon(entered, cart, coupon, NOW);
         expect(result.valid).toBe(true);
@@ -133,7 +128,7 @@ describe('Property 10: Coupon Validation Consistency (Req 3.7)', () => {
             usageLimit: 0,
             usageCount: 0,
             minOrderValue: 0,
-            active: true,
+            active: true
           };
 
           const result = validateCoupon(code, cart, coupon, NOW);
@@ -163,7 +158,7 @@ describe('Property 10: Coupon Validation Consistency (Req 3.7)', () => {
             usageLimit,
             usageCount: usageLimit + extra, // at or above the limit
             minOrderValue: 0,
-            active: true,
+            active: true
           };
 
           const result = validateCoupon(code, cart, coupon, NOW);
@@ -193,7 +188,7 @@ describe('Property 10: Coupon Validation Consistency (Req 3.7)', () => {
             usageCount: 0,
             // strictly greater than the subtotal so the min-order check fails.
             minOrderValue: subtotal + gap,
-            active: true,
+            active: true
           };
 
           const result = validateCoupon(code, cart, coupon, NOW);
@@ -215,7 +210,9 @@ describe('Property 10: Coupon Validation Consistency (Req 3.7)', () => {
         fc.boolean(),
         (cart, couponCode, enteredCode, makeInactive) => {
           // Ensure the entered code genuinely differs from the coupon code.
-          fc.pre(enteredCode.trim().toUpperCase() !== couponCode.trim().toUpperCase() || makeInactive);
+          fc.pre(
+            enteredCode.trim().toUpperCase() !== couponCode.trim().toUpperCase() || makeInactive
+          );
 
           const coupon = {
             code: couponCode,
@@ -225,7 +222,7 @@ describe('Property 10: Coupon Validation Consistency (Req 3.7)', () => {
             usageLimit: 0,
             usageCount: 0,
             minOrderValue: 0,
-            active: !makeInactive,
+            active: !makeInactive
           };
 
           // When inactive, use the matching code so inactivity is the cause;
@@ -252,7 +249,16 @@ describe('Property 10: Coupon Validation Consistency (Req 3.7)', () => {
         fc.integer({ min: 0, max: 50 }),
         fc.integer({ min: 0, max: 50 }),
         fc.boolean(),
-        (cart, code, discountType, discountValue, expiryOffsetDays, usageLimit, usageCount, active) => {
+        (
+          cart,
+          code,
+          discountType,
+          discountValue,
+          expiryOffsetDays,
+          usageLimit,
+          usageCount,
+          active
+        ) => {
           const coupon = {
             code,
             discountType,
@@ -261,7 +267,7 @@ describe('Property 10: Coupon Validation Consistency (Req 3.7)', () => {
             usageLimit,
             usageCount,
             minOrderValue: 0,
-            active,
+            active
           };
 
           const a = validateCoupon(code, cart, coupon, NOW);

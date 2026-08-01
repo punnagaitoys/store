@@ -27,7 +27,7 @@ const cartLogic = require('../../js/lib/cart-logic');
 // A single cart line: positive integer quantity and unit price.
 const itemArb = fc.record({
   quantity: fc.integer({ min: 1, max: 100 }),
-  unitPrice: fc.integer({ min: 1, max: 10000 }),
+  unitPrice: fc.integer({ min: 1, max: 10000 })
 });
 
 // A cart of 0..20 line items.
@@ -40,10 +40,7 @@ describe('Property 9: Cart Total Equals Line Item Sum (Req 3.4)', () => {
   test('cart total equals line item sum minus percentage discount', () => {
     fc.assert(
       fc.property(itemsArb, discountPercentArb, (items, discountPercent) => {
-        const subtotal = items.reduce(
-          (sum, item) => sum + item.quantity * item.unitPrice,
-          0
-        );
+        const subtotal = items.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0);
         const discount = Math.floor((subtotal * discountPercent) / 100);
         const expectedTotal = subtotal - discount;
         const calculatedTotal = cartLogic.calculateCartTotal(items, discountPercent);
@@ -56,10 +53,7 @@ describe('Property 9: Cart Total Equals Line Item Sum (Req 3.4)', () => {
   test('cart total is floored at 0 when discount exceeds subtotal', () => {
     fc.assert(
       fc.property(itemsArb, (items) => {
-        const subtotal = items.reduce(
-          (sum, item) => sum + item.quantity * item.unitPrice,
-          0
-        );
+        const subtotal = items.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0);
         // A fixed discount strictly larger than the subtotal can never drive
         // the total below 0.
         const oversizedDiscount = { type: 'fixed', value: subtotal + 1 };

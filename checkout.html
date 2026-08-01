@@ -1,212 +1,321 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Checkout — Complete your order at Punnagai Toy Store, Mylapore, Chennai">
-  <title>Checkout | Punnagai Toy Store</title>
-  <link rel="icon" href="logo.png" type="image/png">
-  <link rel="apple-touch-icon" href="logo.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-  <div id="navbar"></div>
-  <div id="toast-container" class="toast-container"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Checkout — Complete your order at Punnagai Toy Store, Mylapore, Chennai"
+    />
+    <title>Checkout | Punnagai Toy Store</title>
+    <link rel="icon" href="logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div id="navbar"></div>
+    <div id="toast-container" class="toast-container"></div>
 
-  <main class="page-wrapper">
-    <div class="container">
+    <main class="page-wrapper">
+      <div class="container">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a>
+          <span class="breadcrumb-sep">›</span>
+          <a href="shop.html">Shop</a>
+          <span class="breadcrumb-sep">›</span>
+          <a href="cart.html">Cart</a>
+          <span class="breadcrumb-sep">›</span>
+          <span class="breadcrumb-current">Checkout</span>
+        </nav>
 
-      <!-- Breadcrumb -->
-      <nav class="breadcrumb" aria-label="Breadcrumb">
-        <a href="index.html">Home</a>
-        <span class="breadcrumb-sep">›</span>
-        <a href="shop.html">Shop</a>
-        <span class="breadcrumb-sep">›</span>
-        <a href="cart.html">Cart</a>
-        <span class="breadcrumb-sep">›</span>
-        <span class="breadcrumb-current">Checkout</span>
-      </nav>
+        <h1 class="page-title">
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+            <line x1="8" y1="21" x2="16" y2="21" />
+            <line x1="12" y1="17" x2="12" y2="21" />
+          </svg>
+          Checkout
+        </h1>
 
-      <h1 class="page-title">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-          <line x1="8" y1="21" x2="16" y2="21"/>
-          <line x1="12" y1="17" x2="12" y2="21"/>
-        </svg>
-        Checkout
-      </h1>
+        <!-- Checkout Layout -->
+        <div class="checkout-layout">
+          <!-- Left Column: Shipping & Payment -->
+          <div class="checkout-form-col">
+            <!-- Buyer Information & Pickup Section -->
+            <section class="checkout-section">
+              <h2 class="section-title">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  aria-hidden="true"
+                >
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                Buyer Details &amp; PIN Code
+              </h2>
 
-      <!-- Checkout Layout -->
-      <div class="checkout-layout">
-        <!-- Left Column: Shipping & Payment -->
-        <div class="checkout-form-col">
-          
-          <!-- Buyer Information & Pickup Section -->
-          <section class="checkout-section">
-            <h2 class="section-title">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                <circle cx="12" cy="10" r="3"/>
-              </svg>
-              Buyer Details &amp; PIN Code
-            </h2>
-
-            <div class="pickup-notice" style="background: rgba(37, 99, 235, 0.08); border: 1px dashed var(--primary); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 20px; font-size: 14px; color: var(--text-primary); line-height: 1.5;">
-              <strong style="color: var(--primary);">🏪 Direct Shop Pickup:</strong> You can directly come to our shop in Mylapore, Chennai to inspect &amp; collect your pre-ordered items. Only your PIN Code is required!
-            </div>
-
-            <form id="shipping-form" class="checkout-form">
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="fullName" class="form-label">Full Name *</label>
-                  <input type="text" id="fullName" name="fullName" class="form-input" placeholder="Your Full Name" required>
-                </div>
-                <div class="form-group">
-                  <label for="phone" class="form-label">Phone Number *</label>
-                  <input type="tel" id="phone" name="phone" class="form-input" placeholder="+91 98765 43210" required>
-                </div>
+              <div
+                class="pickup-notice"
+                style="
+                  background: rgba(37, 99, 235, 0.08);
+                  border: 1px dashed var(--primary);
+                  border-radius: var(--radius);
+                  padding: 14px 16px;
+                  margin-bottom: 20px;
+                  font-size: 14px;
+                  color: var(--text-primary);
+                  line-height: 1.5;
+                "
+              >
+                <strong style="color: var(--primary)">🏪 Direct Shop Pickup:</strong> You can
+                directly come to our shop in Mylapore, Chennai to inspect &amp; collect your
+                pre-ordered items. Only your PIN Code is required!
               </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="postalCode" class="form-label">PIN Code *</label>
-                  <input type="text" id="postalCode" name="postalCode" class="form-input" placeholder="600004" pattern="[1-9][0-9]{5}" required>
-                  <div class="form-hint">Enter valid 6-digit PIN code</div>
-                </div>
-                <div class="form-group">
-                  <label for="email" class="form-label">Email</label>
-                  <input type="email" id="email" name="email" class="form-input" placeholder="your@email.com">
-                  <div class="form-hint">For order updates</div>
-                </div>
-              </div>
-              <!-- Default fields for store pickup order schema -->
-              <input type="hidden" id="address" name="address" value="Direct Shop Pickup (Mylapore, Chennai)">
-              <input type="hidden" id="city" name="city" value="Chennai">
-              <input type="hidden" id="state" name="state" value="Tamil Nadu">
-            </form>
-          </section>
 
-          <!-- Shipping Method Section -->
-          <section class="checkout-section">
-            <h2 class="section-title">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <rect x="1" y="3" width="15" height="13"/>
-                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
-                <circle cx="5.5" cy="18.5" r="2.5"/>
-                <circle cx="18.5" cy="18.5" r="2.5"/>
-              </svg>
-              Shipping Method
-            </h2>
-            <div id="shipping-methods" class="shipping-methods">
-              <div class="loading-spinner-center">
-                <div class="loading-spinner"></div>
-                <p>Calculating shipping options...</p>
-              </div>
-            </div>
-          </section>
-
-          <!-- Payment Method Section -->
-          <section class="checkout-section">
-            <h2 class="section-title">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
-                <line x1="1" y1="10" x2="23" y2="10"/>
-              </svg>
-              Payment Method
-            </h2>
-            <div class="payment-methods">
-              <div class="payment-option selected">
-                <input type="radio" id="upi-payment" name="paymentMethod" value="upi" checked>
-                <label for="upi-payment" class="payment-label">
-                  <div class="payment-icon">💳</div>
-                  <div class="payment-info">
-                    <h4>UPI Payment</h4>
-                    <p>Pay using any UPI app (PhonePe, Google Pay, Paytm, etc.)</p>
+              <form id="shipping-form" class="checkout-form">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="fullName" class="form-label">Full Name *</label>
+                    <input
+                      type="text"
+                      id="fullName"
+                      name="fullName"
+                      class="form-input"
+                      placeholder="Your Full Name"
+                      required
+                    />
                   </div>
-                  <div class="payment-badge">Secure</div>
-                </label>
-              </div>
-            </div>
-            <div class="form-group" id="upi-id-group" style="margin-top: 16px;">
-              <label for="upiId" class="form-label">UPI ID (Optional)</label>
-              <input type="text" id="upiId" name="upiId" class="form-input" placeholder="yourname@upi">
-              <div class="form-hint">Leave empty to select during payment</div>
-            </div>
-          </section>
+                  <div class="form-group">
+                    <label for="phone" class="form-label">Phone Number *</label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      class="form-input"
+                      placeholder="+91 98765 43210"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="postalCode" class="form-label">PIN Code *</label>
+                    <input
+                      type="text"
+                      id="postalCode"
+                      name="postalCode"
+                      class="form-input"
+                      placeholder="600004"
+                      pattern="[1-9][0-9]{5}"
+                      required
+                    />
+                    <div class="form-hint">Enter valid 6-digit PIN code</div>
+                  </div>
+                  <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      class="form-input"
+                      placeholder="your@email.com"
+                    />
+                    <div class="form-hint">For order updates</div>
+                  </div>
+                </div>
+                <!-- Default fields for store pickup order schema -->
+                <input
+                  type="hidden"
+                  id="address"
+                  name="address"
+                  value="Direct Shop Pickup (Mylapore, Chennai)"
+                />
+                <input type="hidden" id="city" name="city" value="Chennai" />
+                <input type="hidden" id="state" name="state" value="Tamil Nadu" />
+              </form>
+            </section>
 
+            <!-- Shipping Method Section -->
+            <section class="checkout-section">
+              <h2 class="section-title">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  aria-hidden="true"
+                >
+                  <rect x="1" y="3" width="15" height="13" />
+                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                  <circle cx="5.5" cy="18.5" r="2.5" />
+                  <circle cx="18.5" cy="18.5" r="2.5" />
+                </svg>
+                Shipping Method
+              </h2>
+              <div id="shipping-methods" class="shipping-methods">
+                <div class="loading-spinner-center">
+                  <div class="loading-spinner"></div>
+                  <p>Calculating shipping options...</p>
+                </div>
+              </div>
+            </section>
+
+            <!-- Payment Method Section -->
+            <section class="checkout-section">
+              <h2 class="section-title">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  aria-hidden="true"
+                >
+                  <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+                  <line x1="1" y1="10" x2="23" y2="10" />
+                </svg>
+                Payment Method
+              </h2>
+              <div class="payment-methods">
+                <div class="payment-option selected">
+                  <input type="radio" id="upi-payment" name="paymentMethod" value="upi" checked />
+                  <label for="upi-payment" class="payment-label">
+                    <div class="payment-icon">💳</div>
+                    <div class="payment-info">
+                      <h4>UPI Payment</h4>
+                      <p>Pay using any UPI app (PhonePe, Google Pay, Paytm, etc.)</p>
+                    </div>
+                    <div class="payment-badge">Secure</div>
+                  </label>
+                </div>
+              </div>
+              <div class="form-group" id="upi-id-group" style="margin-top: 16px">
+                <label for="upiId" class="form-label">UPI ID (Optional)</label>
+                <input
+                  type="text"
+                  id="upiId"
+                  name="upiId"
+                  class="form-input"
+                  placeholder="yourname@upi"
+                />
+                <div class="form-hint">Leave empty to select during payment</div>
+              </div>
+            </section>
+          </div>
+
+          <!-- Right Column: Order Summary -->
+          <div class="checkout-summary-col">
+            <section class="checkout-section checkout-summary-section">
+              <h2 class="section-title">Order Summary</h2>
+              <div id="order-summary">
+                <div class="loading-spinner-center">
+                  <div class="loading-spinner"></div>
+                </div>
+              </div>
+            </section>
+          </div>
         </div>
 
-        <!-- Right Column: Order Summary -->
-        <div class="checkout-summary-col">
-          <section class="checkout-section checkout-summary-section">
-            <h2 class="section-title">Order Summary</h2>
-            <div id="order-summary">
-              <div class="loading-spinner-center">
-                <div class="loading-spinner"></div>
-              </div>
-            </div>
-          </section>
+        <!-- Checkout Actions -->
+        <div class="checkout-actions">
+          <a href="cart.html" class="btn btn-outline btn-lg checkout-back">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <line x1="19" y1="12" x2="5" y2="12" />
+              <polyline points="12 19 5 12 12 5" />
+            </svg>
+            Back to Cart
+          </a>
+          <button
+            type="button"
+            id="place-order-btn"
+            class="btn btn-primary btn-lg checkout-place-order"
+            disabled
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+              <line x1="8" y1="21" x2="16" y2="21" />
+              <line x1="12" y1="17" x2="12" y2="21" />
+            </svg>
+            Place Order
+          </button>
         </div>
-      </div>
 
-      <!-- Checkout Actions -->
-      <div class="checkout-actions">
-        <a href="cart.html" class="btn btn-outline btn-lg checkout-back">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <line x1="19" y1="12" x2="5" y2="12"/>
-            <polyline points="12 19 5 12 12 5"/>
-          </svg>
-          Back to Cart
-        </a>
-        <button type="button" id="place-order-btn" class="btn btn-primary btn-lg checkout-place-order" disabled>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-            <line x1="8" y1="21" x2="16" y2="21"/>
-            <line x1="12" y1="17" x2="12" y2="21"/>
-          </svg>
-          Place Order
-        </button>
-      </div>
-
-      <!-- Payment Processing Overlay -->
-      <div id="payment-overlay" class="payment-overlay" style="display: none;">
-        <div class="payment-modal">
-          <div class="payment-modal-content">
-            <h3>Processing Payment</h3>
-            <div class="loading-spinner"></div>
-            <p id="payment-status">Redirecting to UPI payment...</p>
-            <div class="payment-actions" style="display: none;">
-              <button type="button" id="retry-payment" class="btn btn-outline">Try Again</button>
-              <button type="button" id="change-upi" class="btn btn-primary">Use Different UPI ID</button>
+        <!-- Payment Processing Overlay -->
+        <div id="payment-overlay" class="payment-overlay" style="display: none">
+          <div class="payment-modal">
+            <div class="payment-modal-content">
+              <h3>Processing Payment</h3>
+              <div class="loading-spinner"></div>
+              <p id="payment-status">Redirecting to UPI payment...</p>
+              <div class="payment-actions" style="display: none">
+                <button type="button" id="retry-payment" class="btn btn-outline">Try Again</button>
+                <button type="button" id="change-upi" class="btn btn-primary">
+                  Use Different UPI ID
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
+    </main>
 
-    </div>
-  </main>
+    <div id="footer"></div>
 
-  <div id="footer"></div>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <!-- App Scripts -->
-  <script src="js/firebase-config.js"></script>
-  <script src="js/data.js"></script>
-  <!-- Load pure logic modules -->
-  <script src="js/lib/order.js"></script>
-  <script src="js/lib/shipping.js"></script>
-  <script src="js/lib/cart-storage.js"></script>
-  <script src="js/lib/cart-logic.js"></script>
-  <!-- Load checkout orchestration -->
-  <script src="js/checkout.js"></script>
-  <!-- Page-specific checkout UI -->
-  <script src="js/checkout-page.js"></script>
-  <script src="js/app.js"></script>
-
-</body>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <!-- App Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/data.js"></script>
+    <!-- Load pure logic modules -->
+    <script src="js/lib/order.js"></script>
+    <script src="js/lib/shipping.js"></script>
+    <script src="js/lib/cart-storage.js"></script>
+    <script src="js/lib/cart-logic.js"></script>
+    <!-- Load checkout orchestration -->
+    <script src="js/checkout.js"></script>
+    <!-- Page-specific checkout UI -->
+    <script src="js/checkout-page.js"></script>
+    <script src="js/app.js"></script>
+  </body>
 </html>

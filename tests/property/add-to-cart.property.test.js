@@ -37,7 +37,7 @@ const itemArb = fc.record({
   productId: productIdArb,
   variantId: variantIdArb,
   quantity: quantityArb,
-  price: priceArb,
+  price: priceArb
 });
 
 // A cart whose lines have unique item keys (the invariant addItem preserves).

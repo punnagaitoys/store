@@ -29,7 +29,7 @@ function createLocalStorageShim() {
     },
     get length() {
       return data.size;
-    },
+    }
   };
 }
 
@@ -49,7 +49,7 @@ describe('cart-storage — persistence glue', () => {
   test('save then load returns the identical items array (round-trip)', () => {
     const items = [
       { productId: 'prod_001', variantId: 'var_001', quantity: 2, price: 399 },
-      { productId: 'prod_002', variantId: 'var_003', quantity: 1, price: 1299 },
+      { productId: 'prod_002', variantId: 'var_003', quantity: 1, price: 1299 }
     ];
 
     expect(cartStorage.saveCartToLocalStorage(items)).toBe(true);
@@ -60,7 +60,7 @@ describe('cart-storage — persistence glue', () => {
 
   test('persists under the punnagai_cart key with cart + updatedAt shape', () => {
     cartStorage.saveCartToLocalStorage([
-      { productId: 'p', variantId: 'v', quantity: 1, price: 10 },
+      { productId: 'p', variantId: 'v', quantity: 1, price: 10 }
     ]);
 
     const raw = globalThis.localStorage.getItem('punnagai_cart');
@@ -95,7 +95,7 @@ describe('cart-storage — persistence glue', () => {
 
   test('clearCart removes the persisted cart (Req 6.11)', () => {
     cartStorage.saveCartToLocalStorage([
-      { productId: 'p', variantId: 'v', quantity: 1, price: 10 },
+      { productId: 'p', variantId: 'v', quantity: 1, price: 10 }
     ]);
     expect(cartStorage.clearCart()).toBe(true);
 

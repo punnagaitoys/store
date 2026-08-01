@@ -40,7 +40,7 @@ const productArb = fc
       size: fc.constantFrom(...SIZES),
       color: fc.constantFrom(...COLORS),
       price: fc.integer({ min: 1, max: 10000 }),
-      stock: fc.integer({ min: 0, max: 100 }),
+      stock: fc.integer({ min: 0, max: 100 })
     }),
     { minLength: 2, maxLength: 8 }
   )
@@ -51,7 +51,7 @@ const productArb = fc
       size: v.size,
       color: v.color,
       price: v.price,
-      stock: v.stock,
+      stock: v.stock
     }));
 
     const discountArb = fc.oneof(
@@ -59,7 +59,7 @@ const productArb = fc
       fc.record({
         type: fc.constantFrom('percentage', 'fixed'),
         value: fc.integer({ min: 0, max: 100 }),
-        active: fc.boolean(),
+        active: fc.boolean()
       })
     );
 
@@ -70,11 +70,11 @@ const productArb = fc
         category: fc.constantFrom('toys', 'games', 'books'),
         ageGroup: fc.constantFrom('baby', 'kids', 'teen'),
         variants: fc.constant(variants),
-        discount: discountArb,
+        discount: discountArb
       }),
       // Two indices into the variant array: A and B (may be equal).
       indexA: fc.integer({ min: 0, max: variants.length - 1 }),
-      indexB: fc.integer({ min: 0, max: variants.length - 1 }),
+      indexB: fc.integer({ min: 0, max: variants.length - 1 })
     });
   });
 

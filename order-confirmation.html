@@ -1,268 +1,330 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Order Confirmed — Thank you for your purchase at Punnagai Toy Store, Mylapore, Chennai">
-  <meta name="robots" content="noindex, nofollow">
-  <title>Order Confirmed | Punnagai Toy Store</title>
-  <link rel="icon" href="logo.png" type="image/png">
-  <link rel="apple-touch-icon" href="logo.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
-  <style>
-    .confirmation-wrapper {
-      min-height: 70vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 60px 0;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Order Confirmed — Thank you for your purchase at Punnagai Toy Store, Mylapore, Chennai"
+    />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Order Confirmed | Punnagai Toy Store</title>
+    <link rel="icon" href="logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .confirmation-wrapper {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 0;
+      }
 
-    .confirmation-card {
-      background: var(--surface);
-      border-radius: var(--radius-lg, 16px);
-      border: 1px solid var(--border);
-      padding: 48px;
-      max-width: 640px;
-      width: 100%;
-      text-align: center;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-      animation: fadeSlideUp 0.4s ease;
-    }
+      .confirmation-card {
+        background: var(--surface);
+        border-radius: var(--radius-lg, 16px);
+        border: 1px solid var(--border);
+        padding: 48px;
+        max-width: 640px;
+        width: 100%;
+        text-align: center;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        animation: fadeSlideUp 0.4s ease;
+      }
 
-    @keyframes fadeSlideUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+      @keyframes fadeSlideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-    .confirmation-icon {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 24px;
-      box-shadow: 0 4px 20px rgba(34, 197, 94, 0.35);
-    }
+      .confirmation-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 24px;
+        box-shadow: 0 4px 20px rgba(34, 197, 94, 0.35);
+      }
 
-    .confirmation-icon svg {
-      color: white;
-    }
+      .confirmation-icon svg {
+        color: white;
+      }
 
-    .confirmation-title {
-      font-family: 'Fredoka', sans-serif;
-      font-size: 2rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 8px;
-    }
+      .confirmation-title {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 2rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 8px;
+      }
 
-    .confirmation-subtitle {
-      color: var(--text-secondary);
-      font-size: 1rem;
-      margin-bottom: 32px;
-      line-height: 1.6;
-    }
+      .confirmation-subtitle {
+        color: var(--text-secondary);
+        font-size: 1rem;
+        margin-bottom: 32px;
+        line-height: 1.6;
+      }
 
-    .order-id-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--bg-alt, #f3f4f6);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 20px;
-      font-family: 'Courier New', monospace;
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 32px;
-      letter-spacing: 0.5px;
-    }
+      .order-id-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--bg-alt, #f3f4f6);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 32px;
+        letter-spacing: 0.5px;
+      }
 
-    .confirmation-details {
-      background: var(--bg-alt, #f9fafb);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px;
-      text-align: left;
-      margin-bottom: 32px;
-    }
+      .confirmation-details {
+        background: var(--bg-alt, #f9fafb);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 24px;
+        text-align: left;
+        margin-bottom: 32px;
+      }
 
-    .confirmation-details-title {
-      font-weight: 700;
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--text-secondary);
-      margin-bottom: 16px;
-    }
+      .confirmation-details-title {
+        font-weight: 700;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-secondary);
+        margin-bottom: 16px;
+      }
 
-    .detail-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 14px;
-      gap: 16px;
-    }
+      .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 14px;
+        gap: 16px;
+      }
 
-    .detail-row:last-child { border-bottom: none; }
+      .detail-row:last-child {
+        border-bottom: none;
+      }
 
-    .detail-row .label { color: var(--text-secondary); flex-shrink: 0; }
-    .detail-row .value { font-weight: 600; text-align: right; color: var(--text-primary); }
+      .detail-row .label {
+        color: var(--text-secondary);
+        flex-shrink: 0;
+      }
+      .detail-row .value {
+        font-weight: 600;
+        text-align: right;
+        color: var(--text-primary);
+      }
 
-    .order-items-list {
-      background: var(--bg-alt, #f9fafb);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px;
-      text-align: left;
-      margin-bottom: 32px;
-    }
+      .order-items-list {
+        background: var(--bg-alt, #f9fafb);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 24px;
+        text-align: left;
+        margin-bottom: 32px;
+      }
 
-    .order-item-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 14px;
-      gap: 12px;
-    }
+      .order-item-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 14px;
+        gap: 12px;
+      }
 
-    .order-item-row:last-child { border-bottom: none; }
+      .order-item-row:last-child {
+        border-bottom: none;
+      }
 
-    .order-item-name { flex: 1; color: var(--text-primary); font-weight: 500; }
-    .order-item-qty  { color: var(--text-secondary); font-size: 13px; white-space: nowrap; }
-    .order-item-price { font-weight: 700; color: var(--primary); white-space: nowrap; }
+      .order-item-name {
+        flex: 1;
+        color: var(--text-primary);
+        font-weight: 500;
+      }
+      .order-item-qty {
+        color: var(--text-secondary);
+        font-size: 13px;
+        white-space: nowrap;
+      }
+      .order-item-price {
+        font-weight: 700;
+        color: var(--primary);
+        white-space: nowrap;
+      }
 
-    .confirmation-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+      .confirmation-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
 
-    .whatsapp-track-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      background: #25D366;
-      color: white;
-      font-weight: 700;
-      font-size: 1rem;
-      padding: 14px 28px;
-      border-radius: var(--radius, 10px);
-      border: none;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background 0.2s, transform 0.1s;
-    }
+      .whatsapp-track-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        background: #25d366;
+        color: white;
+        font-weight: 700;
+        font-size: 1rem;
+        padding: 14px 28px;
+        border-radius: var(--radius, 10px);
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        transition:
+          background 0.2s,
+          transform 0.1s;
+      }
 
-    .whatsapp-track-btn:hover { background: #1ebe5a; transform: translateY(-1px); }
+      .whatsapp-track-btn:hover {
+        background: #1ebe5a;
+        transform: translateY(-1px);
+      }
 
-    .loading-state {
-      padding: 40px 0;
-      color: var(--text-secondary);
-    }
+      .loading-state {
+        padding: 40px 0;
+        color: var(--text-secondary);
+      }
 
-    @media (max-width: 600px) {
-      .confirmation-card { padding: 28px 20px; }
-      .confirmation-title { font-size: 1.5rem; }
-    }
-  </style>
-</head>
-<body>
-  <div id="navbar"></div>
-  <div id="toast-container" class="toast-container"></div>
+      @media (max-width: 600px) {
+        .confirmation-card {
+          padding: 28px 20px;
+        }
+        .confirmation-title {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="navbar"></div>
+    <div id="toast-container" class="toast-container"></div>
 
-  <main class="page-wrapper confirmation-wrapper">
-    <div class="container">
-      <div id="confirmation-content" class="confirmation-card">
-        <div class="loading-state">
-          <div class="loading-spinner" style="margin: 0 auto 16px;"></div>
-          <p>Loading your order details...</p>
+    <main class="page-wrapper confirmation-wrapper">
+      <div class="container">
+        <div id="confirmation-content" class="confirmation-card">
+          <div class="loading-state">
+            <div class="loading-spinner" style="margin: 0 auto 16px"></div>
+            <p>Loading your order details...</p>
+          </div>
         </div>
       </div>
-    </div>
-  </main>
+    </main>
 
-  <div id="footer"></div>
+    <div id="footer"></div>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <!-- App Scripts -->
-  <script src="js/firebase-config.js"></script>
-  <script src="js/data.js"></script>
-  <script src="js/lib/cart-storage.js"></script>
-  <script src="js/lib/cart-logic.js"></script>
-  <script src="js/cart.js"></script>
-  <script src="js/app.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <!-- App Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/lib/cart-storage.js"></script>
+    <script src="js/lib/cart-logic.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/app.js"></script>
 
-  <script>
-  'use strict';
+    <script>
+      'use strict';
 
-  const TRACKING_WHATSAPP_NUMBER = '917550132101';
+      const TRACKING_WHATSAPP_NUMBER = '917550132101';
 
-  function escHtml(str) {
-    return String(str == null ? '' : str)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  }
+      function escHtml(str) {
+        return String(str == null ? '' : str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
 
-  function fmt(n) {
-    return '₹' + (Number(n) || 0).toLocaleString('en-IN');
-  }
+      function fmt(n) {
+        return '₹' + (Number(n) || 0).toLocaleString('en-IN');
+      }
 
-  function buildTrackWhatsAppUrl(orderId) {
-    const msg = encodeURIComponent(
-      `Hello! 👋 I'd like to track my order from Punnagai Toy Store.\n\n*Order ID:* ${orderId}\n\nCould you please share the current status? Thank you! 🙏`
-    );
-    return `https://wa.me/${TRACKING_WHATSAPP_NUMBER}?text=${msg}`;
-  }
+      function buildTrackWhatsAppUrl(orderId) {
+        const msg = encodeURIComponent(
+          `Hello! 👋 I'd like to track my order from Punnagai Toy Store.\n\n*Order ID:* ${orderId}\n\nCould you please share the current status? Thank you! 🙏`
+        );
+        return `https://wa.me/${TRACKING_WHATSAPP_NUMBER}?text=${msg}`;
+      }
 
-  function statusBadgeColor(status) {
-    const map = { pending: '#f59e0b', confirmed: '#22c55e', shipped: '#3b82f6', delivered: '#10b981', cancelled: '#ef4444', refunded: '#8b5cf6' };
-    return map[status] || '#6b7280';
-  }
+      function statusBadgeColor(status) {
+        const map = {
+          pending: '#f59e0b',
+          confirmed: '#22c55e',
+          shipped: '#3b82f6',
+          delivered: '#10b981',
+          cancelled: '#ef4444',
+          refunded: '#8b5cf6'
+        };
+        return map[status] || '#6b7280';
+      }
 
-  function renderConfirmation(order) {
-    const card = document.getElementById('confirmation-content');
-    if (!card) return;
+      function renderConfirmation(order) {
+        const card = document.getElementById('confirmation-content');
+        if (!card) return;
 
-    const orderId = order.id || order.orderId || 'N/A';
-    const items   = Array.isArray(order.items) ? order.items : [];
-    const addr    = order.shippingAddress || {};
-    const status  = order.orderStatus || 'confirmed';
-    const statusColor = statusBadgeColor(status);
+        const orderId = order.id || order.orderId || 'N/A';
+        const items = Array.isArray(order.items) ? order.items : [];
+        const addr = order.shippingAddress || {};
+        const status = order.orderStatus || 'confirmed';
+        const statusColor = statusBadgeColor(status);
 
-    const itemsHtml = items.map(it => `
+        const itemsHtml = items
+          .map(
+            (it) => `
       <div class="order-item-row">
         <span class="order-item-name">${escHtml(it.name || it.productId || 'Item')}</span>
         <span class="order-item-qty">× ${Number(it.quantity) || 1}</span>
         <span class="order-item-price">${fmt((Number(it.price) || 0) * (Number(it.quantity) || 1))}</span>
       </div>
-    `).join('');
+    `
+          )
+          .join('');
 
-    const addressLine = [addr.address, addr.city, addr.state, addr.postalCode].filter(Boolean).join(', ');
+        const addressLine = [addr.address, addr.city, addr.state, addr.postalCode]
+          .filter(Boolean)
+          .join(', ');
 
-    const shippingRow = order.shippingFee != null
-      ? `<div class="detail-row"><span class="label">Shipping</span><span class="value">${order.shippingFee === 0 ? 'Free' : fmt(order.shippingFee)}</span></div>`
-      : '';
-    const discountRow = order.discount && Number(order.discount) > 0
-      ? `<div class="detail-row"><span class="label">Discount</span><span class="value" style="color:var(--success)">−${fmt(order.discount)}</span></div>`
-      : '';
+        const shippingRow =
+          order.shippingFee != null
+            ? `<div class="detail-row"><span class="label">Shipping</span><span class="value">${order.shippingFee === 0 ? 'Free' : fmt(order.shippingFee)}</span></div>`
+            : '';
+        const discountRow =
+          order.discount && Number(order.discount) > 0
+            ? `<div class="detail-row"><span class="label">Discount</span><span class="value" style="color:var(--success)">−${fmt(order.discount)}</span></div>`
+            : '';
 
-    card.innerHTML = `
+        card.innerHTML = `
       <div class="confirmation-icon">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="20 6 9 17 4 12"></polyline>
@@ -310,12 +372,12 @@
         </a>
       </div>
     `;
-  }
+      }
 
-  function renderError(message) {
-    const card = document.getElementById('confirmation-content');
-    if (!card) return;
-    card.innerHTML = `
+      function renderError(message) {
+        const card = document.getElementById('confirmation-content');
+        if (!card) return;
+        card.innerHTML = `
       <div style="text-align:center; padding:20px 0;">
         <div style="font-size:3rem; margin-bottom:16px;">⚠️</div>
         <h2 style="margin-bottom:8px;">Order Not Found</h2>
@@ -323,28 +385,56 @@
         <a href="shop.html" class="btn btn-primary">Back to Shop</a>
       </div>
     `;
-  }
+      }
 
-  document.addEventListener('DOMContentLoaded', async () => {
-    if (typeof renderNavbar === 'function') renderNavbar('');
-    if (typeof renderFooter === 'function') renderFooter();
+      document.addEventListener('DOMContentLoaded', async () => {
+        if (typeof renderNavbar === 'function') renderNavbar('');
+        if (typeof renderFooter === 'function') renderFooter();
 
-    const params = new URLSearchParams(window.location.search);
-    const orderId = params.get('orderId');
+        const params = new URLSearchParams(window.location.search);
+        const orderId = params.get('orderId');
 
-    if (!orderId) {
-      renderError('No order ID found in the URL. Please check your order confirmation email.');
-      return;
-    }
+        if (!orderId) {
+          renderError('No order ID found in the URL. Please check your order confirmation email.');
+          return;
+        }
 
-    // Try to load the order from the data layer
-    if (typeof getOrderById === 'function') {
-      try {
-        const order = await getOrderById(orderId);
-        if (order) {
-          renderConfirmation(order);
+        // Try to load the order from the data layer
+        if (typeof getOrderById === 'function') {
+          try {
+            const order = await getOrderById(orderId);
+            if (order) {
+              renderConfirmation(order);
+            } else {
+              // Could be a guest order without persistent data — show minimal confirmation
+              renderConfirmation({
+                id: orderId,
+                orderId,
+                orderStatus: 'confirmed',
+                items: [],
+                subtotal: 0,
+                shippingFee: 0,
+                discount: 0,
+                total: 0,
+                shippingAddress: {}
+              });
+            }
+          } catch (err) {
+            console.warn('Could not load order:', err);
+            renderConfirmation({
+              id: orderId,
+              orderId,
+              orderStatus: 'confirmed',
+              items: [],
+              subtotal: 0,
+              shippingFee: 0,
+              discount: 0,
+              total: 0,
+              shippingAddress: {}
+            });
+          }
         } else {
-          // Could be a guest order without persistent data — show minimal confirmation
+          // Data layer not available — show minimal confirmation
           renderConfirmation({
             id: orderId,
             orderId,
@@ -357,35 +447,7 @@
             shippingAddress: {}
           });
         }
-      } catch (err) {
-        console.warn('Could not load order:', err);
-        renderConfirmation({
-          id: orderId,
-          orderId,
-          orderStatus: 'confirmed',
-          items: [],
-          subtotal: 0,
-          shippingFee: 0,
-          discount: 0,
-          total: 0,
-          shippingAddress: {}
-        });
-      }
-    } else {
-      // Data layer not available — show minimal confirmation
-      renderConfirmation({
-        id: orderId,
-        orderId,
-        orderStatus: 'confirmed',
-        items: [],
-        subtotal: 0,
-        shippingFee: 0,
-        discount: 0,
-        total: 0,
-        shippingAddress: {}
       });
-    }
-  });
-  </script>
-</body>
+    </script>
+  </body>
 </html>

@@ -40,8 +40,8 @@ const LOCAL_STORAGE_KEYS = {
 // ============================================================
 // Requirement 1.9: cache product data for 1 hour to improve page load.
 // Requirement 14.5 (pattern reuse): longer-lived caches measured in days.
-const PRODUCT_CACHE_TTL_MS = 60 * 60 * 1000;          // 1 hour
-const CATEGORY_CACHE_TTL_MS = 24 * 60 * 60 * 1000;    // 1 day
+const PRODUCT_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+const CATEGORY_CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 1 day
 
 // Simple in-memory cache: { data, expiresAt }. Cleared on page reload.
 const _memoryCache = {
@@ -77,7 +77,8 @@ const AGE_GROUPS = [
 const SEED_PRODUCTS = [
   {
     name: 'Wooden Rainbow Stacker',
-    description: 'Beautiful handcrafted wooden rainbow stacking toy that develops motor skills, color recognition, and creativity in young children. Made from sustainable wood with non-toxic paint. Perfect gift for babies.',
+    description:
+      'Beautiful handcrafted wooden rainbow stacking toy that develops motor skills, color recognition, and creativity in young children. Made from sustainable wood with non-toxic paint. Perfect gift for babies.',
     price: 899,
     originalPrice: 1199,
     category: 'Educational & Learning',
@@ -91,7 +92,8 @@ const SEED_PRODUCTS = [
   },
   {
     name: 'LEGO Classic Creative Bricks Set',
-    description: 'Classic LEGO set with 900+ pieces in vibrant colours. Perfect for building anything your imagination can dream up! Includes building ideas booklet. Develops spatial reasoning and creativity.',
+    description:
+      'Classic LEGO set with 900+ pieces in vibrant colours. Perfect for building anything your imagination can dream up! Includes building ideas booklet. Develops spatial reasoning and creativity.',
     price: 2499,
     originalPrice: null,
     category: 'Building Blocks',
@@ -105,7 +107,8 @@ const SEED_PRODUCTS = [
   },
   {
     name: 'Magnetic Drawing Board',
-    description: 'Mess-free creative fun! Draw, doodle and erase endlessly with this magnetic drawing board. Includes a magnetic pen and 4 shape stamps. Perfect travel toy — no ink, no mess!',
+    description:
+      'Mess-free creative fun! Draw, doodle and erase endlessly with this magnetic drawing board. Includes a magnetic pen and 4 shape stamps. Perfect travel toy — no ink, no mess!',
     price: 549,
     originalPrice: 699,
     category: 'Arts & Crafts',
@@ -119,7 +122,8 @@ const SEED_PRODUCTS = [
   },
   {
     name: 'Scrabble Junior Board Game',
-    description: 'The classic word game adapted for younger players! Features two sides — one for beginners with pictures and one for advanced play with full words. Develops vocabulary and spelling skills.',
+    description:
+      'The classic word game adapted for younger players! Features two sides — one for beginners with pictures and one for advanced play with full words. Develops vocabulary and spelling skills.',
     price: 799,
     originalPrice: null,
     category: 'Board Games & Puzzles',
@@ -133,7 +137,8 @@ const SEED_PRODUCTS = [
   },
   {
     name: 'Remote Control Racing Car 4WD',
-    description: 'High-speed RC car with 4WD, LED lights, and shock-absorbing tires. Works on all terrain including grass, dirt and tile. Top speed 25 km/h. 2.4 GHz anti-interference. Battery included.',
+    description:
+      'High-speed RC car with 4WD, LED lights, and shock-absorbing tires. Works on all terrain including grass, dirt and tile. Top speed 25 km/h. 2.4 GHz anti-interference. Battery included.',
     price: 1299,
     originalPrice: 1799,
     category: 'Remote Control',
@@ -147,7 +152,8 @@ const SEED_PRODUCTS = [
   },
   {
     name: 'Premium Plush Teddy Bear',
-    description: 'Adorably soft and huggable teddy bear made from premium hypoallergenic materials. Perfect first toy for babies. Machine washable. Comes beautifully boxed — ideal as a gift.',
+    description:
+      'Adorably soft and huggable teddy bear made from premium hypoallergenic materials. Perfect first toy for babies. Machine washable. Comes beautifully boxed — ideal as a gift.',
     price: 649,
     originalPrice: null,
     category: 'Soft Toys & Plush',
@@ -161,7 +167,8 @@ const SEED_PRODUCTS = [
   },
   {
     name: 'Mini Basketball Hoop Set',
-    description: 'Indoor/outdoor mini basketball hoop with adjustable height from 3 to 6 feet. Includes 2 mini basketballs. Develops hand-eye coordination while keeping kids active and healthy.',
+    description:
+      'Indoor/outdoor mini basketball hoop with adjustable height from 3 to 6 feet. Includes 2 mini basketballs. Develops hand-eye coordination while keeping kids active and healthy.',
     price: 999,
     originalPrice: 1299,
     category: 'Outdoor & Sports',
@@ -175,7 +182,8 @@ const SEED_PRODUCTS = [
   },
   {
     name: 'Fashion Doll Deluxe Set',
-    description: 'Beautiful fashion doll with 20+ outfit combinations, accessories, and furniture pieces. Encourages storytelling, creativity and imaginative play. Comes with a stylish carry case.',
+    description:
+      'Beautiful fashion doll with 20+ outfit combinations, accessories, and furniture pieces. Encourages storytelling, creativity and imaginative play. Comes with a stylish carry case.',
     price: 1199,
     originalPrice: null,
     category: 'Dolls & Fashion',
@@ -189,7 +197,8 @@ const SEED_PRODUCTS = [
   },
   {
     name: 'Kids Xylophone Musical Toy',
-    description: 'Bright and colourful 8-note xylophone with two mallets. Produces beautiful, clear musical tones. Introduces children to music and rhythm. Made from non-toxic, BPA-free materials.',
+    description:
+      'Bright and colourful 8-note xylophone with two mallets. Produces beautiful, clear musical tones. Introduces children to music and rhythm. Made from non-toxic, BPA-free materials.',
     price: 449,
     originalPrice: 599,
     category: 'Musical Toys',
@@ -203,7 +212,8 @@ const SEED_PRODUCTS = [
   },
   {
     name: 'Dinosaur Action Figure Set (12 Pcs)',
-    description: 'Realistic set of 12 hand-painted dinosaur figures. Includes T-Rex, Triceratops, Brachiosaurus and more. Made from durable non-toxic ABS plastic. Great for creative play and learning.',
+    description:
+      'Realistic set of 12 hand-painted dinosaur figures. Includes T-Rex, Triceratops, Brachiosaurus and more. Made from durable non-toxic ABS plastic. Great for creative play and learning.',
     price: 699,
     originalPrice: null,
     category: 'Action & Adventure',
@@ -217,7 +227,8 @@ const SEED_PRODUCTS = [
   },
   {
     name: 'Wooden Puzzle — Animals (25 Pcs)',
-    description: 'Chunky wooden puzzle with 25 hand-cut pieces featuring colourful farm animals. Each piece has a knob for easy grasping. Develops problem-solving skills and fine motor control.',
+    description:
+      'Chunky wooden puzzle with 25 hand-cut pieces featuring colourful farm animals. Each piece has a knob for easy grasping. Develops problem-solving skills and fine motor control.',
     price: 399,
     originalPrice: 549,
     category: 'Educational & Learning',
@@ -231,7 +242,8 @@ const SEED_PRODUCTS = [
   },
   {
     name: 'STEM Robot Building Kit',
-    description: 'Build your own robot! This STEM kit includes 120+ parts to build a programmable walking robot. Teaches basic coding logic, engineering concepts and problem-solving. Batteries included.',
+    description:
+      'Build your own robot! This STEM kit includes 120+ parts to build a programmable walking robot. Teaches basic coding logic, engineering concepts and problem-solving. Batteries included.',
     price: 2999,
     originalPrice: 3499,
     category: 'Educational & Learning',
@@ -245,7 +257,8 @@ const SEED_PRODUCTS = [
   },
   {
     name: 'Watercolour Art Set — 48 Colours',
-    description: 'Professional quality watercolour set with 48 vibrant colours, 3 brushes, a palette tray, and a drawing pad. Perfect for budding young artists. Non-toxic and washable paints.',
+    description:
+      'Professional quality watercolour set with 48 vibrant colours, 3 brushes, a palette tray, and a drawing pad. Perfect for budding young artists. Non-toxic and washable paints.',
     price: 599,
     originalPrice: null,
     category: 'Arts & Crafts',
@@ -259,7 +272,8 @@ const SEED_PRODUCTS = [
   },
   {
     name: 'RC Quadcopter Drone for Kids',
-    description: 'Easy-to-fly mini drone perfect for beginners. Features one-key take-off/landing, altitude hold, headless mode, and 360° flips. Includes spare blades and charging cable.',
+    description:
+      'Easy-to-fly mini drone perfect for beginners. Features one-key take-off/landing, altitude hold, headless mode, and 360° flips. Includes spare blades and charging cable.',
     price: 1799,
     originalPrice: 2299,
     category: 'Remote Control',
@@ -273,7 +287,8 @@ const SEED_PRODUCTS = [
   },
   {
     name: 'Carrom Board — Full Size',
-    description: 'Full-size 29×29 inch carrom board made from premium plywood with a smooth playing surface. Includes 24 carrom coins, 2 strikers, boric powder, and a rule book. Family fun guaranteed!',
+    description:
+      'Full-size 29×29 inch carrom board made from premium plywood with a smooth playing surface. Includes 24 carrom coins, 2 strikers, boric powder, and a rule book. Family fun guaranteed!',
     price: 1899,
     originalPrice: 2499,
     category: 'Board Games & Puzzles',
@@ -287,7 +302,8 @@ const SEED_PRODUCTS = [
   },
   {
     name: 'Baby Soft Rattle Gift Set (6 Pcs)',
-    description: 'Colourful set of 6 soft rattles and sensory toys for newborns and infants. Made from BPA-free, washable fabric. Stimulates hearing, vision, and tactile senses. Perfect newborn gift.',
+    description:
+      'Colourful set of 6 soft rattles and sensory toys for newborns and infants. Made from BPA-free, washable fabric. Stimulates hearing, vision, and tactile senses. Perfect newborn gift.',
     price: 499,
     originalPrice: null,
     category: 'Soft Toys & Plush',
@@ -301,7 +317,8 @@ const SEED_PRODUCTS = [
   },
   {
     name: 'Cricket Set — Wooden (Junior)',
-    description: 'Junior cricket set with 2 lightweight wooden bats, 2 rubber balls, 3 stumps with bails, and a carry bag. Ideal for garden and backyard play. Perfect introduction to cricket for young fans.',
+    description:
+      'Junior cricket set with 2 lightweight wooden bats, 2 rubber balls, 3 stumps with bails, and a carry bag. Ideal for garden and backyard play. Perfect introduction to cricket for young fans.',
     price: 849,
     originalPrice: null,
     category: 'Outdoor & Sports',
@@ -315,7 +332,8 @@ const SEED_PRODUCTS = [
   },
   {
     name: 'Pretend Play Kitchen Set',
-    description: 'Complete pretend kitchen playset with 35 accessories including pots, pans, utensils, food items, and a play stove with lights and sounds. Encourages role play and social skills.',
+    description:
+      'Complete pretend kitchen playset with 35 accessories including pots, pans, utensils, food items, and a play stove with lights and sounds. Encourages role play and social skills.',
     price: 1599,
     originalPrice: 1999,
     category: 'Dolls & Fashion',
@@ -329,7 +347,8 @@ const SEED_PRODUCTS = [
   },
   {
     name: 'Jenga Classic Block Stacking Game',
-    description: 'The original block-stacking, stack-crashing game! Pull out a block without toppling the tower. Includes 54 hardwood blocks and a stacking sleeve. For 2+ players, ages 6 and up.',
+    description:
+      'The original block-stacking, stack-crashing game! Pull out a block without toppling the tower. Includes 54 hardwood blocks and a stacking sleeve. For 2+ players, ages 6 and up.',
     price: 699,
     originalPrice: 899,
     category: 'Board Games & Puzzles',
@@ -343,7 +362,8 @@ const SEED_PRODUCTS = [
   },
   {
     name: 'Duplo Baby Blocks Starter Set',
-    description: 'Large, easy-to-grip DUPLO-style building blocks for toddlers. 40 colourful chunky blocks in 6 shapes and colours. Develops fine motor skills, colour recognition, and early construction skills.',
+    description:
+      'Large, easy-to-grip DUPLO-style building blocks for toddlers. 40 colourful chunky blocks in 6 shapes and colours. Develops fine motor skills, colour recognition, and early construction skills.',
     price: 999,
     originalPrice: null,
     category: 'Building Blocks',
@@ -389,21 +409,21 @@ async function getProducts(filters = {}) {
 
     if (window.USE_LOCAL_MODE) {
       products = getLocalProducts();
-      
+
       // Local Filter
       if (filters.category && filters.category !== 'all') {
-        products = products.filter(p => p.category === filters.category);
+        products = products.filter((p) => p.category === filters.category);
       }
       if (filters.ageGroup && filters.ageGroup !== 'all') {
-        products = products.filter(p => p.ageGroup === filters.ageGroup);
+        products = products.filter((p) => p.ageGroup === filters.ageGroup);
       }
       if (filters.inStock === true) {
-        products = products.filter(p => p.inStock === true);
+        products = products.filter((p) => p.inStock === true);
       }
       if (filters.featured === true) {
-        products = products.filter(p => p.featured === true);
+        products = products.filter((p) => p.featured === true);
       }
-      
+
       // Default Sort (Newest first)
       if (!filters.sortBy) {
         products.sort((a, b) => b.createdAt - a.createdAt);
@@ -429,25 +449,32 @@ async function getProducts(filters = {}) {
       }
 
       const snapshot = await query.get();
-      products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      products = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     }
 
     // Client-side search filter
     if (filters.search) {
       const term = filters.search.toLowerCase();
-      products = products.filter(p =>
-        p.name.toLowerCase().includes(term) ||
-        p.description.toLowerCase().includes(term) ||
-        p.category.toLowerCase().includes(term)
+      products = products.filter(
+        (p) =>
+          p.name.toLowerCase().includes(term) ||
+          p.description.toLowerCase().includes(term) ||
+          p.category.toLowerCase().includes(term)
       );
     }
 
     // Client-side sort
     if (filters.sortBy) {
       switch (filters.sortBy) {
-        case 'price-asc': products.sort((a, b) => a.price - b.price); break;
-        case 'price-desc': products.sort((a, b) => b.price - a.price); break;
-        case 'name-asc': products.sort((a, b) => a.name.localeCompare(b.name)); break;
+        case 'price-asc':
+          products.sort((a, b) => a.price - b.price);
+          break;
+        case 'price-desc':
+          products.sort((a, b) => b.price - a.price);
+          break;
+        case 'name-asc':
+          products.sort((a, b) => a.name.localeCompare(b.name));
+          break;
       }
     }
 
@@ -465,7 +492,7 @@ async function getProductById(id) {
   try {
     if (window.USE_LOCAL_MODE) {
       const products = getLocalProducts();
-      return products.find(p => p.id === id) || null;
+      return products.find((p) => p.id === id) || null;
     } else {
       const doc = await db.collection(COLLECTIONS.PRODUCTS).doc(id).get();
       if (!doc.exists) return null;
@@ -494,12 +521,12 @@ async function addProduct(productData) {
     if (productData.inStock !== undefined) {
       data.inStock = Boolean(productData.inStock);
     } else if (productData.variants !== undefined && Array.isArray(productData.variants)) {
-      data.inStock = productData.variants.some(function(v) {
+      data.inStock = productData.variants.some(function (v) {
         return (typeof v.stock === 'number' ? v.stock : Number(v.stock) || 0) > 0;
       });
     }
     if (data.inStock && Array.isArray(data.variants) && data.variants.length > 0) {
-      const hasStock = data.variants.some(v => (Number(v.stock) || 0) > 0);
+      const hasStock = data.variants.some((v) => (Number(v.stock) || 0) > 0);
       if (!hasStock && data.variants[0]) {
         data.variants[0].stock = 10;
       }
@@ -533,17 +560,22 @@ async function updateProduct(id, updates) {
       updatedAt: getServerTimestamp()
     };
     if (updates.price !== undefined) updateData.price = Number(updates.price);
-    if (updates.originalPrice !== undefined) updateData.originalPrice = updates.originalPrice ? Number(updates.originalPrice) : null;
+    if (updates.originalPrice !== undefined)
+      updateData.originalPrice = updates.originalPrice ? Number(updates.originalPrice) : null;
 
     if (updates.inStock !== undefined) {
       updateData.inStock = Boolean(updates.inStock);
     } else if (updates.variants !== undefined && Array.isArray(updates.variants)) {
-      updateData.inStock = updates.variants.some(function(v) {
+      updateData.inStock = updates.variants.some(function (v) {
         return (typeof v.stock === 'number' ? v.stock : Number(v.stock) || 0) > 0;
       });
     }
-    if (updateData.inStock && Array.isArray(updateData.variants) && updateData.variants.length > 0) {
-      const hasStock = updateData.variants.some(v => (Number(v.stock) || 0) > 0);
+    if (
+      updateData.inStock &&
+      Array.isArray(updateData.variants) &&
+      updateData.variants.length > 0
+    ) {
+      const hasStock = updateData.variants.some((v) => (Number(v.stock) || 0) > 0);
       if (!hasStock && updateData.variants[0]) {
         updateData.variants[0].stock = 10;
       }
@@ -551,7 +583,7 @@ async function updateProduct(id, updates) {
 
     if (window.USE_LOCAL_MODE) {
       const products = getLocalProducts();
-      const index = products.findIndex(p => p.id === id);
+      const index = products.findIndex((p) => p.id === id);
       if (index === -1) throw new Error('Product not found in local storage');
       products[index] = { ...products[index], ...updateData };
       saveLocalProducts(products);
@@ -575,7 +607,7 @@ async function deleteProduct(id) {
   try {
     if (window.USE_LOCAL_MODE) {
       let products = getLocalProducts();
-      products = products.filter(p => p.id !== id);
+      products = products.filter((p) => p.id !== id);
       saveLocalProducts(products);
       invalidateCache('products');
       return { success: true };
@@ -601,7 +633,9 @@ async function getProductCount() {
       const snap = await db.collection(COLLECTIONS.PRODUCTS).get();
       return snap.size;
     }
-  } catch { return 0; }
+  } catch {
+    return 0;
+  }
 }
 
 /**
@@ -629,7 +663,7 @@ async function seedProductsIfEmpty() {
       if (snap.empty) {
         console.log('Seeding initial products to Firebase...');
         const batch = db.batch();
-        SEED_PRODUCTS.forEach(product => {
+        SEED_PRODUCTS.forEach((product) => {
           const data = { ...product, createdAt: firebase.firestore.FieldValue.serverTimestamp() };
           const ref = db.collection(COLLECTIONS.PRODUCTS).doc();
           batch.set(ref, data);
@@ -704,7 +738,7 @@ if (typeof window !== 'undefined' && window.USE_LOCAL_MODE) {
 // ============================================================
 
 function getLocalCollection(collectionName) {
-  const key = LOCAL_STORAGE_KEYS[collectionName] || ('punnagai_mock_' + collectionName);
+  const key = LOCAL_STORAGE_KEYS[collectionName] || 'punnagai_mock_' + collectionName;
   try {
     return JSON.parse(localStorage.getItem(key)) || [];
   } catch {
@@ -713,7 +747,7 @@ function getLocalCollection(collectionName) {
 }
 
 function saveLocalCollection(collectionName, records) {
-  const key = LOCAL_STORAGE_KEYS[collectionName] || ('punnagai_mock_' + collectionName);
+  const key = LOCAL_STORAGE_KEYS[collectionName] || 'punnagai_mock_' + collectionName;
   localStorage.setItem(key, JSON.stringify(records));
 }
 
@@ -752,14 +786,18 @@ function invalidateCache(slot, skipNotify = false) {
         bc.close();
       }
       if (typeof window !== 'undefined' && window.dispatchEvent) {
-        window.dispatchEvent(new CustomEvent('punnagai:cache_invalidated', { detail: { slot: slot } }));
+        window.dispatchEvent(
+          new CustomEvent('punnagai:cache_invalidated', { detail: { slot: slot } })
+        );
       }
-    } catch (e) { /* ignore */ }
+    } catch (e) {
+      /* ignore */
+    }
   }
 }
 
 if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
-  window.addEventListener('storage', function(e) {
+  window.addEventListener('storage', function (e) {
     if (e.key === LOCAL_STORAGE_KEY || e.key === 'punnagai_mock_categories') {
       invalidateCache(null, true);
     }
@@ -767,13 +805,15 @@ if (typeof window !== 'undefined' && typeof window.addEventListener === 'functio
   try {
     if (typeof BroadcastChannel !== 'undefined') {
       const bc = new BroadcastChannel('punnagai_store_channel');
-      bc.onmessage = function(event) {
+      bc.onmessage = function (event) {
         if (event.data && event.data.type === 'CACHE_INVALIDATE') {
           invalidateCache(event.data.slot, true);
         }
       };
     }
-  } catch (e) { /* ignore */ }
+  } catch (e) {
+    /* ignore */
+  }
 }
 
 /**
@@ -785,32 +825,39 @@ function applyProductFilters(products, filters = {}) {
   let result = products.slice();
 
   if (filters.category && filters.category !== 'all') {
-    result = result.filter(p => p.category === filters.category);
+    result = result.filter((p) => p.category === filters.category);
   }
   if (filters.ageGroup && filters.ageGroup !== 'all') {
-    result = result.filter(p => p.ageGroup === filters.ageGroup);
+    result = result.filter((p) => p.ageGroup === filters.ageGroup);
   }
   if (filters.inStock === true) {
-    result = result.filter(p => p.inStock === true);
+    result = result.filter((p) => p.inStock === true);
   }
   if (filters.featured === true) {
-    result = result.filter(p => p.featured === true);
+    result = result.filter((p) => p.featured === true);
   }
 
   if (filters.search) {
     const term = filters.search.toLowerCase();
-    result = result.filter(p =>
-      (p.name || '').toLowerCase().includes(term) ||
-      (p.description || '').toLowerCase().includes(term) ||
-      (p.category || '').toLowerCase().includes(term)
+    result = result.filter(
+      (p) =>
+        (p.name || '').toLowerCase().includes(term) ||
+        (p.description || '').toLowerCase().includes(term) ||
+        (p.category || '').toLowerCase().includes(term)
     );
   }
 
   if (filters.sortBy) {
     switch (filters.sortBy) {
-      case 'price-asc': result.sort((a, b) => a.price - b.price); break;
-      case 'price-desc': result.sort((a, b) => b.price - a.price); break;
-      case 'name-asc': result.sort((a, b) => a.name.localeCompare(b.name)); break;
+      case 'price-asc':
+        result.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-desc':
+        result.sort((a, b) => b.price - a.price);
+        break;
+      case 'name-asc':
+        result.sort((a, b) => a.name.localeCompare(b.name));
+        break;
     }
   }
 
@@ -864,7 +911,7 @@ async function getCategories(forceRefresh = false) {
       categories = getLocalCollection(COLLECTIONS.CATEGORIES);
     } else {
       const snap = await db.collection(COLLECTIONS.CATEGORIES).orderBy('displayOrder', 'asc').get();
-      categories = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      categories = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     }
 
     _cacheSet('categories', categories, CATEGORY_CACHE_TTL_MS);
@@ -926,7 +973,7 @@ async function createDoc(collectionName, data) {
 async function getDocById(collectionName, id) {
   try {
     if (window.USE_LOCAL_MODE) {
-      return getLocalCollection(collectionName).find(r => r.id === id) || null;
+      return getLocalCollection(collectionName).find((r) => r.id === id) || null;
     } else {
       const doc = await db.collection(collectionName).doc(id).get();
       if (!doc.exists) return null;
@@ -942,17 +989,17 @@ async function getDocs(collectionName, filters = {}) {
   try {
     if (window.USE_LOCAL_MODE) {
       let records = getLocalCollection(collectionName);
-      Object.keys(filters).forEach(field => {
-        records = records.filter(r => r[field] === filters[field]);
+      Object.keys(filters).forEach((field) => {
+        records = records.filter((r) => r[field] === filters[field]);
       });
       return records;
     } else {
       let query = db.collection(collectionName);
-      Object.keys(filters).forEach(field => {
+      Object.keys(filters).forEach((field) => {
         query = query.where(field, '==', filters[field]);
       });
       const snap = await query.get();
-      return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      return snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     }
   } catch (err) {
     console.error(`Error fetching ${collectionName} docs:`, err);
@@ -965,7 +1012,7 @@ async function updateDoc(collectionName, id, updates) {
     const updateData = { ...updates, updatedAt: getServerTimestamp() };
     if (window.USE_LOCAL_MODE) {
       const records = getLocalCollection(collectionName);
-      const index = records.findIndex(r => r.id === id);
+      const index = records.findIndex((r) => r.id === id);
       if (index === -1) throw new Error(`${collectionName} doc not found in local storage`);
       records[index] = { ...records[index], ...updateData, updatedAt: Date.now() };
       saveLocalCollection(collectionName, records);
@@ -983,7 +1030,7 @@ async function updateDoc(collectionName, id, updates) {
 async function deleteDoc(collectionName, id) {
   try {
     if (window.USE_LOCAL_MODE) {
-      const records = getLocalCollection(collectionName).filter(r => r.id !== id);
+      const records = getLocalCollection(collectionName).filter((r) => r.id !== id);
       saveLocalCollection(collectionName, records);
       return { success: true };
     } else {
@@ -1157,9 +1204,9 @@ async function getInventoryLogs(filters = {}) {
 // js/lib/audit.js (PunnagaiAudit.buildAuditEntry); this writer persists it.
 
 async function createAuditLog(entry) {
-  const e = (entry && typeof entry === 'object') ? entry : {};
+  const e = entry && typeof entry === 'object' ? entry : {};
   return createDoc(COLLECTIONS.AUDIT_LOGS, {
-    timestamp: (typeof e.timestamp === 'number') ? e.timestamp : Date.now(),
+    timestamp: typeof e.timestamp === 'number' ? e.timestamp : Date.now(),
     adminUserId: e.adminUserId || null,
     operationType: e.operationType || null,
     entity: e.entity || { type: null, id: null },

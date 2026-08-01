@@ -46,15 +46,27 @@ const THUMBNAIL_MAX_PX = 240;
 let ProductsModel = (typeof window !== 'undefined' && window.PunnagaiProductsModel) || null;
 let Audit = (typeof window !== 'undefined' && window.PunnagaiAudit) || null;
 if (typeof require !== 'undefined') {
-  if (!ProductsModel) { try { ProductsModel = require('./lib/products-model'); } catch (_) { /* browser */ } }
-  if (!Audit) { try { Audit = require('./lib/audit'); } catch (_) { /* browser */ } }
+  if (!ProductsModel) {
+    try {
+      ProductsModel = require('./lib/products-model');
+    } catch (_) {
+      /* browser */
+    }
+  }
+  if (!Audit) {
+    try {
+      Audit = require('./lib/audit');
+    } catch (_) {
+      /* browser */
+    }
+  }
 }
 
-let adminProducts = [];      // last-loaded product list (for table + filtering)
+let adminProducts = []; // last-loaded product list (for table + filtering)
 let editingProductId = null; // non-null while editing an existing product
-let selectedImageFile = null;// File chosen via the upload input (if any)
-let deletingProductId = null;// product queued for deletion in the confirm modal
-let quillEditor = null;      // Quill.js instance for rich text product descriptions
+let selectedImageFile = null; // File chosen via the upload input (if any)
+let deletingProductId = null; // product queued for deletion in the confirm modal
+let quillEditor = null; // Quill.js instance for rich text product descriptions
 
 // ============================================================
 // PAGE INIT & AUTH
@@ -85,19 +97,16 @@ function wireAdminEvents() {
     if (editorContainer) {
       quillEditor = new Quill('#editor-container', {
         theme: 'snow',
-        placeholder: 'Describe the toy, its features, materials, educational benefits, what makes it special...',
+        placeholder:
+          'Describe the toy, its features, materials, educational benefits, what makes it special...',
         modules: {
-          toolbar: [
-            ['bold', 'italic', 'underline'],
-            [{ 'list': 'bullet' }],
-            ['link', 'clean']
-          ]
+          toolbar: [['bold', 'italic', 'underline'], [{ list: 'bullet' }], ['link', 'clean']]
         }
       });
-      quillEditor.on('text-change', function() {
+      quillEditor.on('text-change', function () {
         const hiddenDesc = document.getElementById('f-description');
         if (hiddenDesc) {
-           hiddenDesc.value = quillEditor.root.innerHTML;
+          hiddenDesc.value = quillEditor.root.innerHTML;
         }
       });
     }
@@ -180,7 +189,8 @@ function handleAdminLogin(e) {
       }
     }, 400);
   } else {
-    window.auth.signInWithEmailAndPassword(email, pass)
+    window.auth
+      .signInWithEmailAndPassword(email, pass)
       .then(() => setLoginLoading(false))
       .catch((err) => {
         setLoginLoading(false);
@@ -201,7 +211,12 @@ function handleAdminLogout() {
 
 /** Resolve the acting admin's id for the audit trail. */
 function getAdminUserId() {
-  if (typeof window !== 'undefined' && !window.USE_LOCAL_MODE && window.auth && window.auth.currentUser) {
+  if (
+    typeof window !== 'undefined' &&
+    !window.USE_LOCAL_MODE &&
+    window.auth &&
+    window.auth.currentUser
+  ) {
     return window.auth.currentUser.uid || window.auth.currentUser.email || 'admin';
   }
   return 'local-admin';
@@ -297,11 +312,16 @@ async function loadAdminProducts() {
     window.MediaLibrary.init(adminProducts);
   }
   const countEl = document.getElementById('products-section-count');
-  if (countEl) countEl.textContent = adminProducts.length + ' product' + (adminProducts.length === 1 ? '' : 's') + ' in catalog';
+  if (countEl)
+    countEl.textContent =
+      adminProducts.length + ' product' + (adminProducts.length === 1 ? '' : 's') + ' in catalog';
 }
 
 function updateDashboardStats(products) {
-  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  const set = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  };
   set('stat-total-products', products.length);
   set('stat-featured', products.filter((p) => p.featured).length);
   set('stat-in-stock', products.filter((p) => p.inStock).length);
@@ -311,12 +331,18 @@ function updateDashboardStats(products) {
 function renderRecentProducts(products) {
   const wrap = document.getElementById('dashboard-recent-products');
   if (!wrap) return;
-  const recent = products.slice().sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)).slice(0, 5);
+  const recent = products
+    .slice()
+    .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
+    .slice(0, 5);
   if (recent.length === 0) {
-    wrap.innerHTML = '<p class="text-secondary">No products yet. Add your first product to get started.</p>';
+    wrap.innerHTML =
+      '<p class="text-secondary">No products yet. Add your first product to get started.</p>';
     return;
   }
-  wrap.innerHTML = recent.map((p) => `
+  wrap.innerHTML = recent
+    .map(
+      (p) => `
     <div class="dashboard-recent-item">
       <img src="${escapeAttr(p.imageUrl)}" alt="${escapeAttr(p.name)}" class="table-image">
       <div>
@@ -325,7 +351,9 @@ function renderRecentProducts(products) {
       </div>
       <span>${formatPriceRange(p)}</span>
     </div>
-  `).join('');
+  `
+    )
+    .join('');
 }
 
 // ============================================================
@@ -337,14 +365,16 @@ function renderProductsTable(products) {
   if (!tbody) return;
 
   if (!products || products.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" class="text-center" style="padding:32px">No products found.</td></tr>';
+    tbody.innerHTML =
+      '<tr><td colspan="6" class="text-center" style="padding:32px">No products found.</td></tr>';
     return;
   }
 
-  tbody.innerHTML = products.map((p) => {
-    const variantCount = getVariantCount(p);
-    const created = formatDate(p.createdAt);
-    return `
+  tbody.innerHTML = products
+    .map((p) => {
+      const variantCount = getVariantCount(p);
+      const created = formatDate(p.createdAt);
+      return `
     <tr>
       <td><img src="${escapeAttr(p.imageUrl)}" alt="${escapeAttr(p.name)}" class="table-image"></td>
       <td>
@@ -362,11 +392,14 @@ function renderProductsTable(products) {
         </div>
       </td>
     </tr>`;
-  }).join('');
+    })
+    .join('');
 }
 
 function filterAdminProducts() {
-  const term = ((document.getElementById('admin-product-search') || {}).value || '').toLowerCase().trim();
+  const term = ((document.getElementById('admin-product-search') || {}).value || '')
+    .toLowerCase()
+    .trim();
   const cat = (document.getElementById('admin-cat-filter') || {}).value || '';
   const stock = (document.getElementById('admin-stock-filter') || {}).value || '';
 
@@ -443,9 +476,14 @@ function openEditProduct(id) {
   // Pre-fill the variant editor from existing variants (distinct sizes/colors).
   const sizes = uniqueValues((product.variants || []).map((v) => v.size));
   const colors = uniqueValues((product.variants || []).map((v) => v.color));
-  const existingStock = (Array.isArray(product.variants) && product.variants.length > 0 && product.variants[0].stock != null)
-    ? product.variants[0].stock
-    : (product.inStock ? '10' : '0');
+  const existingStock =
+    Array.isArray(product.variants) &&
+    product.variants.length > 0 &&
+    product.variants[0].stock != null
+      ? product.variants[0].stock
+      : product.inStock
+        ? '10'
+        : '0';
   setValue('f-variant-stock', String(existingStock));
 
   const cancelBtn = document.getElementById('cancel-edit-btn');
@@ -458,7 +496,7 @@ function openEditProduct(id) {
 
 /** Read the product form into a plain object. */
 function readProductForm() {
-  const descValue = quillEditor ? quillEditor.root.innerHTML : (getValue('f-description') || '');
+  const descValue = quillEditor ? quillEditor.root.innerHTML : getValue('f-description') || '';
   return {
     name: (getValue('f-name') || '').trim(),
     category: getValue('f-category') || '',
@@ -491,7 +529,14 @@ async function handleProductSubmit(e) {
   e.preventDefault();
   const form = readProductForm();
 
-  if (!form.name || !form.category || !form.description || form.price === '' || form.price == null || !form.ageGroup) {
+  if (
+    !form.name ||
+    !form.category ||
+    !form.description ||
+    form.price === '' ||
+    form.price == null ||
+    !form.ageGroup
+  ) {
     showToast('Please fill in all required fields.', 'error');
     return;
   }
@@ -669,14 +714,16 @@ function buildVariantsFromForm(form, sequence) {
   }
 
   // Fallback if the model failed to load.
-  return [{
-    variantId: 'var_' + sequence + '_001',
-    skuId: 'SKU-' + sequence + '-0-ONESIZE-0-STANDARD',
-    size: 'One Size',
-    color: 'Standard',
-    price: basePrice,
-    stock: initialStock
-  }];
+  return [
+    {
+      variantId: 'var_' + sequence + '_001',
+      skuId: 'SKU-' + sequence + '-0-ONESIZE-0-STANDARD',
+      size: 'One Size',
+      color: 'Standard',
+      price: basePrice,
+      stock: initialStock
+    }
+  ];
 }
 
 /**
@@ -696,11 +743,17 @@ function mergeVariantsForEdit(existing, form, sequence) {
   }
 
   const byKey = {};
-  existingVariants.forEach((v) => { byKey[variantKey(v.size, v.color)] = v; });
+  existingVariants.forEach((v) => {
+    byKey[variantKey(v.size, v.color)] = v;
+  });
 
   const basePrice = Number(form.price) || 0;
   const desired = ProductsModel
-    ? ProductsModel.buildVariants(form.sizes, form.colors, { sequence: sequence, price: basePrice, stock: 0 })
+    ? ProductsModel.buildVariants(form.sizes, form.colors, {
+        sequence: sequence,
+        price: basePrice,
+        stock: 0
+      })
     : [];
 
   return desired.map((d) => {
@@ -738,8 +791,12 @@ async function addVariantToProduct(productId, size, color) {
   const sequence = product.sequence || makeSequence();
   const index = variants.length;
   const newVariant = {
-    variantId: ProductsModel ? ProductsModel.formatVariantId('var', sequence, index + 1) : 'var_' + sequence + '_' + (index + 1),
-    skuId: ProductsModel ? ProductsModel.formatSKU('SKU', sequence, index, size, index, color) : 'SKU-' + sequence + '-' + index,
+    variantId: ProductsModel
+      ? ProductsModel.formatVariantId('var', sequence, index + 1)
+      : 'var_' + sequence + '_' + (index + 1),
+    skuId: ProductsModel
+      ? ProductsModel.formatSKU('SKU', sequence, index, size, index, color)
+      : 'SKU-' + sequence + '-' + index,
     size: size,
     color: color,
     price: Number(product.basePrice != null ? product.basePrice : product.price) || 0,
@@ -781,8 +838,11 @@ function updateVariantPreview() {
   const colors = parseList(getValue('f-colors'));
   let count;
   if (sizes.length && colors.length) {
-    count = ProductsModel ? ProductsModel.deriveVariantCount(sizes, colors) : sizes.length * colors.length;
-    el.textContent = 'Will generate ' + count + ' SKU' + (count === 1 ? '' : 's') + ' (one per size × color).';
+    count = ProductsModel
+      ? ProductsModel.deriveVariantCount(sizes, colors)
+      : sizes.length * colors.length;
+    el.textContent =
+      'Will generate ' + count + ' SKU' + (count === 1 ? '' : 's') + ' (one per size × color).';
   } else {
     el.textContent = 'No sizes/colors set — a single default variant will be created.';
   }
@@ -948,7 +1008,10 @@ async function executeDelete() {
       archivedOrderCount: archivedCount
     });
 
-    const suffix = archivedCount > 0 ? ' (' + archivedCount + ' order' + (archivedCount === 1 ? '' : 's') + ' archived)' : '';
+    const suffix =
+      archivedCount > 0
+        ? ' (' + archivedCount + ' order' + (archivedCount === 1 ? '' : 's') + ' archived)'
+        : '';
     showToast('Product deleted' + suffix + '.', 'success');
     closeDeleteModal();
     await loadAdminProducts();
@@ -1063,9 +1126,7 @@ function getVariantCount(product) {
 
 function formatPriceRange(product) {
   const variants = product && Array.isArray(product.variants) ? product.variants : [];
-  const prices = variants
-    .map((v) => Number(v.price))
-    .filter((n) => isFinite(n) && n >= 0);
+  const prices = variants.map((v) => Number(v.price)).filter((n) => isFinite(n) && n >= 0);
   if (prices.length === 0) {
     const base = Number(product.price) || 0;
     return '₹' + base.toLocaleString('en-IN');
@@ -1089,19 +1150,39 @@ function formatDate(ts) {
 }
 
 // DOM value helpers (null-safe)
-function getValue(id) { const el = document.getElementById(id); return el ? el.value : ''; }
-function setValue(id, val) { const el = document.getElementById(id); if (el) el.value = val; }
-function getChecked(id) { const el = document.getElementById(id); return el ? !!el.checked : false; }
-function setChecked(id, val) { const el = document.getElementById(id); if (el) el.checked = !!val; }
-function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+function getValue(id) {
+  const el = document.getElementById(id);
+  return el ? el.value : '';
+}
+function setValue(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.value = val;
+}
+function getChecked(id) {
+  const el = document.getElementById(id);
+  return el ? !!el.checked : false;
+}
+function setChecked(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.checked = !!val;
+}
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
 
 // Minimal HTML/attribute escaping for table rendering.
 function escapeHtml(str) {
   return String(str == null ? '' : str)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
-function escapeAttr(str) { return escapeHtml(str); }
+function escapeAttr(str) {
+  return escapeHtml(str);
+}
 
 function decodeEntities(str) {
   return String(str == null ? '' : str).replace(/&amp;/g, '&');

@@ -49,12 +49,12 @@
 
 // ⚠️ REPLACE THESE VALUES WITH YOUR ACTUAL FIREBASE CONFIG:
 const DEFAULT_FIREBASE_CONFIG = {
-  apiKey:            "YOUR_API_KEY_HERE",
-  authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId:         "YOUR_PROJECT_ID",
-  storageBucket:     "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId:             "YOUR_APP_ID"
+  apiKey: 'YOUR_API_KEY_HERE',
+  authDomain: 'YOUR_PROJECT_ID.firebaseapp.com',
+  projectId: 'YOUR_PROJECT_ID',
+  storageBucket: 'YOUR_PROJECT_ID.appspot.com',
+  messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
+  appId: 'YOUR_APP_ID'
 };
 
 /**
@@ -72,7 +72,7 @@ const firebaseConfig = Object.assign(
 );
 
 // Check for mock mode — local mode whenever the API key is still the placeholder.
-window.USE_LOCAL_MODE = firebaseConfig.apiKey === "YOUR_API_KEY_HERE";
+window.USE_LOCAL_MODE = firebaseConfig.apiKey === 'YOUR_API_KEY_HERE';
 
 /**
  * Emulator toggle.
@@ -85,8 +85,8 @@ window.USE_LOCAL_MODE = firebaseConfig.apiKey === "YOUR_API_KEY_HERE";
  */
 const EMULATOR_DEFAULTS = {
   firestore: { host: 'localhost', port: 8080 },
-  auth:      { url: 'http://localhost:9099' },
-  storage:   { host: 'localhost', port: 9199 }
+  auth: { url: 'http://localhost:9099' },
+  storage: { host: 'localhost', port: 9199 }
 };
 
 let db = null;

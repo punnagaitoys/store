@@ -16,7 +16,12 @@ const ProductsModel = require('../../js/lib/products-model');
 
 describe('buildVariantsFromForm (8.3 SKU generation per variant)', () => {
   test('generates one unique SKU per size × color combination', () => {
-    const form = { price: 500, variantStock: 5, sizes: ['Small', 'Large'], colors: ['Red', 'Blue'] };
+    const form = {
+      price: 500,
+      variantStock: 5,
+      sizes: ['Small', 'Large'],
+      colors: ['Red', 'Blue']
+    };
     const variants = admin.buildVariantsFromForm(form, 'SEQ1');
 
     expect(variants).toHaveLength(4); // 2 sizes × 2 colors
@@ -66,7 +71,14 @@ describe('mergeVariantsForEdit (8.5 edit / 8.7 new variant stock zero)', () => {
   const existing = {
     sequence: 'SEQ1',
     variants: [
-      { variantId: 'var_1', skuId: 'SKU-EXIST-RED', size: 'Small', color: 'Red', price: 400, stock: 30 }
+      {
+        variantId: 'var_1',
+        skuId: 'SKU-EXIST-RED',
+        size: 'Small',
+        color: 'Red',
+        price: 400,
+        stock: 30
+      }
     ]
   };
 
@@ -104,8 +116,12 @@ describe('addVariantToProduct (8.7 initial inventory zero)', () => {
 
   test('appends a new variant with stock zero and persists it', async () => {
     const product = {
-      id: 'p1', basePrice: 600, sequence: 'SEQ9',
-      variants: [{ variantId: 'var_1', skuId: 'SKU-A', size: 'S', color: 'Red', price: 600, stock: 12 }]
+      id: 'p1',
+      basePrice: 600,
+      sequence: 'SEQ9',
+      variants: [
+        { variantId: 'var_1', skuId: 'SKU-A', size: 'S', color: 'Red', price: 600, stock: 12 }
+      ]
     };
     global.getProductById = jest.fn().mockResolvedValue(product);
     global.updateProduct = jest.fn().mockResolvedValue({ success: true });
@@ -122,8 +138,12 @@ describe('addVariantToProduct (8.7 initial inventory zero)', () => {
 
   test('rejects a duplicate size/color variant', async () => {
     const product = {
-      id: 'p1', basePrice: 600, sequence: 'SEQ9',
-      variants: [{ variantId: 'var_1', skuId: 'SKU-A', size: 'S', color: 'Red', price: 600, stock: 12 }]
+      id: 'p1',
+      basePrice: 600,
+      sequence: 'SEQ9',
+      variants: [
+        { variantId: 'var_1', skuId: 'SKU-A', size: 'S', color: 'Red', price: 600, stock: 12 }
+      ]
     };
     global.getProductById = jest.fn().mockResolvedValue(product);
     global.updateProduct = jest.fn().mockResolvedValue({ success: true });
@@ -142,10 +162,13 @@ describe('archiveOrdersContainingProduct (8.6 archive-on-delete)', () => {
 
   test('marks matching order lines as "product archived" and preserves others', async () => {
     const orders = [
-      { id: 'o1', items: [
-        { productId: 'target', name: 'Toy A', quantity: 1 },
-        { productId: 'other', name: 'Toy B', quantity: 2 }
-      ] },
+      {
+        id: 'o1',
+        items: [
+          { productId: 'target', name: 'Toy A', quantity: 1 },
+          { productId: 'other', name: 'Toy B', quantity: 2 }
+        ]
+      },
       { id: 'o2', items: [{ productId: 'other', name: 'Toy B', quantity: 1 }] }
     ];
     global.getOrders = jest.fn().mockResolvedValue(orders);
@@ -167,9 +190,9 @@ describe('archiveOrdersContainingProduct (8.6 archive-on-delete)', () => {
   });
 
   test('returns zero when no orders reference the product', async () => {
-    global.getOrders = jest.fn().mockResolvedValue([
-      { id: 'o1', items: [{ productId: 'other', quantity: 1 }] }
-    ]);
+    global.getOrders = jest
+      .fn()
+      .mockResolvedValue([{ id: 'o1', items: [{ productId: 'other', quantity: 1 }] }]);
     global.updateOrder = jest.fn().mockResolvedValue({ success: true });
 
     const count = await admin.archiveOrdersContainingProduct('target');
@@ -193,8 +216,9 @@ describe('helper utilities', () => {
 
   test('formatPriceRange shows a single price or a range', () => {
     expect(admin.formatPriceRange({ price: 500, variants: [{ price: 500 }] })).toBe('₹500');
-    expect(admin.formatPriceRange({ price: 500, variants: [{ price: 400 }, { price: 600 }] }))
-      .toBe('₹400 – ₹600');
+    expect(admin.formatPriceRange({ price: 500, variants: [{ price: 400 }, { price: 600 }] })).toBe(
+      '₹400 – ₹600'
+    );
     expect(admin.formatPriceRange({ price: 700, variants: [] })).toBe('₹700');
   });
 
@@ -207,9 +231,20 @@ describe('helper utilities', () => {
 describe('assembleProductData keeps legacy shape + variant model', () => {
   test('includes legacy storefront fields and variant/thumbnail data', () => {
     const form = {
-      name: 'Block Set', description: 'desc', price: '499', originalPrice: '699',
-      category: 'Building Blocks', ageGroup: '3-5', imageUrl: 'http://img', badge: 'Sale',
-      inStock: true, featured: false, newArrival: true, sizes: ['S'], colors: ['Red'], variantStock: '0'
+      name: 'Block Set',
+      description: 'desc',
+      price: '499',
+      originalPrice: '699',
+      category: 'Building Blocks',
+      ageGroup: '3-5',
+      imageUrl: 'http://img',
+      badge: 'Sale',
+      inStock: true,
+      featured: false,
+      newArrival: true,
+      sizes: ['S'],
+      colors: ['Red'],
+      variantStock: '0'
     };
     const variants = admin.buildVariantsFromForm(form, 'SEQ');
     const data = admin.assembleProductData(form, variants, 'SEQ', ['thumb1']);

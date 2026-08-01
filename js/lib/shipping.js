@@ -78,9 +78,7 @@
    * can never mutate this template.
    */
   const REGION_METHODS = {
-    local: [
-      { id: 'local_delivery', label: 'Free Local Delivery', cost: 0, estimatedDays: 1 }
-    ],
+    local: [{ id: 'local_delivery', label: 'Free Local Delivery', cost: 0, estimatedDays: 1 }],
     tamilnadu: [
       { id: 'standard', label: 'Standard (Tamil Nadu)', cost: 49, estimatedDays: 3 },
       { id: 'express', label: 'Express (Tamil Nadu)', cost: 99, estimatedDays: 1 }
@@ -205,11 +203,21 @@
     const builtIn = DEFAULT_QUOTES[region] || DEFAULT_QUOTES.allindia;
     if (region === 'local') {
       // Local is always free regardless of any cached record (Property 18).
-      return { cost: 0, estimatedDays: toNonNegative(cachedDefault && cachedDefault.estimatedDays, builtIn.estimatedDays), provider: (cachedDefault && cachedDefault.provider) || builtIn.provider };
+      return {
+        cost: 0,
+        estimatedDays: toNonNegative(
+          cachedDefault && cachedDefault.estimatedDays,
+          builtIn.estimatedDays
+        ),
+        provider: (cachedDefault && cachedDefault.provider) || builtIn.provider
+      };
     }
     if (cachedDefault && typeof cachedDefault === 'object') {
       return {
-        cost: toNonNegative(cachedDefault.baseCost !== undefined ? cachedDefault.baseCost : cachedDefault.cost, builtIn.cost),
+        cost: toNonNegative(
+          cachedDefault.baseCost !== undefined ? cachedDefault.baseCost : cachedDefault.cost,
+          builtIn.cost
+        ),
         estimatedDays: toNonNegative(cachedDefault.estimatedDays, builtIn.estimatedDays),
         provider: cachedDefault.provider || builtIn.provider
       };
@@ -256,8 +264,11 @@
     if (typeof fetchFn === 'function') {
       try {
         const quote = await fetchFn(safeRegion, opts);
-        if (quote && typeof quote === 'object' &&
-            (quote.cost !== undefined || quote.baseCost !== undefined)) {
+        if (
+          quote &&
+          typeof quote === 'object' &&
+          (quote.cost !== undefined || quote.baseCost !== undefined)
+        ) {
           const def = resolveCachedDefault(safeRegion, opts.cachedDefault);
           return {
             region: safeRegion,
@@ -295,9 +306,10 @@
   function defaultTrackingNumber(orderDetails) {
     const od = orderDetails || {};
     const region = REGIONS.indexOf(od.region) !== -1 ? od.region : 'allindia';
-    const orderId = od.orderId !== undefined && od.orderId !== null && String(od.orderId) !== ''
-      ? String(od.orderId)
-      : 'NA';
+    const orderId =
+      od.orderId !== undefined && od.orderId !== null && String(od.orderId) !== ''
+        ? String(od.orderId)
+        : 'NA';
     return 'PNG-' + region.toUpperCase() + '-' + orderId;
   }
 
@@ -320,11 +332,13 @@
   function createShipment(orderDetails, opts) {
     opts = opts || {};
     const od = orderDetails || {};
-    const region = REGIONS.indexOf(od.region) !== -1 ? od.region : determineRegion(od.postalCode) || 'allindia';
+    const region =
+      REGIONS.indexOf(od.region) !== -1 ? od.region : determineRegion(od.postalCode) || 'allindia';
 
-    const genFn = typeof opts.generateTrackingNumber === 'function'
-      ? opts.generateTrackingNumber
-      : defaultTrackingNumber;
+    const genFn =
+      typeof opts.generateTrackingNumber === 'function'
+        ? opts.generateTrackingNumber
+        : defaultTrackingNumber;
     let trackingNumber = genFn(Object.assign({}, od, { region: region }));
 
     const createdAt = typeof opts.now === 'number' ? opts.now : Date.now();
@@ -364,7 +378,8 @@
    */
   function getTracking(trackingNumber, opts) {
     opts = opts || {};
-    const tn = trackingNumber !== undefined && trackingNumber !== null ? String(trackingNumber) : '';
+    const tn =
+      trackingNumber !== undefined && trackingNumber !== null ? String(trackingNumber) : '';
     if (tn === '') {
       return { found: false, tracking: null };
     }

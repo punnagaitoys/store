@@ -1,102 +1,106 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Order History | Punnagai Toy Store</title>
-  <link rel="icon" href="logo.png" type="image/png">
-  <link rel="apple-touch-icon" href="logo.png">
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
-  <style>
-    .order-card {
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px;
-      margin-bottom: 16px;
-      background: white;
-    }
-    .order-header {
-      display: flex;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 12px;
-      margin-bottom: 12px;
-    }
-    .order-status {
-      font-weight: 600;
-      color: var(--primary);
-    }
-    .order-items {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .order-item {
-      display: flex;
-      justify-content: space-between;
-      font-size: 14px;
-    }
-  </style>
-</head>
-<body>
-  <div id="navbar"></div>
-  <div id="toast-container" class="toast-container"></div>
-
-  <main class="page-wrapper container section">
-    <div class="section-header">
-      <h1 class="section-title">Order History</h1>
-      <div class="section-divider"></div>
-    </div>
-    
-    <div style="margin-bottom: 24px;">
-      <a href="account.html" class="btn btn-outline">← Back to Profile</a>
-    </div>
-
-    <div id="orders-list">
-      <div class="loading-spinner-center">
-        <div class="loading-spinner"></div>
-      </div>
-    </div>
-  </main>
-
-  <div id="footer"></div>
-
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  
-  <script src="js/firebase-config.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/data.js"></script>
-  <script src="js/app.js"></script>
-  
-  <script>
-    async function loadOrders() {
-      renderNavbar();
-      renderFooter();
-      
-      const user = window.PunnagaiAuth.getCurrentUser();
-      if (!user) {
-        window.location.href = 'account.html';
-        return;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order History | Punnagai Toy Store</title>
+    <link rel="icon" href="logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="logo.png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .order-card {
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px;
+        margin-bottom: 16px;
+        background: white;
       }
-      
-      try {
-        const orders = await getOrdersByUser(user.uid);
-        const container = document.getElementById('orders-list');
-        
-        if (orders.length === 0) {
-          container.innerHTML = '<p>You have no orders yet.</p>';
+      .order-header {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+      }
+      .order-status {
+        font-weight: 600;
+        color: var(--primary);
+      }
+      .order-items {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .order-item {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="navbar"></div>
+    <div id="toast-container" class="toast-container"></div>
+
+    <main class="page-wrapper container section">
+      <div class="section-header">
+        <h1 class="section-title">Order History</h1>
+        <div class="section-divider"></div>
+      </div>
+
+      <div style="margin-bottom: 24px">
+        <a href="account.html" class="btn btn-outline">← Back to Profile</a>
+      </div>
+
+      <div id="orders-list">
+        <div class="loading-spinner-center">
+          <div class="loading-spinner"></div>
+        </div>
+      </div>
+    </main>
+
+    <div id="footer"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+      async function loadOrders() {
+        renderNavbar();
+        renderFooter();
+
+        const user = window.PunnagaiAuth.getCurrentUser();
+        if (!user) {
+          window.location.href = 'account.html';
           return;
         }
-        
-        // Sort orders by createdAt descending
-        orders.sort((a, b) => b.createdAt - a.createdAt);
-        
-        container.innerHTML = orders.map(order => {
-          const date = new Date(order.createdAt).toLocaleDateString();
-          return `
+
+        try {
+          const orders = await getOrdersByUser(user.uid);
+          const container = document.getElementById('orders-list');
+
+          if (orders.length === 0) {
+            container.innerHTML = '<p>You have no orders yet.</p>';
+            return;
+          }
+
+          // Sort orders by createdAt descending
+          orders.sort((a, b) => b.createdAt - a.createdAt);
+
+          container.innerHTML = orders
+            .map((order) => {
+              const date = new Date(order.createdAt).toLocaleDateString();
+              return `
             <div class="order-card">
               <div class="order-header">
                 <div>
@@ -109,35 +113,45 @@
                 </div>
               </div>
               <div class="order-items">
-                ${order.items.map(item => `
+                ${order.items
+                  .map(
+                    (item) => `
                   <div class="order-item">
                     <span>${item.quantity}x ${item.name}</span>
                     <span>₹${(item.price * item.quantity).toLocaleString('en-IN')}</span>
                   </div>
-                `).join('')}
+                `
+                  )
+                  .join('')}
               </div>
-              ${order.trackingNumber ? `
+              ${
+                order.trackingNumber
+                  ? `
                 <div style="margin-top:12px; padding-top:12px; border-top:1px dashed var(--border); font-size:13px;">
                   <strong>Tracking Number:</strong> ${order.trackingNumber}
                 </div>
-              ` : ''}
+              `
+                  : ''
+              }
             </div>
           `;
-        }).join('');
-      } catch (e) {
-        document.getElementById('orders-list').innerHTML = '<p style="color:var(--danger)">Failed to load orders.</p>';
+            })
+            .join('');
+        } catch (e) {
+          document.getElementById('orders-list').innerHTML =
+            '<p style="color:var(--danger)">Failed to load orders.</p>';
+        }
       }
-    }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      setTimeout(loadOrders, 500);
-    });
+      document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(loadOrders, 500);
+      });
 
-    window.addEventListener('storage', (e) => {
-      if (e.key === 'punnagai_mock_orders') {
-        loadOrders();
-      }
-    });
-  </script>
-</body>
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'punnagai_mock_orders') {
+          loadOrders();
+        }
+      });
+    </script>
+  </body>
 </html>

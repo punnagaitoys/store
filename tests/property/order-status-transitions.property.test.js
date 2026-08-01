@@ -37,7 +37,7 @@ const orderStateArb = fc.constantFrom(...ORDER_STATES);
 const orderArb = fc.record({
   orderStatus: orderStateArb,
   id: fc.string({ minLength: 1, maxLength: 8 }),
-  total: fc.integer({ min: 0, max: 100000 }),
+  total: fc.integer({ min: 0, max: 100000 })
 });
 
 // Injected clock so timestamp stamping is deterministic.
@@ -83,24 +83,30 @@ describe('Property 16: Order Status Transitions Follow Rules (Req 6.8)', () => {
     const fulfilmentStateArb = fc.constantFrom(...FULFILMENT_PATH);
 
     fc.assert(
-      fc.property(orderArb, fulfilmentStateArb, fulfilmentStateArb, nowArb, (base, from, to, now) => {
-        const fromIdx = FULFILMENT_PATH.indexOf(from);
-        const toIdx = FULFILMENT_PATH.indexOf(to);
-        const isLegalForwardStep = toIdx === fromIdx + 1;
+      fc.property(
+        orderArb,
+        fulfilmentStateArb,
+        fulfilmentStateArb,
+        nowArb,
+        (base, from, to, now) => {
+          const fromIdx = FULFILMENT_PATH.indexOf(from);
+          const toIdx = FULFILMENT_PATH.indexOf(to);
+          const isLegalForwardStep = toIdx === fromIdx + 1;
 
-        const current = { ...base, orderStatus: from };
+          const current = { ...base, orderStatus: from };
 
-        if (isLegalForwardStep) {
-          expect(canTransition(from, to)).toBe(true);
-          expect(applyTransition(current, to, { now }).orderStatus).toBe(to);
-        } else {
-          // Skips (e.g. pending → shipped, confirmed → delivered), no-ops
-          // (from === to), and backwards moves (e.g. shipped → confirmed) are
-          // all illegal on the strict fulfilment path.
-          expect(canTransition(from, to)).toBe(false);
-          expect(() => applyTransition(current, to, { now })).toThrow();
+          if (isLegalForwardStep) {
+            expect(canTransition(from, to)).toBe(true);
+            expect(applyTransition(current, to, { now }).orderStatus).toBe(to);
+          } else {
+            // Skips (e.g. pending → shipped, confirmed → delivered), no-ops
+            // (from === to), and backwards moves (e.g. shipped → confirmed) are
+            // all illegal on the strict fulfilment path.
+            expect(canTransition(from, to)).toBe(false);
+            expect(() => applyTransition(current, to, { now })).toThrow();
+          }
         }
-      })
+      )
     );
   });
 

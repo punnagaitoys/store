@@ -29,9 +29,14 @@ beforeEach(async () => {
 describe('Products — CRUD against the Firestore emulator', () => {
   test('addProduct persists and is retrievable by id', async () => {
     const res = await data.addProduct({
-      name: 'Wooden Train', description: 'classic', price: 799,
-      category: 'Educational & Learning', ageGroup: '3-5',
-      imageUrl: 'https://example.com/train.jpg', inStock: true, featured: true
+      name: 'Wooden Train',
+      description: 'classic',
+      price: 799,
+      category: 'Educational & Learning',
+      ageGroup: '3-5',
+      imageUrl: 'https://example.com/train.jpg',
+      inStock: true,
+      featured: true
     });
     expect(res.success).toBe(true);
     expect(typeof res.id).toBe('string');
@@ -45,8 +50,14 @@ describe('Products — CRUD against the Firestore emulator', () => {
 
   test('updateProduct mutates fields and coerces numbers', async () => {
     const { id } = await data.addProduct({
-      name: 'Kite', description: '', price: 199, category: 'Outdoor & Sports',
-      ageGroup: '6-8', imageUrl: '', inStock: true, featured: false
+      name: 'Kite',
+      description: '',
+      price: 199,
+      category: 'Outdoor & Sports',
+      ageGroup: '6-8',
+      imageUrl: '',
+      inStock: true,
+      featured: false
     });
 
     const upd = await data.updateProduct(id, { price: '249', inStock: false });
@@ -59,8 +70,14 @@ describe('Products — CRUD against the Firestore emulator', () => {
 
   test('deleteProduct removes the document', async () => {
     const { id } = await data.addProduct({
-      name: 'Yo-Yo', description: '', price: 99, category: 'Outdoor & Sports',
-      ageGroup: '9-12', imageUrl: '', inStock: true, featured: false
+      name: 'Yo-Yo',
+      description: '',
+      price: 99,
+      category: 'Outdoor & Sports',
+      ageGroup: '9-12',
+      imageUrl: '',
+      inStock: true,
+      featured: false
     });
     expect(await data.getProductById(id)).not.toBeNull();
 
@@ -70,13 +87,40 @@ describe('Products — CRUD against the Firestore emulator', () => {
   });
 
   test('getProducts applies category + inStock filters server-side', async () => {
-    await data.addProduct({ name: 'Blocks A', description: '', price: 100, category: 'Building Blocks', ageGroup: '3-5', imageUrl: '', inStock: true, featured: false });
-    await data.addProduct({ name: 'Blocks B', description: '', price: 150, category: 'Building Blocks', ageGroup: '6-8', imageUrl: '', inStock: false, featured: false });
-    await data.addProduct({ name: 'Doll', description: '', price: 200, category: 'Dolls & Fashion', ageGroup: '6-8', imageUrl: '', inStock: true, featured: false });
+    await data.addProduct({
+      name: 'Blocks A',
+      description: '',
+      price: 100,
+      category: 'Building Blocks',
+      ageGroup: '3-5',
+      imageUrl: '',
+      inStock: true,
+      featured: false
+    });
+    await data.addProduct({
+      name: 'Blocks B',
+      description: '',
+      price: 150,
+      category: 'Building Blocks',
+      ageGroup: '6-8',
+      imageUrl: '',
+      inStock: false,
+      featured: false
+    });
+    await data.addProduct({
+      name: 'Doll',
+      description: '',
+      price: 200,
+      category: 'Dolls & Fashion',
+      ageGroup: '6-8',
+      imageUrl: '',
+      inStock: true,
+      featured: false
+    });
 
     const blocks = await data.getProducts({ category: 'Building Blocks' });
     expect(blocks).toHaveLength(2);
-    expect(blocks.every(p => p.category === 'Building Blocks')).toBe(true);
+    expect(blocks.every((p) => p.category === 'Building Blocks')).toBe(true);
 
     const inStockBlocks = await data.getProducts({ category: 'Building Blocks', inStock: true });
     expect(inStockBlocks).toHaveLength(1);
@@ -85,8 +129,26 @@ describe('Products — CRUD against the Firestore emulator', () => {
 
   test('getProductCount reflects the number of stored products', async () => {
     expect(await data.getProductCount()).toBe(0);
-    await data.addProduct({ name: 'P1', description: '', price: 1, category: 'c', ageGroup: '0-2', imageUrl: '', inStock: true, featured: false });
-    await data.addProduct({ name: 'P2', description: '', price: 2, category: 'c', ageGroup: '0-2', imageUrl: '', inStock: true, featured: false });
+    await data.addProduct({
+      name: 'P1',
+      description: '',
+      price: 1,
+      category: 'c',
+      ageGroup: '0-2',
+      imageUrl: '',
+      inStock: true,
+      featured: false
+    });
+    await data.addProduct({
+      name: 'P2',
+      description: '',
+      price: 2,
+      category: 'c',
+      ageGroup: '0-2',
+      imageUrl: '',
+      inStock: true,
+      featured: false
+    });
     expect(await data.getProductCount()).toBe(2);
   });
 });
@@ -96,7 +158,8 @@ describe('Orders — CRUD against the Firestore emulator', () => {
     const res = await data.createOrder({
       userId: 'user-1',
       items: [{ skuId: 'SKU-1', quantity: 2, unitPrice: 100, lineTotal: 200 }],
-      subtotal: 200, total: 200
+      subtotal: 200,
+      total: 200
     });
     expect(res.success).toBe(true);
 
@@ -118,20 +181,24 @@ describe('Orders — CRUD against the Firestore emulator', () => {
     expect(order.paymentStatus).toBe('paid');
   });
 
-  test('getOrdersByUser returns only that user\'s orders', async () => {
+  test("getOrdersByUser returns only that user's orders", async () => {
     await data.createOrder({ userId: 'alice', items: [], subtotal: 10, total: 10 });
     await data.createOrder({ userId: 'alice', items: [], subtotal: 20, total: 20 });
     await data.createOrder({ userId: 'bob', items: [], subtotal: 30, total: 30 });
 
     const aliceOrders = await data.getOrdersByUser('alice');
     expect(aliceOrders).toHaveLength(2);
-    expect(aliceOrders.every(o => o.userId === 'alice')).toBe(true);
+    expect(aliceOrders.every((o) => o.userId === 'alice')).toBe(true);
   });
 });
 
 describe('Users — CRUD against the Firestore emulator', () => {
   test('createUser then getUserByEmail round-trips', async () => {
-    const res = await data.createUser({ email: 'parent@example.com', name: 'Parent', phone: '+919876543210' });
+    const res = await data.createUser({
+      email: 'parent@example.com',
+      name: 'Parent',
+      phone: '+919876543210'
+    });
     expect(res.success).toBe(true);
 
     const user = await data.getUserByEmail('parent@example.com');
@@ -154,7 +221,11 @@ describe('Users — CRUD against the Firestore emulator', () => {
 
 describe('Coupons — CRUD against the Firestore emulator', () => {
   test('createCoupon uppercases code; getCouponByCode is case-insensitive', async () => {
-    const res = await data.createCoupon({ code: 'diwali25', discountType: 'percentage', discountValue: 25 });
+    const res = await data.createCoupon({
+      code: 'diwali25',
+      discountType: 'percentage',
+      discountValue: 25
+    });
     expect(res.success).toBe(true);
 
     const found = await data.getCouponByCode('diwali25');
@@ -165,7 +236,11 @@ describe('Coupons — CRUD against the Firestore emulator', () => {
   });
 
   test('deleteCoupon removes it', async () => {
-    const { id } = await data.createCoupon({ code: 'TEMP', discountType: 'fixed', discountValue: 50 });
+    const { id } = await data.createCoupon({
+      code: 'TEMP',
+      discountType: 'fixed',
+      discountValue: 50
+    });
     const del = await data.deleteCoupon(id);
     expect(del.success).toBe(true);
 

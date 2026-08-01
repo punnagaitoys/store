@@ -26,7 +26,7 @@ const CATEGORIES = [
   'Building Blocks',
   'Outdoor & Sports',
   'Dolls & Action Figures',
-  'Arts & Crafts',
+  'Arts & Crafts'
 ];
 const AGE_GROUPS = ['0-2', '3-5', '6-8', '9-12', '12+'];
 
@@ -34,7 +34,7 @@ const productArb = fc.record({
   productId: fc.string(),
   category: fc.constantFrom(...CATEGORIES),
   ageGroup: fc.constantFrom(...AGE_GROUPS),
-  price: fc.integer({ min: 0, max: 5000 }),
+  price: fc.integer({ min: 0, max: 5000 })
 });
 
 const productsArb = fc.array(productArb, { maxLength: 40 });
@@ -46,7 +46,7 @@ const filtersArb = fc.record(
     category: fc.option(fc.constantFrom(...CATEGORIES), { nil: undefined }),
     ageGroup: fc.option(fc.constantFrom(...AGE_GROUPS), { nil: undefined }),
     priceMin: fc.option(fc.integer({ min: 0, max: 5000 }), { nil: undefined }),
-    priceMax: fc.option(fc.integer({ min: 0, max: 5000 }), { nil: undefined }),
+    priceMax: fc.option(fc.integer({ min: 0, max: 5000 }), { nil: undefined })
   },
   { requiredKeys: [] }
 );
@@ -56,10 +56,20 @@ const filtersArb = fc.record(
 function referenceCount(products, filters) {
   const f = filters || {};
   return products.filter((p) => {
-    if (f.category !== undefined && f.category !== null && f.category !== '' && f.category !== 'all') {
+    if (
+      f.category !== undefined &&
+      f.category !== null &&
+      f.category !== '' &&
+      f.category !== 'all'
+    ) {
       if (p.category !== f.category) return false;
     }
-    if (f.ageGroup !== undefined && f.ageGroup !== null && f.ageGroup !== '' && f.ageGroup !== 'all') {
+    if (
+      f.ageGroup !== undefined &&
+      f.ageGroup !== null &&
+      f.ageGroup !== '' &&
+      f.ageGroup !== 'all'
+    ) {
       if (p.ageGroup !== f.ageGroup) return false;
     }
     if (f.priceMin !== undefined && f.priceMin !== null && f.priceMin !== '') {
@@ -106,7 +116,7 @@ describe('Property 3: Filter Count Accuracy (Req 1.5)', () => {
           const narrowed = {
             ...filters,
             priceMin: baseMin + raiseMin,
-            priceMax: baseMax - lowerMax,
+            priceMax: baseMax - lowerMax
           };
 
           const narrowedCount = matchingCount(products, narrowed);

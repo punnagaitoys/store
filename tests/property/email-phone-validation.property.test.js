@@ -42,7 +42,7 @@ const validEmailArb = fc
   .record({
     local: alnumString(1, 20),
     domain: alnumString(1, 15),
-    tld: letterString(2, 6),
+    tld: letterString(2, 6)
   })
   .map(({ local, domain, tld }) => `${local}@${domain}.${tld}`);
 
@@ -82,7 +82,7 @@ const subscriberLeadDigit = fc.constantFrom('6', '7', '8', '9'); // valid lead 6
 const validSubscriberArb = fc
   .record({
     lead: subscriberLeadDigit,
-    rest: fc.array(digitChar, { minLength: 9, maxLength: 9 }).map((d) => d.join('')),
+    rest: fc.array(digitChar, { minLength: 9, maxLength: 9 }).map((d) => d.join(''))
   })
   .map(({ lead, rest }) => lead + rest);
 
@@ -99,23 +99,26 @@ const invalidPhoneArb = fc.oneof(
   fc
     .record({
       lead: subscriberLeadDigit,
-      rest: fc.array(digitChar, { minLength: 0, maxLength: 8 }).map((d) => d.join('')),
+      rest: fc.array(digitChar, { minLength: 0, maxLength: 8 }).map((d) => d.join(''))
     })
     .map(({ lead, rest }) => lead + rest),
   // wrong length: too long (11+ digits, no recognized prefix)
-  fc.array(digitChar, { minLength: 11, maxLength: 14 }).map((d) => d.join('')).filter(s => !/^0/.test(s) && !/^91/.test(s)),
+  fc
+    .array(digitChar, { minLength: 11, maxLength: 14 })
+    .map((d) => d.join(''))
+    .filter((s) => !/^0/.test(s) && !/^91/.test(s)),
   // valid length but subscriber leads with 0-5 (disallowed)
   fc
     .record({
       lead: fc.constantFrom('0', '1', '2', '3', '4', '5'),
-      rest: fc.array(digitChar, { minLength: 9, maxLength: 9 }).map((d) => d.join('')),
+      rest: fc.array(digitChar, { minLength: 9, maxLength: 9 }).map((d) => d.join(''))
     })
     .map(({ lead, rest }) => lead + rest),
   // contains letters
   fc
     .record({
       lead: subscriberLeadDigit,
-      rest: fc.array(digitChar, { minLength: 8, maxLength: 8 }).map((d) => d.join('')),
+      rest: fc.array(digitChar, { minLength: 8, maxLength: 8 }).map((d) => d.join(''))
     })
     .map(({ lead, rest }) => lead + rest + 'a'),
   // wrong country code (e.g. +1) on an otherwise 10-digit subscriber

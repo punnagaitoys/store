@@ -179,7 +179,9 @@
    */
   function searchOrders(orders, query) {
     const list = Array.isArray(orders) ? orders : [];
-    const term = String(query == null ? '' : query).trim().toLowerCase();
+    const term = String(query == null ? '' : query)
+      .trim()
+      .toLowerCase();
     if (term === '') {
       return list.slice();
     }
@@ -221,8 +223,8 @@
     opts = opts || {};
     const threshold = typeof opts.threshold === 'number' ? opts.threshold : 0;
     const treatMissingAsDepleted = opts.treatMissingAsDepleted === true;
-    const map = (stockMap && typeof stockMap === 'object') ? stockMap : {};
-    const items = (order && Array.isArray(order.items)) ? order.items : [];
+    const map = stockMap && typeof stockMap === 'object' ? stockMap : {};
+    const items = order && Array.isArray(order.items) ? order.items : [];
 
     const blockedItems = [];
     for (let i = 0; i < items.length; i++) {
@@ -261,7 +263,7 @@
    * @returns {Object<string, number>} stock key → total quantity to restore.
    */
   function restorationDeltas(order) {
-    const items = (order && Array.isArray(order.items)) ? order.items : [];
+    const items = order && Array.isArray(order.items) ? order.items : [];
     const deltas = {};
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
@@ -294,7 +296,7 @@
   function restoreInventoryForOrder(order, stockMap, opts) {
     opts = opts || {};
     const inventoryModel = getInventoryModel(opts.inventoryModel);
-    const base = (stockMap && typeof stockMap === 'object') ? stockMap : {};
+    const base = stockMap && typeof stockMap === 'object' ? stockMap : {};
     const next = Object.assign({}, base);
     const deltas = restorationDeltas(order);
 
@@ -340,7 +342,7 @@
         for (let v = 0; v < variants.length; v++) {
           const variant = variants[v];
           if (!variant || typeof variant !== 'object') continue;
-          const key = String(variant.skuId || variant.variantId || (pid + '-' + v));
+          const key = String(variant.skuId || variant.variantId || pid + '-' + v);
           index[key] = { product: product, variantIndex: v };
           const s = Number(variant.stock);
           stockMap[key] = Number.isFinite(s) ? s : 0;
@@ -369,8 +371,11 @@
    * @returns {string}
    */
   function defaultGenerateTrackingNumber() {
-    return 'TR' + Date.now().toString(36).toUpperCase() +
-      Math.random().toString(36).slice(2, 6).toUpperCase();
+    return (
+      'TR' +
+      Date.now().toString(36).toUpperCase() +
+      Math.random().toString(36).slice(2, 6).toUpperCase()
+    );
   }
 
   /**
@@ -384,7 +389,9 @@
     if (isLocalMode()) {
       try {
         console.log('[admin-orders] (mock) tracking email →', payload);
-      } catch (e) { /* ignore */ }
+      } catch (e) {
+        /* ignore */
+      }
       return { success: true, mocked: true };
     }
     return {
@@ -404,7 +411,9 @@
     if (isLocalMode()) {
       try {
         console.log('[admin-orders] (mock) UPI refund →', payload);
-      } catch (e) { /* ignore */ }
+      } catch (e) {
+        /* ignore */
+      }
       return {
         success: true,
         mocked: true,
@@ -472,10 +481,14 @@
    */
   async function markOrderShipped(orderId, deps) {
     deps = deps || {};
-    const getOrderByIdFn = deps.getOrderById || (typeof window !== 'undefined' ? window.getOrderById : null);
-    const updateOrderFn = deps.updateOrder || (typeof window !== 'undefined' ? window.updateOrder : null);
-    const getProductsFn = deps.getProducts || (typeof window !== 'undefined' ? window.getProducts : null);
-    const getUserByIdFn = deps.getUserById || (typeof window !== 'undefined' ? window.getUserById : null);
+    const getOrderByIdFn =
+      deps.getOrderById || (typeof window !== 'undefined' ? window.getOrderById : null);
+    const updateOrderFn =
+      deps.updateOrder || (typeof window !== 'undefined' ? window.updateOrder : null);
+    const getProductsFn =
+      deps.getProducts || (typeof window !== 'undefined' ? window.getProducts : null);
+    const getUserByIdFn =
+      deps.getUserById || (typeof window !== 'undefined' ? window.getUserById : null);
     const sendTrackingEmailFn = deps.sendTrackingEmail || defaultSendTrackingEmail;
     const generateTrackingNumberFn = deps.generateTrackingNumber || defaultGenerateTrackingNumber;
     const orderModel = getOrderModel(deps.orderModel);
@@ -483,10 +496,16 @@
     const adminUserId = deps.adminUserId || null;
 
     if (typeof getOrderByIdFn !== 'function' || typeof updateOrderFn !== 'function') {
-      return { success: false, error: 'Data layer unavailable (getOrderById/updateOrder not found)' };
+      return {
+        success: false,
+        error: 'Data layer unavailable (getOrderById/updateOrder not found)'
+      };
     }
     if (!orderModel || typeof orderModel.canTransition !== 'function') {
-      return { success: false, error: 'Order state machine unavailable (js/lib/order.js not loaded)' };
+      return {
+        success: false,
+        error: 'Order state machine unavailable (js/lib/order.js not loaded)'
+      };
     }
 
     // 1. Load order.
@@ -506,7 +525,11 @@
       treatMissingAsDepleted: false
     });
     if (!shippable.shippable) {
-      const keys = shippable.blockedItems.map(function (b) { return b.key; }).join(', ');
+      const keys = shippable.blockedItems
+        .map(function (b) {
+          return b.key;
+        })
+        .join(', ');
       return {
         success: false,
         error: 'Cannot mark as shipped: inventory depleted for item(s): ' + keys,
@@ -541,7 +564,9 @@
       try {
         const user = await getUserByIdFn(order.userId);
         recipient = user && user.email ? user.email : null;
-      } catch (e) { /* email lookup is best-effort */ }
+      } catch (e) {
+        /* email lookup is best-effort */
+      }
     }
     let emailed = false;
     try {
@@ -559,7 +584,8 @@
     // 4c. Audit (Req 17.8 / Property 23).
     await writeAudit(audit, {
       adminUserId: adminUserId,
-      operationType: audit && audit.OPERATION_TYPES ? audit.OPERATION_TYPES.MARK_SHIPPED : 'mark_shipped',
+      operationType:
+        audit && audit.OPERATION_TYPES ? audit.OPERATION_TYPES.MARK_SHIPPED : 'mark_shipped',
       entity: { type: 'order', id: orderId },
       details: { trackingNumber: trackingNumber, emailed: emailed, shippedAt: shipped.shippedAt }
     });
@@ -593,11 +619,16 @@
    */
   async function processRefund(orderId, deps) {
     deps = deps || {};
-    const getOrderByIdFn = deps.getOrderById || (typeof window !== 'undefined' ? window.getOrderById : null);
-    const updateOrderFn = deps.updateOrder || (typeof window !== 'undefined' ? window.updateOrder : null);
-    const getProductsFn = deps.getProducts || (typeof window !== 'undefined' ? window.getProducts : null);
-    const updateProductFn = deps.updateProduct || (typeof window !== 'undefined' ? window.updateProduct : null);
-    const createInventoryLogFn = deps.createInventoryLog || (typeof window !== 'undefined' ? window.createInventoryLog : null);
+    const getOrderByIdFn =
+      deps.getOrderById || (typeof window !== 'undefined' ? window.getOrderById : null);
+    const updateOrderFn =
+      deps.updateOrder || (typeof window !== 'undefined' ? window.updateOrder : null);
+    const getProductsFn =
+      deps.getProducts || (typeof window !== 'undefined' ? window.getProducts : null);
+    const updateProductFn =
+      deps.updateProduct || (typeof window !== 'undefined' ? window.updateProduct : null);
+    const createInventoryLogFn =
+      deps.createInventoryLog || (typeof window !== 'undefined' ? window.createInventoryLog : null);
     const refundViaUPIFn = deps.refundViaUPI || defaultRefundViaUPI;
     const inventoryModel = getInventoryModel(deps.inventoryModel);
     const orderModel = getOrderModel(deps.orderModel);
@@ -605,10 +636,16 @@
     const adminUserId = deps.adminUserId || null;
 
     if (typeof getOrderByIdFn !== 'function' || typeof updateOrderFn !== 'function') {
-      return { success: false, error: 'Data layer unavailable (getOrderById/updateOrder not found)' };
+      return {
+        success: false,
+        error: 'Data layer unavailable (getOrderById/updateOrder not found)'
+      };
     }
     if (!orderModel || typeof orderModel.canTransition !== 'function') {
-      return { success: false, error: 'Order state machine unavailable (js/lib/order.js not loaded)' };
+      return {
+        success: false,
+        error: 'Order state machine unavailable (js/lib/order.js not loaded)'
+      };
     }
 
     // 1. Load order.
@@ -635,7 +672,10 @@
       });
     } catch (err) {
       console.error('admin-orders: UPI refund threw:', err);
-      return { success: false, error: 'Refund failed: ' + (err && err.message ? err.message : String(err)) };
+      return {
+        success: false,
+        error: 'Refund failed: ' + (err && err.message ? err.message : String(err))
+      };
     }
     if (!refundResult || refundResult.success !== true) {
       const reason = (refundResult && refundResult.error) || 'UPI gateway returned an error';
@@ -667,7 +707,9 @@
         productsToUpdate[pid] = {
           product: product,
           variants: Array.isArray(product.variants)
-            ? product.variants.map(function (v) { return Object.assign({}, v); })
+            ? product.variants.map(function (v) {
+                return Object.assign({}, v);
+              })
             : null
         };
       }
@@ -676,19 +718,33 @@
       if (entry.variantIndex === null) {
         // Product-level stock.
         const previousStock = Number(product.stock) || 0;
-        const restored = inventoryModel && typeof inventoryModel.restoreStock === 'function'
-          ? inventoryModel.restoreStock({ stock: previousStock }, qty).stock
-          : Math.max(0, previousStock + qty);
+        const restored =
+          inventoryModel && typeof inventoryModel.restoreStock === 'function'
+            ? inventoryModel.restoreStock({ stock: previousStock }, qty).stock
+            : Math.max(0, previousStock + qty);
         bundle.productStock = restored;
-        restoredItems.push({ key: key, quantity: qty, previousStock: previousStock, newStock: restored, persisted: true });
+        restoredItems.push({
+          key: key,
+          quantity: qty,
+          previousStock: previousStock,
+          newStock: restored,
+          persisted: true
+        });
       } else {
         const variant = bundle.variants[entry.variantIndex];
         const previousStock = Number(variant.stock) || 0;
-        bundle.variants[entry.variantIndex] = inventoryModel && typeof inventoryModel.restoreStock === 'function'
-          ? inventoryModel.restoreStock(variant, qty)
-          : Object.assign({}, variant, { stock: Math.max(0, previousStock + qty) });
+        bundle.variants[entry.variantIndex] =
+          inventoryModel && typeof inventoryModel.restoreStock === 'function'
+            ? inventoryModel.restoreStock(variant, qty)
+            : Object.assign({}, variant, { stock: Math.max(0, previousStock + qty) });
         const newStock = bundle.variants[entry.variantIndex].stock;
-        restoredItems.push({ key: key, quantity: qty, previousStock: previousStock, newStock: newStock, persisted: true });
+        restoredItems.push({
+          key: key,
+          quantity: qty,
+          previousStock: previousStock,
+          newStock: newStock,
+          persisted: true
+        });
       }
     });
 
@@ -732,7 +788,10 @@
       refundedAt: typeof deps.now === 'number' ? deps.now : Date.now()
     });
     if (orderUpdate && orderUpdate.success === false) {
-      return { success: false, error: orderUpdate.error || 'Refund processed but failed to update order' };
+      return {
+        success: false,
+        error: orderUpdate.error || 'Refund processed but failed to update order'
+      };
     }
 
     // Audit (Req 17.8 / Property 23).

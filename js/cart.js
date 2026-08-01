@@ -32,7 +32,9 @@ function cartStorageLoad() {
   try {
     const parsed = JSON.parse(localStorage.getItem('punnagai_cart'));
     return parsed && Array.isArray(parsed.cart) ? parsed.cart : [];
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 function cartStorageSave(items) {
@@ -40,18 +42,27 @@ function cartStorageSave(items) {
     return PunnagaiCartStorage.saveCartToLocalStorage(items);
   }
   try {
-    localStorage.setItem('punnagai_cart', JSON.stringify({
-      cart: Array.isArray(items) ? items : [],
-      updatedAt: Date.now(),
-    }));
-  } catch { /* storage unavailable — ignore */ }
+    localStorage.setItem(
+      'punnagai_cart',
+      JSON.stringify({
+        cart: Array.isArray(items) ? items : [],
+        updatedAt: Date.now()
+      })
+    );
+  } catch {
+    /* storage unavailable — ignore */
+  }
 }
 
 function cartStorageClear() {
   if (typeof PunnagaiCartStorage !== 'undefined') {
     return PunnagaiCartStorage.clearCart();
   }
-  try { localStorage.removeItem('punnagai_cart'); } catch { /* ignore */ }
+  try {
+    localStorage.removeItem('punnagai_cart');
+  } catch {
+    /* ignore */
+  }
 }
 
 function cartItemKey(item) {
@@ -59,8 +70,12 @@ function cartItemKey(item) {
     return PunnagaiCartLogic.itemKey(item);
   }
   const pid = item && item.productId != null ? String(item.productId) : '';
-  const variant = item && item.variantId != null ? String(item.variantId)
-    : (item && item.skuId != null ? String(item.skuId) : '');
+  const variant =
+    item && item.variantId != null
+      ? String(item.variantId)
+      : item && item.skuId != null
+        ? String(item.skuId)
+        : '';
   return pid + '::' + variant;
 }
 
@@ -71,7 +86,7 @@ function cartAddItem(items, item) {
   const current = Array.isArray(items) ? items.slice() : [];
   const key = cartItemKey(item);
   const addQty = Math.max(1, Math.floor(Number(item.quantity)) || 1);
-  const existing = current.find(i => cartItemKey(i) === key);
+  const existing = current.find((i) => cartItemKey(i) === key);
   if (existing) {
     existing.quantity = (Math.floor(Number(existing.quantity)) || 1) + addQty;
   } else {
@@ -88,7 +103,7 @@ function cartUpdateQuantity(items, key, quantity, stock) {
   if (Number.isFinite(Number(stock)) && Number(stock) >= 1 && next > Number(stock)) {
     next = Math.floor(Number(stock));
   }
-  return (Array.isArray(items) ? items : []).map(i =>
+  return (Array.isArray(items) ? items : []).map((i) =>
     cartItemKey(i) === key ? Object.assign({}, i, { quantity: next }) : i
   );
 }
@@ -97,7 +112,7 @@ function cartRemoveItem(items, key) {
   if (typeof PunnagaiCartLogic !== 'undefined') {
     return PunnagaiCartLogic.removeItem(items, key);
   }
-  return (Array.isArray(items) ? items : []).filter(i => cartItemKey(i) !== key);
+  return (Array.isArray(items) ? items : []).filter((i) => cartItemKey(i) !== key);
 }
 
 function cartCalculateSubtotal(items) {
@@ -105,7 +120,8 @@ function cartCalculateSubtotal(items) {
     return PunnagaiCartLogic.calculateSubtotal(items);
   }
   return (Array.isArray(items) ? items : []).reduce(
-    (sum, i) => sum + (Number(i.price) || 0) * (Math.floor(Number(i.quantity)) || 0), 0
+    (sum, i) => sum + (Number(i.price) || 0) * (Math.floor(Number(i.quantity)) || 0),
+    0
   );
 }
 
@@ -137,13 +153,16 @@ function saveCart(cart) {
 function addToCart(product, quantity = 1, variant = null) {
   const snapshot = {
     productId: product.id,
-    variantId: (variant && variant.variantId) ? variant.variantId : (product.variantId || ''),
-    name: product.name + (variant && variant.size ? ` - ${variant.size}` : '') + (variant && variant.color ? ` - ${variant.color}` : ''),
-    price: (variant && variant.price !== undefined) ? variant.price : product.price,
+    variantId: variant && variant.variantId ? variant.variantId : product.variantId || '',
+    name:
+      product.name +
+      (variant && variant.size ? ` - ${variant.size}` : '') +
+      (variant && variant.color ? ` - ${variant.color}` : ''),
+    price: variant && variant.price !== undefined ? variant.price : product.price,
     imageUrl: product.imageUrl,
     category: product.category,
     ageGroup: product.ageGroup,
-    quantity,
+    quantity
   };
   // Carry numeric stock through to the cart for the max-quantity rule, if known.
   if (variant && Number.isFinite(Number(variant.stock))) {
@@ -327,9 +346,10 @@ function renderCartSummaryHtml(cart) {
 
   const total = Math.max(0, subtotal - discountAmount);
 
-  const discountRow = discountAmount > 0
-    ? `<div class="summary-row summary-discount"><span>Discount (${escapeHtml(appliedCouponCode)})</span><span>−${formatPrice(discountAmount)}</span></div>`
-    : '';
+  const discountRow =
+    discountAmount > 0
+      ? `<div class="summary-row summary-discount"><span>Discount (${escapeHtml(appliedCouponCode)})</span><span>−${formatPrice(discountAmount)}</span></div>`
+      : '';
 
   const feedbackHtml = couponFeedback
     ? `<div class="coupon-feedback coupon-feedback-${couponFeedback.type}">${escapeHtml(couponFeedback.message)}</div>`
@@ -410,7 +430,7 @@ function wireCartInteractions(itemsContainer, summaryContainer) {
     const action = btn.getAttribute('data-action');
 
     const cart = getCart();
-    const item = cart.find(i => cartItemKey(i) === key);
+    const item = cart.find((i) => cartItemKey(i) === key);
     if (!item && action !== 'remove') return;
 
     if (action === 'inc') {
@@ -434,7 +454,10 @@ function wireCartInteractions(itemsContainer, summaryContainer) {
   if (couponBtn) couponBtn.addEventListener('click', applyCouponFromInput);
   if (couponInput) {
     couponInput.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') { e.preventDefault(); applyCouponFromInput(); }
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        applyCouponFromInput();
+      }
     });
   }
 
@@ -451,14 +474,19 @@ function wireCartInteractions(itemsContainer, summaryContainer) {
         if (appliedCouponCode && appliedCouponRecord) {
           const cart = getCart();
           const res = cartValidateCoupon(appliedCouponCode, cart, appliedCouponRecord);
-          sessionStorage.setItem('punnagai_checkout_coupon', JSON.stringify({
-            code: appliedCouponCode,
-            discount: res.valid ? res.discountAmount : 0
-          }));
+          sessionStorage.setItem(
+            'punnagai_checkout_coupon',
+            JSON.stringify({
+              code: appliedCouponCode,
+              discount: res.valid ? res.discountAmount : 0
+            })
+          );
         } else {
           sessionStorage.removeItem('punnagai_checkout_coupon');
         }
-      } catch (_) { /* ignore storage errors */ }
+      } catch (_) {
+        /* ignore storage errors */
+      }
       window.location.href = 'checkout.html';
     });
   }
@@ -483,7 +511,11 @@ async function applyCouponFromInput() {
 
   let coupon = null;
   if (typeof getCouponByCode === 'function') {
-    try { coupon = await getCouponByCode(code); } catch { coupon = null; }
+    try {
+      coupon = await getCouponByCode(code);
+    } catch {
+      coupon = null;
+    }
   }
 
   const result = cartValidateCoupon(code, cart, coupon);
@@ -492,13 +524,16 @@ async function applyCouponFromInput() {
     appliedCouponRecord = coupon;
     couponFeedback = {
       message: `Coupon "${code}" applied — you saved ${formatPrice(result.discountAmount)}!`,
-      type: 'success',
+      type: 'success'
     };
     showToast('Coupon applied!', 'success');
   } else {
     appliedCouponCode = '';
     appliedCouponRecord = null;
-    couponFeedback = { message: result.reason || 'Coupon code not found or expired', type: 'error' };
+    couponFeedback = {
+      message: result.reason || 'Coupon code not found or expired',
+      type: 'error'
+    };
   }
   renderCartPage();
 }
@@ -510,12 +545,14 @@ async function applyCouponFromInput() {
 function updateCartBadge() {
   const count = getCartCount();
   const badges = document.querySelectorAll('.cart-badge');
-  badges.forEach(badge => {
+  badges.forEach((badge) => {
     badge.textContent = count;
     badge.style.display = count > 0 ? 'flex' : 'none';
   });
   const mobileBadges = document.querySelectorAll('.cart-badge-mobile');
-  mobileBadges.forEach(badge => { badge.textContent = count; });
+  mobileBadges.forEach((badge) => {
+    badge.textContent = count;
+  });
 }
 
 // Initialize badge on load

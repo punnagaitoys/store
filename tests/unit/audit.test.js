@@ -21,11 +21,7 @@ describe('audit.buildAuditEntry — pure builder', () => {
     );
     // Discount & coupon management operations (Requirement 11).
     expect(audit.ALLOWED_OPERATION_TYPES).toEqual(
-      expect.arrayContaining([
-        'create_discount',
-        'create_coupon',
-        'deactivate_coupon'
-      ])
+      expect.arrayContaining(['create_discount', 'create_coupon', 'deactivate_coupon'])
     );
   });
 
@@ -61,14 +57,19 @@ describe('audit.buildAuditEntry — pure builder', () => {
   });
 
   test('throws on an operationType outside the allowed set', () => {
-    expect(() => audit.buildAuditEntry({ operationType: 'launch_rocket' })).toThrow(/invalid operationType/);
+    expect(() => audit.buildAuditEntry({ operationType: 'launch_rocket' })).toThrow(
+      /invalid operationType/
+    );
   });
 
   test('normalizes a bare string/number entity into an object with id', () => {
-    expect(audit.buildAuditEntry({ operationType: 'delete_product', entity: 'p9' }).entity)
-      .toEqual({ type: null, id: 'p9' });
-    expect(audit.buildAuditEntry({ operationType: 'delete_product', entity: 7 }).entity)
-      .toEqual({ type: null, id: '7' });
+    expect(audit.buildAuditEntry({ operationType: 'delete_product', entity: 'p9' }).entity).toEqual(
+      { type: null, id: 'p9' }
+    );
+    expect(audit.buildAuditEntry({ operationType: 'delete_product', entity: 7 }).entity).toEqual({
+      type: null,
+      id: '7'
+    });
   });
 
   test('always provides entity and details objects even when omitted', () => {

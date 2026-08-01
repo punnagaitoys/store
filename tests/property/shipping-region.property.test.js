@@ -31,7 +31,7 @@ const {
   LOCAL_PIN_MIN,
   LOCAL_PIN_MAX,
   TN_PIN_MIN,
-  TN_PIN_MAX,
+  TN_PIN_MAX
 } = shipping;
 
 // A valid Indian PIN: 6 digits, leading digit 1-9 → integer 100000..999999.
@@ -114,7 +114,7 @@ describe('Property 15: Shipping Methods Match Region (Req 6.4, 7.1)', () => {
             id: match.id,
             label: match.label,
             cost: match.cost,
-            estimatedDays: match.estimatedDays,
+            estimatedDays: match.estimatedDays
           });
         });
       })

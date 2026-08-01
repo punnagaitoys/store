@@ -1,6 +1,6 @@
 /**
  * admin-ui.js — UI Controllers for Admin Panel extensions
- * 
+ *
  * Binds the DOM elements in admin.html to the underlying pure/glue logic in
  * admin-inventory.js, admin-orders.js, admin-coupons.js, and admin-categories.js.
  */
@@ -9,8 +9,10 @@
   'use strict';
 
   // --- Utility ---
-  function el(id) { return document.getElementById(id); }
-  
+  function el(id) {
+    return document.getElementById(id);
+  }
+
   function showToast(msg, type = 'info') {
     if (window.showToast) {
       window.showToast(msg, type);
@@ -33,8 +35,11 @@
 
   function escapeHtml(str) {
     return String(str == null ? '' : str)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 
   // ==========================================================================
@@ -43,7 +48,7 @@
   function initInventory() {
     const btnDownload = el('btn-download-template');
     const btnProcess = el('btn-process-inventory');
-    
+
     if (btnDownload) {
       btnDownload.onclick = () => {
         if (window.PunnagaiAdminInventory) {
@@ -64,7 +69,7 @@
         const resultsDiv = el('inventory-upload-results');
         const text = el('process-inventory-text');
         const spinner = el('process-inventory-spinner');
-        
+
         text.style.display = 'none';
         spinner.style.display = 'block';
         btnProcess.disabled = true;
@@ -73,7 +78,7 @@
         try {
           const res = await window.PunnagaiAdminInventory.uploadInventoryFile(file);
           resultsDiv.style.display = 'block';
-          
+
           if (res.success) {
             resultsDiv.style.backgroundColor = 'var(--success-bg)';
             resultsDiv.style.border = '1px solid var(--success)';
@@ -87,7 +92,7 @@
             let html = `<strong>Upload Failed</strong><br>${escapeHtml(res.error || 'Unknown error')}`;
             if (res.failedRows && res.failedRows.length > 0) {
               html += `<ul style="margin-top:10px; padding-left:20px;">`;
-              res.failedRows.forEach(r => {
+              res.failedRows.forEach((r) => {
                 html += `<li>Row ${r.row}: SKU ${escapeHtml(r.sku)} - ${escapeHtml(r.reason)}</li>`;
               });
               html += `</ul>`;
@@ -115,8 +120,9 @@
     const countEl = el('orders-section-count');
     if (!tbody || !window.PunnagaiAdminOrders) return;
 
-    tbody.innerHTML = '<tr><td colspan="6" class="table-loading-cell"><div class="loading-spinner" style="margin:auto"></div></td></tr>';
-    
+    tbody.innerHTML =
+      '<tr><td colspan="6" class="table-loading-cell"><div class="loading-spinner" style="margin:auto"></div></td></tr>';
+
     try {
       const res = await window.PunnagaiAdminOrders.loadOrders();
       if (res && res.success) {
@@ -141,21 +147,22 @@
     }
 
     let html = '';
-    orders.forEach(o => {
+    orders.forEach((o) => {
       const customer = window.PunnagaiAdminOrders.orderCustomerName(o);
       const total = Number(o.total || 0).toLocaleString('en-IN');
       const status = (o.status || 'pending').toLowerCase();
       const statusClass = `badge-${status.replace(' ', '-')}`;
-      
+
       let actions = `<button class="btn btn-outline btn-sm" onclick="window.AdminUI.openOrderModal('${o.id}')">View</button>`;
-      
-      const checkboxStr = (status === 'pending' || status === 'confirmed')
-        ? `<input type="checkbox" class="order-checkbox" value="${escapeHtml(o.id)}" onchange="if(window.AdminUI) window.AdminUI.updateBulkShipButton()">`
-        : '';
+
+      const checkboxStr =
+        status === 'pending' || status === 'confirmed'
+          ? `<input type="checkbox" class="order-checkbox" value="${escapeHtml(o.id)}" onchange="if(window.AdminUI) window.AdminUI.updateBulkShipButton()">`
+          : '';
 
       html += `<tr>
         <td>${checkboxStr}</td>
-        <td>#${escapeHtml(o.id.substring(0,8))}</td>
+        <td>#${escapeHtml(o.id.substring(0, 8))}</td>
         <td>${formatDate(o.createdAt)}</td>
         <td>${escapeHtml(customer)}</td>
         <td>₹${total}</td>
@@ -163,7 +170,7 @@
         <td>${actions}</td>
       </tr>`;
     });
-    
+
     tbody.innerHTML = html;
     updateBulkShipButton();
   }
@@ -171,7 +178,7 @@
   function toggleSelectAllOrders(event) {
     const isChecked = event.target.checked;
     const checkboxes = document.querySelectorAll('.order-checkbox');
-    checkboxes.forEach(cb => cb.checked = isChecked);
+    checkboxes.forEach((cb) => (cb.checked = isChecked));
     updateBulkShipButton();
   }
 
@@ -180,21 +187,28 @@
     if (!btn) return;
     const checked = document.querySelectorAll('.order-checkbox:checked').length;
     btn.disabled = checked === 0;
-    btn.textContent = checked > 0 ? `Mark ${checked} Selected as Shipped` : 'Mark Selected as Shipped';
+    btn.textContent =
+      checked > 0 ? `Mark ${checked} Selected as Shipped` : 'Mark Selected as Shipped';
   }
 
   async function bulkMarkShipped() {
-    const checked = Array.from(document.querySelectorAll('.order-checkbox:checked')).map(cb => cb.value);
+    const checked = Array.from(document.querySelectorAll('.order-checkbox:checked')).map(
+      (cb) => cb.value
+    );
     if (checked.length === 0) return;
     if (!confirm(`Mark ${checked.length} orders as shipped?`)) return;
 
     let successCount = 0;
     for (const id of checked) {
       try {
-        const res = await window.PunnagaiAdminOrders.markOrderShipped(id, 'TRACK-BULK-' + Date.now(), 'user@example.com');
+        const res = await window.PunnagaiAdminOrders.markOrderShipped(
+          id,
+          'TRACK-BULK-' + Date.now(),
+          'user@example.com'
+        );
         if (res.success) successCount++;
       } catch (err) {
-        console.error("Failed to bulk ship order", id, err);
+        console.error('Failed to bulk ship order', id, err);
       }
     }
     showToast(`Successfully marked ${successCount}/${checked.length} orders as shipped`, 'success');
@@ -207,7 +221,7 @@
     if (!window.PunnagaiAdminOrders) return;
     const term = (el('admin-orders-search')?.value || '').trim();
     const status = el('admin-orders-status-filter')?.value || '';
-    
+
     let filtered = allOrders;
     if (status) {
       filtered = window.PunnagaiAdminOrders.filterOrdersByStatus(filtered, status);
@@ -228,7 +242,11 @@
   async function actionMarkShipped(orderId) {
     if (!confirm('Mark this order as shipped and send tracking link?')) return;
     try {
-      const res = await window.PunnagaiAdminOrders.markOrderShipped(orderId, 'TRACK-' + Date.now(), 'user@example.com');
+      const res = await window.PunnagaiAdminOrders.markOrderShipped(
+        orderId,
+        'TRACK-' + Date.now(),
+        'user@example.com'
+      );
       if (res.success) {
         showToast('Order marked as shipped!', 'success');
         closeOrderModal();
@@ -244,7 +262,7 @@
   async function actionRefund(orderId) {
     if (!confirm('Process refund? This will attempt a UPI refund and restore inventory.')) return;
     try {
-      const order = allOrders.find(o => o.id === orderId);
+      const order = allOrders.find((o) => o.id === orderId);
       const res = await window.PunnagaiAdminOrders.processRefund(order);
       if (res.success) {
         showToast('Refund processed successfully!', 'success');
@@ -259,15 +277,15 @@
   }
 
   function openOrderModal(orderId) {
-    const order = allOrders.find(o => o.id === orderId);
+    const order = allOrders.find((o) => o.id === orderId);
     if (!order) return;
-    
+
     const content = el('order-modal-content');
     const modal = el('order-modal');
     if (!content || !modal) return;
 
     let itemsHtml = '<ul style="list-style:none; padding:0; margin:10px 0;">';
-    (order.items || []).forEach(it => {
+    (order.items || []).forEach((it) => {
       itemsHtml += `<li style="padding:8px 0; border-bottom:1px solid var(--border)">
         <strong>${escapeHtml(it.name || 'Product')}</strong> x${it.quantity}
         <br><small class="text-secondary">SKU: ${escapeHtml(it.skuId || 'N/A')}</small>
@@ -277,12 +295,12 @@
 
     let actionButtons = '';
     const status = (order.status || '').toLowerCase();
-    
+
     if (status === 'confirmed' || status === 'pending') {
       actionButtons += `<button class="btn btn-primary" onclick="window.AdminUI.actionMarkShipped('${order.id}')">Mark Shipped</button>`;
       actionButtons += `<button class="btn btn-outline" style="margin-left:10px" onclick="window.AdminUI.actionRefund('${order.id}')">Refund Order</button>`;
     } else if (status === 'cancelled') {
-       actionButtons += `<button class="btn btn-outline" onclick="window.AdminUI.actionRefund('${order.id}')">Process Refund</button>`;
+      actionButtons += `<button class="btn btn-outline" onclick="window.AdminUI.actionRefund('${order.id}')">Process Refund</button>`;
     }
 
     content.innerHTML = `
@@ -321,9 +339,10 @@
   async function loadCoupons() {
     const tbody = el('admin-coupons-table-body');
     if (!tbody || !window.PunnagaiAdminCoupons) return;
-    
-    tbody.innerHTML = '<tr><td colspan="6" class="table-loading-cell"><div class="loading-spinner" style="margin:auto"></div></td></tr>';
-    
+
+    tbody.innerHTML =
+      '<tr><td colspan="6" class="table-loading-cell"><div class="loading-spinner" style="margin:auto"></div></td></tr>';
+
     try {
       const res = await window.PunnagaiAdminCoupons.listActiveCoupons();
       if (res && res.success) {
@@ -341,16 +360,18 @@
     if (!tbody) return;
 
     if (!coupons || coupons.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" class="text-center">No active coupons found.</td></tr>';
+      tbody.innerHTML =
+        '<tr><td colspan="6" class="text-center">No active coupons found.</td></tr>';
       return;
     }
 
     let html = '';
-    coupons.forEach(c => {
-      const discount = c.discountType === 'percentage' ? `${c.discountValue}%` : `₹${c.discountValue}`;
+    coupons.forEach((c) => {
+      const discount =
+        c.discountType === 'percentage' ? `${c.discountValue}%` : `₹${c.discountValue}`;
       const usage = `${c.usageCount || 0} / ${c.usageLimit || '∞'}`;
       const expiry = c.expiryDate ? new Date(c.expiryDate).toLocaleDateString() : 'Never';
-      
+
       html += `<tr>
         <td><strong>${escapeHtml(c.code)}</strong></td>
         <td>${discount}</td>
@@ -362,7 +383,7 @@
         </td>
       </tr>`;
     });
-    
+
     tbody.innerHTML = html;
   }
 
@@ -399,17 +420,18 @@
         const val = Number(el('coupon-value').value);
         const limit = Number(el('coupon-limit').value);
         const exp = el('coupon-expiry').value;
-        
+
         const btn = el('btn-submit-coupon');
         btn.disabled = true;
 
         try {
           const res = await window.PunnagaiAdminCoupons.createCouponCode(
-            type, val,
+            type,
+            val,
             exp ? new Date(exp).getTime() : null,
             limit
           );
-          
+
           if (res.success) {
             showToast(`Coupon created: ${res.code}`, 'success');
             closeCouponModal();
@@ -433,18 +455,19 @@
   async function loadCategories() {
     const tbody = el('admin-categories-table-body');
     if (!tbody || !window.AdminCategories) return;
-    
-    tbody.innerHTML = '<tr><td colspan="3" class="table-loading-cell"><div class="loading-spinner" style="margin:auto"></div></td></tr>';
-    
+
+    tbody.innerHTML =
+      '<tr><td colspan="3" class="table-loading-cell"><div class="loading-spinner" style="margin:auto"></div></td></tr>';
+
     try {
       const res = await window.AdminCategories.listCategoriesWithCounts();
       if (!res || res.length === 0) {
         tbody.innerHTML = '<tr><td colspan="3" class="text-center">No categories found.</td></tr>';
         return;
       }
-      
+
       let html = '';
-      res.forEach(c => {
+      res.forEach((c) => {
         html += `<tr>
           <td>${escapeHtml(c.name)}</td>
           <td>${c.productCount || 0}</td>
@@ -460,24 +483,25 @@
   async function loadBanners() {
     const tbody = el('admin-banners-table-body');
     if (!tbody || !window.AdminCategories) return;
-    
-    tbody.innerHTML = '<tr><td colspan="3" class="table-loading-cell"><div class="loading-spinner" style="margin:auto"></div></td></tr>';
-    
+
+    tbody.innerHTML =
+      '<tr><td colspan="3" class="table-loading-cell"><div class="loading-spinner" style="margin:auto"></div></td></tr>';
+
     try {
       let banners = [];
       if (typeof window.getBanners === 'function') {
-         banners = await window.getBanners({}); // data.js function
+        banners = await window.getBanners({}); // data.js function
       } else {
-         banners = await window.AdminCategories.listActiveBanners();
+        banners = await window.AdminCategories.listActiveBanners();
       }
 
       if (!banners || banners.length === 0) {
         tbody.innerHTML = '<tr><td colspan="3" class="text-center">No banners found.</td></tr>';
         return;
       }
-      
+
       let html = '';
-      banners.forEach(b => {
+      banners.forEach((b) => {
         html += `<tr>
           <td><img src="${escapeHtml(b.imageUrl)}" style="height:40px; border-radius:4px" alt="Banner"></td>
           <td><span class="badge ${b.active ? 'badge-success' : 'badge-error'}">${b.active ? 'Yes' : 'No'}</span></td>
@@ -524,7 +548,7 @@
           } else {
             showToast('Failed to create category: ' + res.error, 'error');
           }
-        } catch(err) {
+        } catch (err) {
           showToast('Error creating category', 'error');
         } finally {
           btn.disabled = false;
@@ -549,7 +573,7 @@
           } else {
             showToast('Failed to create banner: ' + res.error, 'error');
           }
-        } catch(err) {
+        } catch (err) {
           showToast('Error creating banner', 'error');
         } finally {
           btn.disabled = false;
@@ -558,11 +582,10 @@
     }
   }
 
-
   // ==========================================================================
   // DASHBOARD & AUDIT LOGS
   // ==========================================================================
-  
+
   let chartInstance = null;
 
   async function loadDashboardCharts() {
@@ -571,15 +594,22 @@
       const res = await window.PunnagaiAdminOrders.loadOrders();
       if (res && res.success) {
         const orders = res.orders || [];
-        const statusCounts = { pending: 0, confirmed: 0, shipped: 0, delivered: 0, cancelled: 0, refunded: 0 };
-        orders.forEach(o => {
+        const statusCounts = {
+          pending: 0,
+          confirmed: 0,
+          shipped: 0,
+          delivered: 0,
+          cancelled: 0,
+          refunded: 0
+        };
+        orders.forEach((o) => {
           const s = (o.status || 'pending').toLowerCase();
           if (statusCounts[s] !== undefined) statusCounts[s]++;
         });
 
         const ctx = el('ordersChart');
         if (!ctx) return;
-        
+
         if (chartInstance) {
           chartInstance.destroy();
         }
@@ -588,13 +618,19 @@
           type: 'doughnut',
           data: {
             labels: ['Pending', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled', 'Refunded'],
-            datasets: [{
-              data: [
-                statusCounts.pending, statusCounts.confirmed, statusCounts.shipped,
-                statusCounts.delivered, statusCounts.cancelled, statusCounts.refunded
-              ],
-              backgroundColor: ['#f59e0b', '#3b82f6', '#8b5cf6', '#10b981', '#ef4444', '#6b7280']
-            }]
+            datasets: [
+              {
+                data: [
+                  statusCounts.pending,
+                  statusCounts.confirmed,
+                  statusCounts.shipped,
+                  statusCounts.delivered,
+                  statusCounts.cancelled,
+                  statusCounts.refunded
+                ],
+                backgroundColor: ['#f59e0b', '#3b82f6', '#8b5cf6', '#10b981', '#ef4444', '#6b7280']
+              }
+            ]
           },
           options: {
             responsive: true,
@@ -603,7 +639,7 @@
           }
         });
       }
-    } catch(err) {
+    } catch (err) {
       console.error('Failed to load charts', err);
     }
   }
@@ -611,19 +647,22 @@
   function loadLowStock(adminProducts) {
     const tbody = el('low-stock-table-body');
     if (!tbody || !adminProducts) return;
-    
-    const lowStock = adminProducts.filter(p => p.quantity < 5).sort((a,b) => a.quantity - b.quantity);
-    
+
+    const lowStock = adminProducts
+      .filter((p) => p.quantity < 5)
+      .sort((a, b) => a.quantity - b.quantity);
+
     if (lowStock.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="3" class="text-center">Inventory levels are healthy!</td></tr>';
+      tbody.innerHTML =
+        '<tr><td colspan="3" class="text-center">Inventory levels are healthy!</td></tr>';
       return;
     }
 
     let html = '';
-    lowStock.forEach(p => {
+    lowStock.forEach((p) => {
       const isOut = p.quantity <= 0;
       html += `<tr>
-        <td>${escapeHtml(p.skuId || p.id.substring(0,8))}</td>
+        <td>${escapeHtml(p.skuId || p.id.substring(0, 8))}</td>
         <td>${escapeHtml(p.name)}</td>
         <td style="color:${isOut ? 'var(--error)' : 'var(--warning)'}; font-weight:bold">${p.quantity}</td>
       </tr>`;
@@ -634,31 +673,35 @@
   async function loadAuditLogs() {
     const tbody = el('admin-audit-table-body');
     if (!tbody || !window.getAuditLogs) return;
-    
-    tbody.innerHTML = '<tr><td colspan="5" class="table-loading-cell"><div class="loading-spinner" style="margin:auto"></div></td></tr>';
+
+    tbody.innerHTML =
+      '<tr><td colspan="5" class="table-loading-cell"><div class="loading-spinner" style="margin:auto"></div></td></tr>';
     try {
       const logs = await window.getAuditLogs();
       if (!logs || logs.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" class="text-center">No logs found.</td></tr>';
         return;
       }
-      
+
       let html = '';
-      logs.forEach(log => {
+      logs.forEach((log) => {
         let details = '';
         if (log.payload) {
-          try { details = JSON.stringify(log.payload); } 
-          catch(e) { details = String(log.payload); }
+          try {
+            details = JSON.stringify(log.payload);
+          } catch (e) {
+            details = String(log.payload);
+          }
         }
-        
+
         const typeStr = log.entity && log.entity.type ? log.entity.type : 'N/A';
         const idStr = log.entity && log.entity.id ? log.entity.id : 'N/A';
-        
+
         html += `<tr>
           <td>${formatDate(log.timestamp)}</td>
           <td>${escapeHtml(log.adminEmail || log.adminUid || 'Unknown')}</td>
           <td><span class="badge badge-pending">${escapeHtml(log.operationType)}</span></td>
-          <td>${escapeHtml(typeStr)} (${escapeHtml(String(idStr).substring(0,8))})</td>
+          <td>${escapeHtml(typeStr)} (${escapeHtml(String(idStr).substring(0, 8))})</td>
           <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${escapeHtml(details)}">
             ${escapeHtml(details)}
           </td>
@@ -667,10 +710,10 @@
       tbody.innerHTML = html;
     } catch (err) {
       console.error(err);
-      tbody.innerHTML = '<tr><td colspan="5" class="text-error text-center">Failed to load audit logs.</td></tr>';
+      tbody.innerHTML =
+        '<tr><td colspan="5" class="text-error text-center">Failed to load audit logs.</td></tr>';
     }
   }
-
 
   // ==========================================================================
   // HOME PAGE YOUTUBE VIDEOS (Req 19)
@@ -692,24 +735,27 @@
         id: 'hv_1',
         videoId: 'dQw4w9WgXcQ',
         title: 'Welcome to Punnagai Toy Store Mylapore',
-        description: 'Take a virtual tour of Mylapore\'s favorite toy destination and discover our magical range.'
+        description:
+          "Take a virtual tour of Mylapore's favorite toy destination and discover our magical range."
       },
       {
         id: 'hv_2',
         videoId: 'M7lc1UVf-VE',
         title: 'Top Educational & STEM Toys for Kids',
-        description: 'Discover how learning meets fun with our age-tested STEM and educational toys.'
+        description:
+          'Discover how learning meets fun with our age-tested STEM and educational toys.'
       },
       {
         id: 'hv_3',
         videoId: 'tgbNymZ7vqY',
         title: 'Wooden Toys & Traditional Games Showcase',
-        description: 'Explore eco-friendly wooden toys crafted for safety, creativity and durability.'
+        description:
+          'Explore eco-friendly wooden toys crafted for safety, creativity and durability.'
       }
     ];
     try {
       localStorage.setItem('Punnagai_HomeVideos', JSON.stringify(defaults));
-    } catch(e){}
+    } catch (e) {}
     return defaults;
   }
 
@@ -719,8 +765,10 @@
     if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
       return trimmed;
     }
-    const match = trimmed.match(/(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-    return (match && match[1]) ? match[1] : trimmed.substring(0, 11);
+    const match = trimmed.match(
+      /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+    );
+    return match && match[1] ? match[1] : trimmed.substring(0, 11);
   }
 
   function loadHomeVideos() {
@@ -733,7 +781,8 @@
     if (!tbody) return;
 
     if (!videos || videos.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="4" class="text-muted text-center">No home page videos added yet. Click "+ Add New Video" to get started.</td></tr>';
+      tbody.innerHTML =
+        '<tr><td colspan="4" class="text-muted text-center">No home page videos added yet. Click "+ Add New Video" to get started.</td></tr>';
       return;
     }
 
@@ -779,7 +828,7 @@
 
     if (id) {
       const videos = getAdminHomeVideos();
-      const target = videos.find(v => v.id === id);
+      const target = videos.find((v) => v.id === id);
       if (target) {
         if (titleEl) titleEl.textContent = 'Edit YouTube Video';
         el('hv-id').value = target.id;
@@ -821,7 +870,7 @@
 
     const videos = getAdminHomeVideos();
     if (idVal) {
-      const index = videos.findIndex(v => v.id === idVal);
+      const index = videos.findIndex((v) => v.id === idVal);
       if (index > -1) {
         videos[index] = {
           id: idVal,
@@ -848,7 +897,7 @@
   function deleteHomeVideo(id) {
     if (!confirm('Are you sure you want to remove this video from the Home Page?')) return;
     let videos = getAdminHomeVideos();
-    videos = videos.filter(v => v.id !== id);
+    videos = videos.filter((v) => v.id !== id);
     localStorage.setItem('Punnagai_HomeVideos', JSON.stringify(videos));
     showToast('Video removed from Home Page.', 'success');
     renderHomeVideosTable(videos);
@@ -862,11 +911,10 @@
     renderHomeVideosTable(videos);
   }
 
-
   // ==========================================================================
   // EXPORTS
   // ==========================================================================
-  
+
   // Expose methods for the global namespace so they can be called from admin.js
   // and inline onclick handlers.
   window.AdminUI = {
@@ -875,7 +923,7 @@
     initOrders,
     initCoupons,
     initCategories,
-    
+
     // Lazy Loaders (called when switching tabs)
     loadOrders,
     loadCoupons,
@@ -915,5 +963,4 @@
     initCoupons();
     initCategories();
   });
-
 })();

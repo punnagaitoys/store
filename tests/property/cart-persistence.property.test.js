@@ -42,7 +42,7 @@ function createLocalStorageShim() {
     },
     get length() {
       return data.size;
-    },
+    }
   };
 }
 
@@ -51,7 +51,7 @@ const cartItemArb = fc.record({
   productId: fc.string(),
   variantId: fc.string(),
   quantity: fc.integer({ min: 1, max: 10 }),
-  price: fc.integer({ min: 1, max: 5000 }),
+  price: fc.integer({ min: 1, max: 5000 })
 });
 
 // A cart of 0..20 line items.

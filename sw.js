@@ -49,7 +49,7 @@ function shouldBypass(request) {
   try {
     const url = new URL(request.url);
     if (request.method !== 'GET') return true;
-    if (BYPASS_HOSTS.some(host => url.hostname.includes(host))) return true;
+    if (BYPASS_HOSTS.some((host) => url.hostname.includes(host))) return true;
     if (url.pathname.includes('/firestore/')) return true;
     return false;
   } catch (e) {
@@ -66,12 +66,17 @@ function isHtmlRequest(request) {
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      // Non-fatal: if some precache URLs 404, don't block install
-      return Promise.allSettled(
-        PRECACHE_URLS.map(url => cache.add(url).catch(e => console.warn('[SW] Precache failed:', url, e)))
-      );
-    }).then(() => self.skipWaiting())
+    caches
+      .open(CACHE_NAME)
+      .then((cache) => {
+        // Non-fatal: if some precache URLs 404, don't block install
+        return Promise.allSettled(
+          PRECACHE_URLS.map((url) =>
+            cache.add(url).catch((e) => console.warn('[SW] Precache failed:', url, e))
+          )
+        );
+      })
+      .then(() => self.skipWaiting())
   );
 });
 
@@ -79,11 +84,14 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
-      );
-    }).then(() => self.clients.claim())
+    caches
+      .keys()
+      .then((keys) => {
+        return Promise.all(
+          keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+        );
+      })
+      .then(() => self.clients.claim())
   );
 });
 
@@ -103,14 +111,13 @@ self.addEventListener('fetch', (event) => {
           // Cache a fresh copy on success
           if (response.ok) {
             const clone = response.clone();
-            caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
           }
           return response;
         })
         .catch(() => {
           // Offline: serve cached version or the offline fallback
-          return caches.match(request)
-            .then(cached => cached || caches.match(OFFLINE_PAGE));
+          return caches.match(request).then((cached) => cached || caches.match(OFFLINE_PAGE));
         })
     );
   } else {
@@ -119,12 +126,16 @@ self.addEventListener('fetch', (event) => {
       caches.match(request).then((cached) => {
         if (cached) {
           // Serve from cache and refresh in background
-          const networkFetch = fetch(request).then((response) => {
-            if (response.ok) {
-              caches.open(CACHE_NAME).then(cache => cache.put(request, response.clone()));
-            }
-            return response;
-          }).catch(() => {/* network unavailable — cache serves */});
+          const networkFetch = fetch(request)
+            .then((response) => {
+              if (response.ok) {
+                caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
+              }
+              return response;
+            })
+            .catch(() => {
+              /* network unavailable — cache serves */
+            });
           // Return cached immediately without waiting
           return cached;
         }
@@ -132,7 +143,7 @@ self.addEventListener('fetch', (event) => {
         return fetch(request).then((response) => {
           if (response.ok) {
             const clone = response.clone();
-            caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
           }
           return response;
         });

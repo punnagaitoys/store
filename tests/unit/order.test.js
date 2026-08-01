@@ -147,10 +147,16 @@ describe('isDuplicateOrder (Req 6 — Payment Already Processed)', () => {
 
   test('item order does not affect equivalence', () => {
     const a = makeOrder({
-      items: [{ skuId: 'A', quantity: 1 }, { skuId: 'B', quantity: 2 }]
+      items: [
+        { skuId: 'A', quantity: 1 },
+        { skuId: 'B', quantity: 2 }
+      ]
     });
     const b = makeOrder({
-      items: [{ skuId: 'B', quantity: 2 }, { skuId: 'A', quantity: 1 }]
+      items: [
+        { skuId: 'B', quantity: 2 },
+        { skuId: 'A', quantity: 1 }
+      ]
     });
     expect(order.isDuplicateOrder(a, [b])).toBe(true);
   });

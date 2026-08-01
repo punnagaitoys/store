@@ -293,10 +293,10 @@
         <strong>Date:</strong> ${formatDate(order.createdAt)}
       </div>
       <div style="margin-bottom:16px">
-        <strong>Shipping Address:</strong><br>
-        ${escapeHtml(order.shipping?.fullName || 'N/A')}<br>
-        ${escapeHtml(order.shipping?.address || '')}<br>
-        ${escapeHtml(order.shipping?.city || '')}, ${escapeHtml(order.shipping?.pinCode || '')}
+        <strong>Customer / Pickup Details:</strong><br>
+        ${escapeHtml(order.shipping?.fullName || order.shippingAddress?.name || 'N/A')}<br>
+        ${escapeHtml(order.shipping?.address || order.shippingAddress?.address || '')}<br>
+        ${escapeHtml(order.shipping?.city || order.shippingAddress?.city || '')}, ${escapeHtml(order.shipping?.pinCode || order.shippingAddress?.postalCode || '')}
       </div>
       <div>
         <strong>Items:</strong>
@@ -673,6 +673,197 @@
 
 
   // ==========================================================================
+  // HOME PAGE YOUTUBE VIDEOS (Req 19)
+  // ==========================================================================
+  function getAdminHomeVideos() {
+    try {
+      const stored = localStorage.getItem('Punnagai_HomeVideos');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+    } catch (e) {
+      console.warn('Error reading Home Videos', e);
+    }
+    const defaults = [
+      {
+        id: 'hv_1',
+        videoId: 'dQw4w9WgXcQ',
+        title: 'Welcome to Punnagai Toy Store Mylapore',
+        description: 'Take a virtual tour of Mylapore\'s favorite toy destination and discover our magical range.'
+      },
+      {
+        id: 'hv_2',
+        videoId: 'M7lc1UVf-VE',
+        title: 'Top Educational & STEM Toys for Kids',
+        description: 'Discover how learning meets fun with our age-tested STEM and educational toys.'
+      },
+      {
+        id: 'hv_3',
+        videoId: 'tgbNymZ7vqY',
+        title: 'Wooden Toys & Traditional Games Showcase',
+        description: 'Explore eco-friendly wooden toys crafted for safety, creativity and durability.'
+      }
+    ];
+    try {
+      localStorage.setItem('Punnagai_HomeVideos', JSON.stringify(defaults));
+    } catch(e){}
+    return defaults;
+  }
+
+  function extractYouTubeID(input) {
+    if (!input) return 'dQw4w9WgXcQ';
+    const trimmed = String(input).trim();
+    if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
+      return trimmed;
+    }
+    const match = trimmed.match(/(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    return (match && match[1]) ? match[1] : trimmed.substring(0, 11);
+  }
+
+  function loadHomeVideos() {
+    const videos = getAdminHomeVideos();
+    renderHomeVideosTable(videos);
+  }
+
+  function renderHomeVideosTable(videos) {
+    const tbody = el('admin-home-videos-tbody');
+    if (!tbody) return;
+
+    if (!videos || videos.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" class="text-muted text-center">No home page videos added yet. Click "+ Add New Video" to get started.</td></tr>';
+      return;
+    }
+
+    let html = '';
+    videos.forEach((v) => {
+      const thumbUrl = `https://img.youtube.com/vi/${v.videoId}/hqdefault.jpg`;
+      html += `
+        <tr>
+          <td>
+            <div style="width: 110px; aspect-ratio: 16/9; border-radius: 8px; overflow: hidden; background: #000; border: 1px solid var(--border-gray);">
+              <img src="${thumbUrl}" alt="${escapeHtml(v.title)}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='logo.png'">
+            </div>
+          </td>
+          <td>
+            <strong style="display:block; font-size: 0.95rem; margin-bottom: 4px;">${escapeHtml(v.title)}</strong>
+            <span style="font-size: 0.78rem; color: var(--text-muted); background: var(--bg-secondary); padding: 2px 8px; border-radius: 4px; font-family: monospace;">ID: ${escapeHtml(v.videoId)}</span>
+          </td>
+          <td>
+            <p style="margin: 0; font-size: 0.88rem; color: var(--text-secondary); max-width: 320px;">${escapeHtml(v.description || 'No description provided')}</p>
+          </td>
+          <td style="text-align: right; white-space: nowrap;">
+            <button class="btn btn-outline btn-sm" type="button" onclick="window.AdminUI.openAddHomeVideoModal('${escapeHtml(v.id)}')" style="margin-right: 6px;">
+              Edit
+            </button>
+            <button class="btn btn-danger btn-sm" type="button" onclick="window.AdminUI.deleteHomeVideo('${escapeHtml(v.id)}')">
+              Delete
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+    tbody.innerHTML = html;
+  }
+
+  function openAddHomeVideoModal(id) {
+    const card = el('home-video-form-card');
+    const titleEl = el('home-video-form-title');
+    const form = el('home-video-form');
+    if (!card || !form) return;
+
+    card.style.display = 'block';
+    form.reset();
+
+    if (id) {
+      const videos = getAdminHomeVideos();
+      const target = videos.find(v => v.id === id);
+      if (target) {
+        if (titleEl) titleEl.textContent = 'Edit YouTube Video';
+        el('hv-id').value = target.id;
+        el('hv-url').value = `https://www.youtube.com/watch?v=${target.videoId}`;
+        el('hv-title').value = target.title;
+        el('hv-desc').value = target.description || '';
+      }
+    } else {
+      if (titleEl) titleEl.textContent = 'Add YouTube Video';
+      el('hv-id').value = '';
+    }
+    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function closeHomeVideoForm() {
+    const card = el('home-video-form-card');
+    const form = el('home-video-form');
+    if (card) card.style.display = 'none';
+    if (form) form.reset();
+  }
+
+  function handleHomeVideoSubmit(e) {
+    e.preventDefault();
+    const idVal = el('hv-id').value;
+    const urlVal = el('hv-url').value;
+    const titleVal = el('hv-title').value.trim();
+    const descVal = el('hv-desc').value.trim();
+
+    if (!urlVal || !titleVal) {
+      showToast('Please enter both Video URL/ID and Title', 'error');
+      return;
+    }
+
+    const videoId = extractYouTubeID(urlVal);
+    if (!videoId || videoId.length < 8) {
+      showToast('Could not extract a valid YouTube Video ID from the URL', 'error');
+      return;
+    }
+
+    const videos = getAdminHomeVideos();
+    if (idVal) {
+      const index = videos.findIndex(v => v.id === idVal);
+      if (index > -1) {
+        videos[index] = {
+          id: idVal,
+          videoId: videoId,
+          title: titleVal,
+          description: descVal
+        };
+      }
+    } else {
+      videos.push({
+        id: 'hv_' + Date.now(),
+        videoId: videoId,
+        title: titleVal,
+        description: descVal
+      });
+    }
+
+    localStorage.setItem('Punnagai_HomeVideos', JSON.stringify(videos));
+    showToast(idVal ? 'Video updated successfully!' : 'New video added to Home Page!', 'success');
+    closeHomeVideoForm();
+    renderHomeVideosTable(videos);
+  }
+
+  function deleteHomeVideo(id) {
+    if (!confirm('Are you sure you want to remove this video from the Home Page?')) return;
+    let videos = getAdminHomeVideos();
+    videos = videos.filter(v => v.id !== id);
+    localStorage.setItem('Punnagai_HomeVideos', JSON.stringify(videos));
+    showToast('Video removed from Home Page.', 'success');
+    renderHomeVideosTable(videos);
+  }
+
+  function resetHomeVideosToDefault() {
+    if (!confirm('Restore the default 3 Home Page toy demonstration videos?')) return;
+    localStorage.removeItem('Punnagai_HomeVideos');
+    const videos = getAdminHomeVideos();
+    showToast('Default Home Page videos restored!', 'success');
+    renderHomeVideosTable(videos);
+  }
+
+
+  // ==========================================================================
   // EXPORTS
   // ==========================================================================
   
@@ -693,6 +884,7 @@
     loadDashboardCharts,
     loadLowStock,
     loadAuditLogs,
+    loadHomeVideos,
 
     toggleSelectAllOrders,
     updateBulkShipButton,
@@ -703,6 +895,11 @@
     closeOrderModal,
     openCouponModal,
     closeCouponModal,
+    openAddHomeVideoModal,
+    closeHomeVideoForm,
+    handleHomeVideoSubmit,
+    deleteHomeVideo,
+    resetHomeVideosToDefault,
 
     // Actions
     actionMarkShipped,

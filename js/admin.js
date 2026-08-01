@@ -250,6 +250,10 @@ function showSection(name) {
     }
   } else if (name === 'audit') {
     if (window.AdminUI) window.AdminUI.loadAuditLogs();
+  } else if (name === 'videos') {
+    if (window.AdminUI) window.AdminUI.loadHomeVideos();
+  } else if (name === 'media-library') {
+    if (window.MediaLibrary) window.MediaLibrary.renderMediaGrid();
   }
 
   // Collapse the mobile sidebar after navigating.
@@ -289,6 +293,9 @@ async function loadAdminProducts() {
   updateDashboardStats(adminProducts);
   renderRecentProducts(adminProducts);
   renderProductsTable(adminProducts);
+  if (window.MediaLibrary) {
+    window.MediaLibrary.init(adminProducts);
+  }
   const countEl = document.getElementById('products-section-count');
   if (countEl) countEl.textContent = adminProducts.length + ' product' + (adminProducts.length === 1 ? '' : 's') + ' in catalog';
 }

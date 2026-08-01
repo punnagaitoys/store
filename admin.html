@@ -6,6 +6,8 @@
   <meta name="robots" content="noindex, nofollow">
   <meta name="description" content="Admin Panel — Punnagai Toy Store Management">
   <title>Admin Panel | Punnagai Toy Store</title>
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -21,12 +23,7 @@
 <div id="admin-login-screen" class="admin-login-screen">
   <div class="login-card">
     <div class="login-logo">
-      <div class="login-logo-icon">
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true">
-          <rect width="48" height="48" rx="14" fill="#2563eb"/>
-          <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="Fredoka, sans-serif" font-size="28" font-weight="700" fill="white">K</text>
-        </svg>
-      </div>
+      <img src="logo.png" alt="Punnagai Toys Logo" class="admin-login-logo-img">
       <h1>Punnagai Admin</h1>
       <p>Toy Store Management Panel</p>
     </div>
@@ -98,10 +95,7 @@
   <!-- Sidebar -->
   <aside class="admin-sidebar" id="admin-sidebar">
     <div class="admin-logo">
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" aria-hidden="true">
-        <rect width="36" height="36" rx="10" fill="rgba(255,255,255,0.15)"/>
-        <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="Fredoka, sans-serif" font-size="22" font-weight="700" fill="white">K</text>
-      </svg>
+      <img src="logo.png" alt="Punnagai Toys Logo" class="admin-sidebar-logo-img">
       <span class="admin-logo-text">Punnagai Admin</span>
     </div>
 
@@ -153,6 +147,20 @@
 
       <button
         class="admin-nav-item"
+        data-section="media-library"
+        onclick="showSection('media-library')"
+        type="button"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+        <span>Media Library</span>
+      </button>
+
+      <button
+        class="admin-nav-item"
         data-section="inventory"
         onclick="showSection('inventory')"
         type="button"
@@ -189,6 +197,16 @@
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
         <span>Categories & Banners</span>
+      </button>
+
+      <button
+        class="admin-nav-item"
+        data-section="videos"
+        onclick="showSection('videos')"
+        type="button"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"></polygon><path d="M2 8v11a2 2 0 0 0 2 2h14"></path></svg>
+        <span>Home Videos</span>
       </button>
 
       <button
@@ -350,6 +368,12 @@
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
             </div>
             <span>View All Products</span>
+          </button>
+          <button class="quick-action-btn" onclick="showSection('videos')" type="button">
+            <div class="quick-action-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            </div>
+            <span>Manage Home Videos</span>
           </button>
           <a href="index.html" target="_blank" class="quick-action-btn">
             <div class="quick-action-icon">
@@ -578,16 +602,28 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
               Product Image URL <span class="required-star">*</span>
             </label>
-            <input
-              type="url"
-              id="f-image-url"
-              class="form-control"
-              placeholder="https://example.com/toy-image.jpg"
-              oninput="updateImagePreview()"
-            >
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+              <input
+                type="url"
+                id="f-image-url"
+                class="form-control"
+                placeholder="https://example.com/toy-image.jpg"
+                oninput="updateImagePreview()"
+                style="flex:1; min-width:240px;"
+              >
+              <button
+                type="button"
+                class="btn btn-primary"
+                onclick="openMediaLibraryModal('f-image-url')"
+                style="display:inline-flex; align-items:center; gap:6px; white-space:nowrap; padding:0 16px; height:42px;"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                Media Library
+              </button>
+            </div>
             <small class="form-hint">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              Upload your image to <a href="https://imgbb.com" target="_blank" rel="noopener">imgbb.com</a> or Google Drive and paste the direct link here.
+              Select an image from your Media Library or paste an external direct URL.
             </small>
             <!-- Image Preview -->
             <div id="img-preview-wrapper" class="img-preview-wrapper" style="display:none">
@@ -909,7 +945,13 @@
           <form id="admin-banner-form" style="display:flex; flex-direction:column; gap:12px; margin-top:16px;">
              <div class="form-group" style="margin:0">
                <label class="form-label" for="new-banner-url">Banner Image URL</label>
-               <input type="url" id="new-banner-url" class="form-control" placeholder="https://..." required>
+               <div style="display:flex; gap:8px; align-items:center;">
+                 <input type="url" id="new-banner-url" class="form-control" placeholder="https://..." required style="flex:1;">
+                 <button type="button" class="btn btn-primary" onclick="openMediaLibraryModal('new-banner-url')" style="display:inline-flex; align-items:center; gap:6px; white-space:nowrap; height:42px; padding:0 14px;">
+                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                   Media Library
+                 </button>
+               </div>
              </div>
              <div class="form-group" style="margin:0">
                <label class="form-label" for="new-banner-link">Target Link (Optional)</label>
@@ -955,6 +997,111 @@
           <tr><td colspan="5" class="table-loading-cell"><div class="loading-spinner" style="margin:auto"></div></td></tr>
         </tbody>
       </table>
+  </div>
+
+  <!-- SECTION: HOME YOUTUBE VIDEOS (Req 19) -->
+  <div id="section-videos" class="admin-section" style="display:none">
+    <div class="admin-page-header">
+      <div>
+        <h1 class="admin-page-title">Home Page YouTube Videos</h1>
+        <p class="admin-page-subtitle">Add, edit, and manage YouTube demonstration videos featured on the storefront Home Page.</p>
+      </div>
+      <div class="admin-page-actions" style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button class="btn btn-outline" type="button" onclick="window.AdminUI && window.AdminUI.resetHomeVideosToDefault()">
+          Restore Default Videos
+        </button>
+        <button class="btn btn-primary" type="button" onclick="window.AdminUI && window.AdminUI.openAddHomeVideoModal()">
+          + Add New Video
+        </button>
+      </div>
+    </div>
+
+    <!-- Video Add / Edit Card Form -->
+    <div id="home-video-form-card" class="admin-card" style="display:none; margin-bottom: 28px;">
+      <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-gray); padding-bottom: 12px; margin-bottom: 16px;">
+        <h3 id="home-video-form-title" class="card-title" style="margin:0;">Add YouTube Video</h3>
+        <button type="button" class="btn-close" onclick="window.AdminUI && window.AdminUI.closeHomeVideoForm()" aria-label="Close form" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">✕</button>
+      </div>
+      <form id="home-video-form" onsubmit="window.AdminUI && window.AdminUI.handleHomeVideoSubmit(event)" style="padding: 4px 0;">
+        <input type="hidden" id="hv-id" value="">
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label class="form-label" for="hv-url">YouTube Video URL or Video ID <span style="color: red;">*</span></label>
+          <input type="text" id="hv-url" class="form-control" placeholder="e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ or https://youtu.be/dQw4w9WgXcQ or dQw4w9WgXcQ" required>
+          <small class="form-hint" style="color: var(--text-muted); font-size: 0.78rem;">Supports YouTube watch links, share links, embed links, or 11-character Video IDs.</small>
+        </div>
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label class="form-label" for="hv-title">Video Title <span style="color: red;">*</span></label>
+          <input type="text" id="hv-title" class="form-control" placeholder="e.g. Welcome to Punnagai Toy Store Mylapore" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label class="form-label" for="hv-desc">Description (Optional)</label>
+          <textarea id="hv-desc" class="form-control" rows="2" placeholder="Brief explanation of the toy demonstration..."></textarea>
+        </div>
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button type="button" class="btn btn-outline" onclick="window.AdminUI && window.AdminUI.closeHomeVideoForm()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Video</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Existing Videos Table -->
+    <div class="table-container">
+      <table class="product-table" style="font-size:14px">
+        <thead>
+          <tr>
+            <th scope="col" style="width: 140px;">Thumbnail</th>
+            <th scope="col">Video Title &amp; ID</th>
+            <th scope="col">Description</th>
+            <th scope="col" style="width: 160px; text-align: right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="admin-home-videos-tbody">
+          <tr><td colspan="4" class="table-loading-cell"><div class="loading-spinner" style="margin:auto"></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION: MEDIA LIBRARY (WordPress-Style) -->
+  <div id="section-media-library" class="admin-section" style="display:none">
+    <div class="admin-page-header">
+      <div>
+        <h1 class="admin-page-title">Media Library</h1>
+        <p class="admin-page-subtitle">Manage, search, and connect product images across Punnagai Toy Store.</p>
+      </div>
+      <div class="admin-page-actions" style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button class="btn btn-primary" type="button" onclick="openUploadMediaModal()">
+          + Upload / Add New Image
+        </button>
+      </div>
+    </div>
+
+    <!-- Toolbar: Search & Filter -->
+    <div class="table-actions" style="display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:20px; flex-wrap:wrap; background:#fff; padding:16px; border-radius:8px; border:1px solid var(--border);">
+      <div style="display:flex; gap:12px; align-items:center; flex:1; min-width:260px;">
+        <input
+          type="text"
+          id="media-library-search"
+          class="form-control"
+          placeholder="Search media by title or URL..."
+          oninput="filterMediaLibrary()"
+          style="max-width:320px;"
+        >
+        <select id="media-library-filter" class="form-control" onchange="filterMediaLibrary()" style="max-width:180px;">
+          <option value="all">All Categories</option>
+          <option value="toys">Toys & Products</option>
+          <option value="banners">Banners & Heroes</option>
+          <option value="custom">Uploaded / Custom</option>
+        </select>
+      </div>
+      <div style="font-size:13px; color:var(--text-muted);">
+        Click <strong>Use for Product</strong> on any image to auto-connect it.
+      </div>
+    </div>
+
+    <!-- Grid View -->
+    <div id="media-library-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:20px;">
+      <!-- Populated by JS -->
     </div>
   </div>
   </main>
@@ -1057,6 +1204,91 @@
   </div>
 </div>
 
+<!-- ================================================
+     WORDPRESS-STYLE MEDIA LIBRARY PICKER MODAL
+================================================ -->
+<div id="media-library-modal" class="modal-overlay" style="display:none" role="dialog" aria-modal="true" aria-labelledby="media-modal-title">
+  <div class="modal" role="document" style="max-width:860px; width:95%; max-height:90vh; display:flex; flex-direction:column; overflow:hidden;">
+    <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <div>
+        <h3 class="modal-title" id="media-modal-title" style="margin:0; font-size:20px;">Select Image from Media Library</h3>
+        <p style="margin:4px 0 0 0; font-size:13px; color:var(--text-muted);">Choose an image to connect to your product or banner.</p>
+      </div>
+      <button class="btn-icon" onclick="closeMediaLibraryModal()" type="button" aria-label="Close modal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- Modal Filter Bar -->
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap;">
+      <div style="display:flex; gap:10px; align-items:center; flex:1; min-width:240px;">
+        <input type="text" id="media-modal-search" class="form-control" placeholder="Search images..." oninput="filterModalMediaLibrary()" style="max-width:260px;">
+        <select id="media-modal-filter" class="form-control" onchange="filterModalMediaLibrary()" style="max-width:160px;">
+          <option value="all">All</option>
+          <option value="toys">Toys</option>
+          <option value="banners">Banners</option>
+          <option value="custom">Uploaded</option>
+        </select>
+      </div>
+      <button type="button" class="btn btn-outline" onclick="openUploadMediaModal()" style="font-size:13px;">
+        + Upload New
+      </button>
+    </div>
+
+    <!-- Modal Image Grid (Scrollable) -->
+    <div id="media-modal-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:12px; overflow-y:auto; max-height:50vh; padding:8px; background:#F9FAFB; border:1px solid #E5E7EB; border-radius:8px;">
+      <!-- JS populated -->
+    </div>
+
+    <div class="modal-actions" style="margin-top:16px; border-top:1px solid var(--border); padding-top:16px; display:flex; justify-content:flex-end; gap:10px;">
+      <button class="btn btn-outline" type="button" onclick="closeMediaLibraryModal()">Cancel</button>
+      <button class="btn btn-primary" type="button" id="media-modal-select-btn" disabled onclick="window.MediaLibrary.confirmSelection()">Use Selected Image</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================
+     UPLOAD / ADD MEDIA MODAL
+================================================ -->
+<div id="upload-media-modal" class="modal-overlay" style="display:none" role="dialog" aria-modal="true" aria-labelledby="upload-modal-title">
+  <div class="modal" role="document" style="max-width:500px; width:90%;">
+    <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h3 class="modal-title" id="upload-modal-title" style="margin:0;">Upload / Add Image</h3>
+      <button class="btn-icon" onclick="closeUploadMediaModal()" type="button" aria-label="Close modal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <form id="upload-media-form" onsubmit="window.MediaLibrary.handleUploadSubmit(event)">
+      <div class="form-group">
+        <label class="form-label" for="upload-media-title">Image Title (Optional)</label>
+        <input type="text" id="upload-media-title" class="form-control" placeholder="e.g. Wooden Train Set">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="upload-media-category">Category</label>
+        <select id="upload-media-category" class="form-control">
+          <option value="toys">Toys & Products</option>
+          <option value="banners">Banners & Heroes</option>
+          <option value="custom">Uploaded / Custom</option>
+        </select>
+      </div>
+      <div class="form-group" style="padding:16px; background:#F9FAFB; border:1px dashed #D1D5DB; border-radius:8px; text-align:center;">
+        <label class="form-label" style="margin-bottom:8px; font-weight:700;">Option A: Choose File from Computer</label>
+        <input type="file" id="upload-media-file" accept="image/*" class="form-control" style="max-width:100%;">
+        <small class="form-hint" style="display:block; margin-top:4px;">Supports PNG, JPG, WEBP, GIF (stored securely locally).</small>
+      </div>
+      <div style="text-align:center; margin:10px 0; font-weight:700; color:#6B7280; font-size:13px;">— OR —</div>
+      <div class="form-group">
+        <label class="form-label" for="upload-media-url">Option B: Paste Direct Image URL</label>
+        <input type="url" id="upload-media-url" class="form-control" placeholder="https://example.com/image.jpg">
+      </div>
+      <div class="modal-actions" style="margin-top:20px; border-top:1px solid var(--border); padding-top:14px; display:flex; justify-content:flex-end; gap:10px;">
+        <button class="btn btn-outline" type="button" onclick="closeUploadMediaModal()">Cancel</button>
+        <button class="btn btn-primary" type="submit">Add to Library</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- Sidebar Overlay (mobile) -->
 <div class="admin-sidebar-overlay" id="admin-sidebar-overlay" onclick="toggleAdminSidebar()" aria-hidden="true"></div>
 
@@ -1083,6 +1315,7 @@
 <script src="js/admin-orders.js"></script>
 <script src="js/admin-coupons.js"></script>
 <script src="js/admin-categories.js"></script>
+<script src="js/admin-media-library.js"></script>
 <script src="js/admin-ui.js"></script>
 <script src="js/admin.js"></script>
 <script>

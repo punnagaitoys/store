@@ -308,9 +308,9 @@ async function handlePlaceOrder() {
     name: formData.get('fullName'),
     phone: formData.get('phone'),
     email: formData.get('email') || '',
-    address: formData.get('address'),
-    city: formData.get('city'),
-    state: formData.get('state'),
+    address: formData.get('address') || 'Direct Shop Pickup (Mylapore, Chennai)',
+    city: formData.get('city') || 'Chennai',
+    state: formData.get('state') || 'Tamil Nadu',
     postalCode: formData.get('postalCode')
   };
   const upiId = (document.getElementById('upiId')?.value || '').trim();

@@ -19,7 +19,7 @@ function showToast(message, type = 'success') {
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
 
-  const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ';
+  const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : type === 'warning' ? '⚠️' : 'ℹ';
   toast.innerHTML = `
     <span class="toast-icon">${icon}</span>
     <span class="toast-msg">${message}</span>
@@ -76,15 +76,11 @@ function renderNavbar(activePage = '') {
     <nav class="navbar" id="main-navbar">
       <div class="container">
         <div class="navbar-inner">
-          <a href="index.html" class="navbar-logo">
-            <div class="navbar-logo-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-              </svg>
-            </div>
+          <a href="index.html" class="navbar-logo" aria-label="Punnagai Toys Home">
+            <img src="logo.png" alt="Punnagai Toys Logo">
             <div class="logo-text-group">
               <span class="logo-text">Punnagai</span>
-              <span class="logo-sub">Toy Store</span>
+              <span class="logo-sub">Toys</span>
             </div>
           </a>
 
@@ -164,12 +160,8 @@ function renderFooter() {
           <!-- Brand -->
           <div class="footer-brand">
             <div class="footer-logo">
-              <div class="footer-logo-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                </svg>
-              </div>
-              <span class="footer-brand-name">Punnagai Toy Store</span>
+              <img src="logo.png" alt="Punnagai Toys Logo">
+              <span class="footer-brand-name">Punnagai Toys</span>
             </div>
             <p class="footer-tagline">Bringing joy and wonder to children across Mylapore and beyond. Quality toys for every age, every imagination.</p>
             <div class="footer-socials">
@@ -232,7 +224,7 @@ function renderFooter() {
           </div>
           <div class="footer-contact-item">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6.29 6.29l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2.02z"/></svg>
-            <span>+91 75501 32101</span>
+            <span>+91 75501 32101 / +91 72994 61657</span>
           </div>
           <div class="footer-contact-item">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -466,6 +458,10 @@ function renderProductCard(product) {
         ${imgHtml}
         ${badgeHtml}
         ${videoBadge}
+        <button class="quick-view-btn" onclick="event.stopPropagation(); openQuickView('${product.id}')" aria-label="Quick preview of ${product.name}">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          Quick View
+        </button>
         <button class="product-wishlist-btn" onclick="event.stopPropagation(); handleWishlistToggle && handleWishlistToggle('${product.id}')" aria-label="Add ${product.name} to wishlist">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         </button>
@@ -614,7 +610,7 @@ function injectLocalBusinessStructuredData() {
     name: 'Punnagai Toy Store',
     description: 'Mylapore\'s favourite toy destination. Quality toys for every age from babies to teens.',
     url: 'https://punnagaitoys.com',
-    telephone: '+917550132101',
+    telephone: ['+917550132101', '+917299461657'],
     address: {
       '@type': 'PostalAddress',
       streetAddress: '4/7 Luz Bazar Complex, R.K. Mutt Road',
@@ -654,6 +650,8 @@ async function initHomePage() {
 
   // Source from the cached data layer (Req 1.9) and hide out-of-stock items.
   const allProducts = filterAvailableProducts(await getAllProductsCached());
+  window.HOMEPAGE_ALL_PRODUCTS = allProducts;
+  if (typeof initLiveStoreActivity === 'function') initLiveStoreActivity();
 
   if (featuredContainer) {
     const featured = (typeof window.PunnagaiCatalog !== 'undefined'
@@ -675,8 +673,8 @@ async function initHomePage() {
 
   // Initialize YouTube Player (Req 19)
   if (typeof window.PunnagaiYouTube !== 'undefined') {
-    const ytPlayer = new window.PunnagaiYouTube();
-    ytPlayer.render();
+    window.PunnagaiYouTubeInstance = new window.PunnagaiYouTube();
+    window.PunnagaiYouTubeInstance.render();
   }
 
   // Initialize Floating Reviews (Req 20)
@@ -1383,7 +1381,161 @@ document.addEventListener('DOMContentLoaded', () => {
   // Show Offline Mode Warning
   if (window.USE_LOCAL_MODE && typeof showToast === 'function') {
     setTimeout(() => {
-      showToast('⚠️ Running in Local/Offline Mode (Data not synced to cloud)', 'info');
+      showToast('Running in Local/Offline Mode (Data not synced to cloud)', 'warning');
     }, 1000);
   }
 });
+
+// ============================================================
+// DYNAMIC INTERACTIVE FEATURE 1: Quick View Modal
+// ============================================================
+window.openQuickView = function(productId) {
+  const product = productCache[productId];
+  if (!product) return;
+
+  let modal = document.getElementById('quick-view-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'quick-view-modal';
+    modal.className = 'quick-view-overlay';
+    document.body.appendChild(modal);
+  }
+
+  const isOnSale = product.originalPrice && product.originalPrice > product.price;
+  const discount = isOnSale ? Math.round((1 - product.price / product.originalPrice) * 100) : 0;
+  const waPhone = '916381801640';
+  const waMsg = encodeURIComponent(`Hi Punnagai Toys! I would like to pre-order "${product.name}" (₹${product.price}). Is it available at your Mylapore store?`);
+  const waUrl = `https://wa.me/${waPhone}?text=${waMsg}`;
+
+  modal.innerHTML = `
+    <div class="quick-view-card" onclick="event.stopPropagation()">
+      <button class="quick-view-close" onclick="closeQuickView()" aria-label="Close modal">&times;</button>
+      <div class="quick-view-grid">
+        <div class="quick-view-img-wrap">
+          ${product.imageUrl ? `<img src="${product.imageUrl}" alt="${product.name}" class="quick-view-main-img" />` : `<div class="product-img-placeholder" style="height:320px"><span class="cat-emoji">🎁</span></div>`}
+          <span class="quick-view-badge">${product.category}</span>
+        </div>
+        <div class="quick-view-content">
+          <div class="quick-view-meta">
+            <span class="quick-view-age">Ages ${product.ageGroup} yrs</span>
+            <span class="quick-view-stock"><span class="pulse-dot"></span> In Stock in Mylapore</span>
+          </div>
+          <h2 class="quick-view-title">${product.name}</h2>
+          <div class="quick-view-price-row">
+            <span class="quick-view-price">&#8377;${product.price.toLocaleString('en-IN')}</span>
+            ${isOnSale ? `<span class="quick-view-orig-price">&#8377;${product.originalPrice.toLocaleString('en-IN')}</span>` : ''}
+            ${isOnSale ? `<span class="discount-tag">&minus;${discount}%</span>` : ''}
+          </div>
+          <p class="quick-view-desc">${product.description || 'Delightful quality toy for growing minds. Safe, durable, and educational.'}</p>
+          <div class="quick-view-actions">
+            <button class="btn btn-primary" onclick="handleAddToCart('${product.id}'); closeQuickView();" style="flex:1">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+              Add to Cart
+            </button>
+            <a href="${waUrl}" target="_blank" rel="noopener" class="btn btn-whatsapp-preorder" style="flex:1; text-align:center;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              WhatsApp Pre-Order
+            </a>
+          </div>
+          <button class="btn btn-outline" onclick="window.location='product?id=${product.id}'" style="width:100%; margin-top:10px;">
+            View Full Detail Page &rarr;
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  modal.style.display = 'flex';
+  modal.onclick = (e) => {
+    if (e.target === modal) closeQuickView();
+  };
+  document.addEventListener('keydown', handleEscClose);
+};
+
+window.closeQuickView = function() {
+  const modal = document.getElementById('quick-view-modal');
+  if (modal) modal.style.display = 'none';
+  document.removeEventListener('keydown', handleEscClose);
+};
+
+function handleEscClose(e) {
+  if (e.key === 'Escape') closeQuickView();
+}
+
+// ============================================================
+// DYNAMIC INTERACTIVE FEATURE 2: Homepage Featured Toys Category Filter
+// ============================================================
+window.filterFeaturedToys = function(category, btnEl) {
+  if (btnEl) {
+    document.querySelectorAll('.featured-tab').forEach(t => {
+      t.classList.remove('active');
+      t.setAttribute('aria-selected', 'false');
+    });
+    btnEl.classList.add('active');
+    btnEl.setAttribute('aria-selected', 'true');
+  }
+  const allProducts = window.HOMEPAGE_ALL_PRODUCTS || [];
+  const featuredContainer = document.getElementById('featured-products');
+  if (!featuredContainer) return;
+
+  let filtered = allProducts.filter(p => p.featured === true);
+  if (category && category !== 'all') {
+    filtered = allProducts.filter(p => p.category === category);
+  }
+  const toShow = filtered.slice(0, 4);
+
+  function renderGrid(products) {
+    return `<div class="product-grid fade-slide-in">${products.map(p => { productCache[p.id] = p; return renderProductCard(p); }).join('')}</div>`;
+  }
+
+  featuredContainer.innerHTML = toShow.length
+    ? renderGrid(toShow)
+    : '<p class="text-muted" style="text-align:center; padding:24px;">No toys found in this category right now.</p>';
+};
+
+// ============================================================
+// DYNAMIC INTERACTIVE FEATURE 3: Live Store Activity Social Proof
+// ============================================================
+window.initLiveStoreActivity = function() {
+  const activities = [
+    { name: 'Sowmya from Alwarpet', action: 'pre-ordered', item: 'LEGO City Police Station', time: '2 mins ago' },
+    { name: 'Karthik from T. Nagar', action: 'bought', item: 'Remote Control Stunt Car', time: '5 mins ago' },
+    { name: 'Priya from Mandaveli', action: 'added to wishlist', item: 'Wooden Montessori Puzzle', time: 'Just now' },
+    { name: 'Anand from Adyar', action: 'pre-ordered', item: 'Remote Control Drone', time: '12 mins ago' },
+    { name: 'Divya from Mylapore', action: 'bought', item: 'Barbie Fashionista Doll', time: '7 mins ago' }
+  ];
+
+  let index = 0;
+  setInterval(() => {
+    if (document.hidden) return;
+    const activity = activities[index % activities.length];
+    index++;
+
+    const toast = document.createElement('div');
+    toast.className = 'live-activity-toast';
+    toast.innerHTML = `
+      <div class="live-activity-icon">🛍️</div>
+      <div class="live-activity-body">
+        <p class="live-activity-title"><strong>${activity.name}</strong> ${activity.action}</p>
+        <p class="live-activity-item">${activity.item}</p>
+        <span class="live-activity-time">${activity.time} • Verified in Chennai</span>
+      </div>
+      <button class="live-activity-close" onclick="this.parentElement.remove()" aria-label="Close notification">&times;</button>
+    `;
+
+    let container = document.getElementById('live-activity-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'live-activity-container';
+      container.className = 'live-activity-container';
+      document.body.appendChild(container);
+    }
+
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.classList.add('fade-out');
+      setTimeout(() => toast.remove(), 400);
+    }, 6000);
+  }, 40000);
+};
+

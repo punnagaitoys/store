@@ -17,6 +17,8 @@
   <meta name="twitter:description" content="Quality toys for every age at Mylapore's favourite toy store!">
   <meta name="twitter:image" content="https://punnagaitoys.com/logo.png">
   <title>Punnagai Toy Store — Mylapore, Chennai | Quality Toys for Every Age</title>
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -58,21 +60,27 @@
             </div>
           </div>
         </div>
+
         <div class="hero-image-col">
-          <!-- HERO IMAGE PLACEHOLDER: Replace this with actual store/toy image -->
-          <div class="hero-img-placeholder">
-            <div class="hero-img-inner">
-              <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.2" opacity="0.4">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-              </svg>
-              <p style="color:#2563eb;opacity:0.6;font-family:Fredoka;font-size:1.1rem;margin-top:16px">Add your hero image here</p>
-              <p style="color:#6B7280;font-family:Nunito;font-size:0.85rem;margin-top:8px">Replace in index.html hero section</p>
+          <div class="hero-horizontal-banner">
+            <img src="images/hero-banner.jpg" alt="Punnagai Toy Store Mylapore Chennai - Interior full of quality toys" class="hero-main-img" loading="eager" width="1200" height="560">
+            <div class="hero-banner-overlay"></div>
+            <!-- Floating toy badges -->
+            <div class="floating-badge badge-1">🎯 500+ Educational &amp; Fun Toys</div>
+            <div class="floating-badge badge-2">✨ Mylapore's #1 Toy Store</div>
+            <div class="floating-badge badge-3">⭐ Age-Tested &amp; Kid-Approved</div>
+            <!-- Store tag -->
+            <div class="hero-store-tag">
+              <div class="store-tag-icon-wrap">
+                <img src="logo.png" alt="Punnagai Toys Logo" class="store-tag-logo">
+                <div class="store-tag-dot" title="Store Open Now"></div>
+              </div>
+              <div class="store-tag-text">
+                <strong>Visit Us in Mylapore, Chennai</strong>
+                <span>Open Daily • 9:00 AM – 9:00 PM</span>
+              </div>
             </div>
           </div>
-          <!-- Floating toy badges -->
-          <div class="floating-badge badge-1">🎯 Educational</div>
-          <div class="floating-badge badge-2">🧩 Fun!</div>
-          <div class="floating-badge badge-3">⭐ Premium</div>
         </div>
       </div>
     </div>
@@ -221,6 +229,14 @@
         <h2 class="section-title">Featured Toys</h2>
         <div class="section-divider"></div>
       </div>
+      <!-- Interactive Category Filter Tabs -->
+      <div class="featured-tabs-bar" role="tablist" aria-label="Filter Featured Toys by Category">
+        <button class="featured-tab active" onclick="filterFeaturedToys('all', this)" role="tab" aria-selected="true">✨ All Featured</button>
+        <button class="featured-tab" onclick="filterFeaturedToys('Educational & Learning', this)" role="tab" aria-selected="false">📚 Educational</button>
+        <button class="featured-tab" onclick="filterFeaturedToys('Board Games & Puzzles', this)" role="tab" aria-selected="false">♟️ Board Games</button>
+        <button class="featured-tab" onclick="filterFeaturedToys('Outdoor & Sports', this)" role="tab" aria-selected="false">⚽ Outdoor &amp; Sports</button>
+        <button class="featured-tab" onclick="filterFeaturedToys('Building Blocks', this)" role="tab" aria-selected="false">🧱 Building Blocks</button>
+      </div>
       <div id="featured-products">
         <!-- Loaded by app.js -->
         <div class="product-grid">
@@ -265,6 +281,55 @@
           <div class="skeleton-card"></div>
           <div class="skeleton-card"></div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GOOGLE MAPS REVIEWS (HORIZONTAL SCROLL) -->
+  <section class="section reviews-section" id="google-reviews">
+    <div class="container">
+      <div class="reviews-header-wrap">
+        <div class="section-header align-left" style="margin-bottom:0; text-align:left;">
+          <span class="section-badge google-badge">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+            </svg>
+            Google Maps Verified Reviews
+          </span>
+          <h2 class="section-title">Loved by Mylapore Parents</h2>
+          <p class="section-subtitle" style="color:var(--text-secondary); margin-top:4px;">Real 4.8★ rating from our store on Google Maps</p>
+        </div>
+
+        <div class="reviews-top-bar">
+          <div class="google-score-card">
+            <div class="score-num">4.8</div>
+            <div class="score-meta">
+              <div class="score-stars">★★★★★</div>
+              <div class="score-count">120+ Google Reviews</div>
+            </div>
+            <a href="https://maps.google.com/?q=Punnagai+Toys+Mylapore+Chennai" target="_blank" rel="noopener" class="google-maps-btn">
+              <span>View on Google Maps</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            </a>
+          </div>
+
+          <div class="reviews-nav-btns">
+            <button type="button" class="rev-nav-btn prev" id="reviews-prev-btn" aria-label="Scroll left">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <button type="button" class="rev-nav-btn next" id="reviews-next-btn" aria-label="Scroll right">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Horizontal Scroll Container -->
+      <div class="reviews-scroll-container" id="google-reviews-scroll">
+        <!-- Rendered dynamically by google-reviews.js -->
       </div>
     </div>
   </section>
@@ -347,7 +412,7 @@
               </div>
               <div>
                 <strong>Phone</strong>
-                <p><a href="tel:+917550132101" style="color:inherit">+91 75501 32101</a></p>
+                <p><a href="tel:+917550132101" style="color:inherit">+91 75501 32101</a> / <a href="tel:+917299461657" style="color:inherit">+91 72994 61657</a></p>
               </div>
             </div>
             <div class="contact-item">
@@ -356,7 +421,7 @@
               </div>
               <div>
                 <strong>WhatsApp</strong>
-                <p><a href="https://wa.me/917550132101" target="_blank" class="whatsapp-link">+91 75501 32101</a><br><small>Pre-book toys, enquiries &amp; more</small></p>
+                <p><a href="https://wa.me/917550132101" target="_blank" class="whatsapp-link">+91 75501 32101</a> / <a href="https://wa.me/917299461657" target="_blank" class="whatsapp-link">+91 72994 61657</a><br><small>Pre-book toys, enquiries &amp; more</small></p>
               </div>
             </div>
             <div class="contact-item">
@@ -416,6 +481,7 @@
   <script src="js/lib/catalog.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/youtube.js"></script>
+  <script src="js/google-reviews.js"></script>
   <script src="js/floating-reviews.js"></script>
   <script src="js/app.js"></script>
 

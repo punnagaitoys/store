@@ -6,6 +6,8 @@
   <meta name="description" content="Order Confirmed — Thank you for your purchase at Punnagai Toy Store, Mylapore, Chennai">
   <meta name="robots" content="noindex, nofollow">
   <title>Order Confirmed | Punnagai Toy Store</title>
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -294,7 +296,7 @@
         ${shippingRow}
         ${discountRow}
         <div class="detail-row"><span class="label" style="font-weight:700;">Total Paid</span><span class="value" style="font-size:1.1rem; color:var(--primary);">${fmt(order.total)}</span></div>
-        ${addr.name ? `<div class="detail-row"><span class="label">Deliver to</span><span class="value">${escHtml(addr.name)}<br><span style="font-weight:400; color:var(--text-secondary); font-size:13px;">${escHtml(addressLine)}</span></span></div>` : ''}
+        ${addr.name ? `<div class="detail-row"><span class="label">Customer / Pickup</span><span class="value">${escHtml(addr.name)}<br><span style="font-weight:400; color:var(--text-secondary); font-size:13px;">${escHtml(addressLine)}</span></span></div>` : ''}
         ${addr.phone ? `<div class="detail-row"><span class="label">Phone</span><span class="value">${escHtml(addr.phone)}</span></div>` : ''}
       </div>
 

@@ -98,8 +98,18 @@
    */
   function normalizeEntity(entity) {
     if (entity && typeof entity === 'object' && !Array.isArray(entity)) {
-      // Keep any caller-provided fields, but guarantee type/id are present.
-      return Object.assign({ type: null, id: null }, entity);
+      const res = { type: null, id: null };
+      Object.keys(entity).forEach(function (k) {
+        if (k !== '__proto__') {
+          Object.defineProperty(res, k, {
+            value: entity[k],
+            writable: true,
+            enumerable: true,
+            configurable: true
+          });
+        }
+      });
+      return res;
     }
     if (typeof entity === 'string' || typeof entity === 'number') {
       return { type: null, id: String(entity) };
@@ -107,26 +117,6 @@
     return { type: null, id: null };
   }
 
-  /**
-   * Build a well-formed, normalized audit log entry.
-   *
-   * Property 23 (Req 17.8): every admin operation must produce an entry with
-   * a timestamp, admin user ID, operation type, and relevant entity details.
-   * This builder guarantees all four fields are always present on the result
-   * and that `operationType` is a member of the allowed set (it throws for an
-   * unknown operation type so malformed entries can never be created).
-   *
-   * @param {Object} input
-   * @param {string|number|null} [input.adminUserId] - ID of the acting admin.
-   * @param {string} input.operationType - one of ALLOWED_OPERATION_TYPES.
-   * @param {Object|string|number|null} [input.entity] - the affected entity
-   *   (object with type/id, or a bare id). Always normalized to an object.
-   * @param {Object} [input.details] - additional operation details (e.g.
-   *   changed fields, quantities, order id).
-   * @param {number} [input.timestamp] - epoch millis; defaults to Date.now().
-   * @returns {{timestamp:number, adminUserId:(string|null), operationType:string, entity:Object, details:Object}}
-   * @throws {Error} if operationType is not in the allowed set.
-   */
   function buildAuditEntry(input) {
     const src = (input && typeof input === 'object') ? input : {};
 
@@ -148,9 +138,19 @@
 
     const entity = normalizeEntity(src.entity);
 
-    const details = (src.details && typeof src.details === 'object' && !Array.isArray(src.details))
-      ? Object.assign({}, src.details)
-      : {};
+    const details = {};
+    if (src.details && typeof src.details === 'object' && !Array.isArray(src.details)) {
+      Object.keys(src.details).forEach(function (k) {
+        if (k !== '__proto__') {
+          Object.defineProperty(details, k, {
+            value: src.details[k],
+            writable: true,
+            enumerable: true,
+            configurable: true
+          });
+        }
+      });
+    }
 
     return { timestamp: timestamp, adminUserId: adminUserId, operationType: operationType, entity: entity, details: details };
   }

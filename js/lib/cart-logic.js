@@ -281,12 +281,14 @@
       if (type === 'fixed') {
         amount = value;
       } else {
-        amount = Math.floor((base * value) / 100);
+        const raw = (base * value) / 100;
+        amount = raw > 0 && raw < 1 ? Math.ceil(raw) : Math.floor(raw);
       }
     } else {
       // Number → percentage path (matches Property 9 test convention).
       const percent = toNumber(discount);
-      amount = Math.floor((base * percent) / 100);
+      const raw = (base * percent) / 100;
+      amount = raw > 0 && raw < 1 ? Math.ceil(raw) : Math.floor(raw);
     }
 
     if (!Number.isFinite(amount) || amount < 0) {

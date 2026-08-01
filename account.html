@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Account | Punnagai Toy Store</title>
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="logo.png">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -20,7 +22,10 @@
     <!-- Login/Register Section -->
     <div id="auth-section" style="max-width: 400px; margin: 0 auto; display: none;">
       <div class="card" style="padding: 24px;">
-        <h2 style="margin-bottom: 16px;" id="auth-title">Login</h2>
+        <div style="text-align: center; margin-bottom: 16px;">
+          <img src="logo.png" alt="Punnagai Toys Logo" style="width: 64px; height: 64px; border-radius: 50%; object-fit: contain; background: white; padding: 3px; box-shadow: 0 4px 12px rgba(0,0,0,0.12); margin-bottom: 8px;">
+          <h2 style="margin-bottom: 0;" id="auth-title">Login</h2>
+        </div>
         
         <form id="auth-form" onsubmit="handleAuthSubmit(event)">
           <div id="register-fields" style="display: none;">

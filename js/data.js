@@ -491,6 +491,12 @@ async function addProduct(productData) {
       createdAt: getServerTimestamp()
     };
 
+    if (productData.variants !== undefined && Array.isArray(productData.variants)) {
+      data.inStock = productData.variants.some(function(v) {
+        return (typeof v.stock === 'number' ? v.stock : Number(v.stock) || 0) > 0;
+      });
+    }
+
     if (window.USE_LOCAL_MODE) {
       const newProduct = { id: generateId(), ...data };
       const products = getLocalProducts();
@@ -520,6 +526,12 @@ async function updateProduct(id, updates) {
     };
     if (updates.price !== undefined) updateData.price = Number(updates.price);
     if (updates.originalPrice !== undefined) updateData.originalPrice = updates.originalPrice ? Number(updates.originalPrice) : null;
+
+    if (updates.variants !== undefined && Array.isArray(updates.variants)) {
+      updateData.inStock = updates.variants.some(function(v) {
+        return (typeof v.stock === 'number' ? v.stock : Number(v.stock) || 0) > 0;
+      });
+    }
 
     if (window.USE_LOCAL_MODE) {
       const products = getLocalProducts();

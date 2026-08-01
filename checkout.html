@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Checkout — Complete your order at Punnagai Toy Store, Mylapore, Chennai">
   <title>Checkout | Punnagai Toy Store</title>
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -42,44 +44,35 @@
         <!-- Left Column: Shipping & Payment -->
         <div class="checkout-form-col">
           
-          <!-- Shipping Address Section -->
+          <!-- Buyer Information & Pickup Section -->
           <section class="checkout-section">
             <h2 class="section-title">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
                 <circle cx="12" cy="10" r="3"/>
               </svg>
-              Shipping Address
+              Buyer Details &amp; PIN Code
             </h2>
+
+            <div class="pickup-notice" style="background: rgba(37, 99, 235, 0.08); border: 1px dashed var(--primary); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 20px; font-size: 14px; color: var(--text-primary); line-height: 1.5;">
+              <strong style="color: var(--primary);">🏪 Direct Shop Pickup:</strong> You can directly come to our shop in Mylapore, Chennai to inspect &amp; collect your pre-ordered items. Only your PIN Code is required!
+            </div>
+
             <form id="shipping-form" class="checkout-form">
               <div class="form-row">
                 <div class="form-group">
                   <label for="fullName" class="form-label">Full Name *</label>
-                  <input type="text" id="fullName" name="fullName" class="form-input" required>
+                  <input type="text" id="fullName" name="fullName" class="form-input" placeholder="Your Full Name" required>
                 </div>
                 <div class="form-group">
                   <label for="phone" class="form-label">Phone Number *</label>
                   <input type="tel" id="phone" name="phone" class="form-input" placeholder="+91 98765 43210" required>
                 </div>
               </div>
-              <div class="form-group">
-                <label for="address" class="form-label">Address *</label>
-                <textarea id="address" name="address" class="form-input" rows="3" placeholder="House/Flat No., Street Name" required></textarea>
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="city" class="form-label">City *</label>
-                  <input type="text" id="city" name="city" class="form-input" value="Chennai" required>
-                </div>
-                <div class="form-group">
-                  <label for="state" class="form-label">State *</label>
-                  <input type="text" id="state" name="state" class="form-input" value="Tamil Nadu" required>
-                </div>
-              </div>
               <div class="form-row">
                 <div class="form-group">
                   <label for="postalCode" class="form-label">PIN Code *</label>
-                  <input type="text" id="postalCode" name="postalCode" class="form-input" placeholder="600001" pattern="[1-9][0-9]{5}" required>
+                  <input type="text" id="postalCode" name="postalCode" class="form-input" placeholder="600004" pattern="[1-9][0-9]{5}" required>
                   <div class="form-hint">Enter valid 6-digit PIN code</div>
                 </div>
                 <div class="form-group">
@@ -88,6 +81,10 @@
                   <div class="form-hint">For order updates</div>
                 </div>
               </div>
+              <!-- Default fields for store pickup order schema -->
+              <input type="hidden" id="address" name="address" value="Direct Shop Pickup (Mylapore, Chennai)">
+              <input type="hidden" id="city" name="city" value="Chennai">
+              <input type="hidden" id="state" name="state" value="Tamil Nadu">
             </form>
           </section>
 

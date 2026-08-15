@@ -266,7 +266,7 @@ window.initReviewsSection = async function initReviewsSection(productId) {
     formHtml = `
       <div class="review-cta-box">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <p>Have this toy? <a href="login.html" class="review-login-link">Log in</a> to share your review.</p>
+        <p>Have this toy? <a href="account.html" class="review-login-link">Log in</a> to share your review.</p>
       </div>`;
   } else if (!hasPurchased) {
     formHtml = `

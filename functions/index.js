@@ -103,3 +103,98 @@ exports.sendWhatsAppReceipt = functions.firestore
       return null;
     }
   });
+
+/**
+ * Securely creates an order by re-calculating all prices on the server.
+ * This prevents malicious users from tampering with total prices on the frontend.
+ */
+exports.createSecureOrder = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'User must be logged in to checkout.');
+  }
+
+  const { items, shippingAddress, shippingMethod, paymentMethod, couponCode, notes } = data;
+
+  if (!items || !Array.isArray(items) || items.length === 0) {
+    throw new functions.https.HttpsError('invalid-argument', 'Cart is empty.');
+  }
+
+  const db = admin.firestore();
+  let subtotal = 0;
+  const processedItems = [];
+
+  // Securely fetch real prices for all items
+  for (const item of items) {
+    const { productId, variantId, quantity } = item;
+    if (!productId || !quantity || quantity <= 0) {
+      throw new functions.https.HttpsError('invalid-argument', 'Invalid item format.');
+    }
+
+    const doc = await db.collection('products').doc(productId).get();
+    if (!doc.exists) {
+      throw new functions.https.HttpsError('not-found', `Product ${productId} not found.`);
+    }
+
+    const product = doc.data();
+    let price = product.price || 0;
+
+    if (variantId && Array.isArray(product.variants)) {
+      const variant = product.variants.find((v) => v.id === variantId);
+      if (variant && typeof variant.price === 'number') {
+        price = variant.price;
+      }
+    }
+
+    subtotal += price * quantity;
+    processedItems.push({
+      productId,
+      variantId: variantId || '',
+      name: product.name,
+      price: price,
+      quantity: quantity,
+      imageUrl: item.imageUrl || ''
+    });
+  }
+
+  // Handle shipping (Simulated logic based on method/pincode, replace with actual)
+  let shippingFee = 0;
+  if (shippingMethod === 'local') shippingFee = 0;
+  else if (shippingMethod === 'standard') shippingFee = 50;
+
+  // Handle coupon
+  let discount = 0;
+  if (couponCode) {
+    const couponDocs = await db.collection('coupons').where('code', '==', couponCode).get();
+    if (!couponDocs.empty) {
+      const coupon = couponDocs.docs[0].data();
+      if (coupon.type === 'fixed') {
+        discount = coupon.amount;
+      } else if (coupon.type === 'percentage') {
+        discount = (subtotal * coupon.amount) / 100;
+      }
+    }
+  }
+
+  const total = Math.max(0, subtotal + shippingFee - discount);
+
+  const orderData = {
+    userId: context.auth.uid,
+    items: processedItems,
+    subtotal,
+    shippingFee,
+    taxAmount: 0,
+    discount,
+    total,
+    couponCode: couponCode || null,
+    shippingAddress,
+    shippingMethod: shippingMethod || 'standard',
+    paymentMethod: paymentMethod || 'upi',
+    paymentStatus: 'pending',
+    orderStatus: 'pending',
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    notes: notes || ''
+  };
+
+  const orderRef = await db.collection('orders').add(orderData);
+  return { success: true, id: orderRef.id };
+});

@@ -92,6 +92,7 @@ const EMULATOR_DEFAULTS = {
 let db = null;
 let auth = null;
 let storage = null;
+let functions = null;
 
 if (!window.USE_LOCAL_MODE) {
   // Initialize Firebase
@@ -99,6 +100,7 @@ if (!window.USE_LOCAL_MODE) {
   db = firebase.firestore();
   auth = firebase.auth();
   storage = firebase.storage ? firebase.storage() : null;
+  functions = firebase.functions ? firebase.functions() : null;
 
   if (window.USE_FIREBASE_EMULATOR) {
     const hosts = Object.assign({}, EMULATOR_DEFAULTS, window.FIREBASE_EMULATOR_HOSTS || {});
@@ -126,4 +128,5 @@ if (typeof window !== 'undefined') {
   window.db = db;
   window.auth = auth;
   window.storage = storage;
+  window.functions = functions;
 }

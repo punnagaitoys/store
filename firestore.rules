@@ -77,8 +77,7 @@ service cloud.firestore {
     // - Customers may NOT update or delete — those actions are admin-only.
 
     match /orders/{orderId} {
-      allow create: if isAuthenticated() &&
-                       request.resource.data.userId == request.auth.uid;
+      allow create: if false;               // Securely created via Cloud Functions only
       allow read:   if isAdmin() || isOwner(resource);
       allow update: if isAdmin();
       allow delete: if false;               // Orders are never deleted
@@ -113,7 +112,7 @@ service cloud.firestore {
 
     match /audit_logs/{logId} {
       allow read:   if isAdmin();
-      allow create: if isAuthenticated();    // Any auth user can write audit entries (the data layer controls what's written)
+      allow create: if isAdmin();    // Only admins can write audit entries directly
       allow update, delete: if false;        // Logs are immutable
     }
 

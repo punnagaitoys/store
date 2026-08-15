@@ -1076,6 +1076,22 @@ async function updateUser(id, updates) {
 // ============================================================
 
 async function createOrder(orderData) {
+  // Use secure Cloud Function if in Firebase mode
+  if (!window.USE_LOCAL_MODE && window.functions) {
+    try {
+      const createSecureOrder = window.functions.httpsCallable('createSecureOrder');
+      const res = await createSecureOrder(orderData);
+      if (res.data && res.data.success) {
+        return { success: true, id: res.data.id };
+      }
+      return { success: false, error: 'Server rejected the order.' };
+    } catch (err) {
+      console.error('Secure order creation failed:', err);
+      return { success: false, error: err.message };
+    }
+  }
+
+  // Fallback for Local Storage Demo mode
   return createDoc(COLLECTIONS.ORDERS, {
     userId: orderData.userId || null,
     items: orderData.items || [],

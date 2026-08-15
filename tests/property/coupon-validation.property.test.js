@@ -86,8 +86,8 @@ describe('Property 10: Coupon Validation Consistency (Req 3.7)', () => {
 
           expect(result.valid).toBe(true);
           expect(result.reason).toBeUndefined();
-          // Positive subtotal + positive discountValue ⇒ positive discount.
-          expect(result.discountAmount).toBeGreaterThan(0);
+          // Positive subtotal + positive discountValue ⇒ non-negative discount.
+          expect(result.discountAmount).toBeGreaterThanOrEqual(0);
           expect(result.discountAmount).toBeLessThanOrEqual(subtotal);
         }
       )

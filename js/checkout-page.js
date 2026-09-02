@@ -84,6 +84,12 @@ async function initCheckoutPage() {
     );
   }
 
+  // Default delivery address fields (pickup)
+  updateAddressFieldsForShipping('local_delivery');
+  if (pinInput && pinInput.value && pinInput.value.trim().length === 6 && /^\d{6}$/.test(pinInput.value.trim())) {
+    await loadShippingMethods(pinInput.value.trim());
+  }
+
   // Wire Place Order
   const placeOrderBtn = document.getElementById('place-order-btn');
   if (placeOrderBtn) {
@@ -235,6 +241,49 @@ function escapeHtml(str) {
 // SHIPPING METHODS
 // ============================================================
 
+const DEFAULT_PICKUP_ADDRESS = 'Direct Shop Pickup (Mylapore, Chennai)';
+
+function updateAddressFieldsForShipping(methodId) {
+  const courierFields = document.getElementById('courier-address-fields');
+  const addressInput = document.getElementById('address');
+  const cityInput = document.getElementById('city');
+  const stateInput = document.getElementById('state');
+
+  const isLocal = methodId === 'local_delivery';
+
+  if (isLocal) {
+    if (courierFields) courierFields.style.display = 'none';
+    if (addressInput) {
+      addressInput.value = DEFAULT_PICKUP_ADDRESS;
+      addressInput.required = false;
+    }
+    if (cityInput) {
+      if (!cityInput.value) cityInput.value = 'Chennai';
+      cityInput.required = false;
+    }
+    if (stateInput) {
+      if (!stateInput.value) stateInput.value = 'Tamil Nadu';
+      stateInput.required = false;
+    }
+  } else {
+    if (courierFields) courierFields.style.display = 'block';
+    if (addressInput) {
+      addressInput.required = true;
+      if (addressInput.value === DEFAULT_PICKUP_ADDRESS) {
+        addressInput.value = '';
+      }
+    }
+    if (cityInput) {
+      cityInput.required = true;
+      if (!cityInput.value) cityInput.value = 'Chennai';
+    }
+    if (stateInput) {
+      stateInput.required = true;
+      if (!stateInput.value) stateInput.value = 'Tamil Nadu';
+    }
+  }
+}
+
 async function loadShippingMethods(pin) {
   const container = document.getElementById('shipping-methods');
   if (!container) return;
@@ -260,6 +309,7 @@ async function loadShippingMethods(pin) {
   // Default: select first method
   selectedShippingMethod = methods[0];
   currentShippingCost = selectedShippingMethod.cost;
+  updateAddressFieldsForShipping(selectedShippingMethod.id);
 
   container.innerHTML = methods
     .map(
@@ -287,6 +337,7 @@ async function loadShippingMethods(pin) {
         .querySelectorAll('.shipping-option')
         .forEach((el) => el.classList.remove('selected'));
       radio.closest('.shipping-option').classList.add('selected');
+      updateAddressFieldsForShipping(selectedShippingMethod.id);
       updateSummaryTotals();
     });
   });
@@ -325,14 +376,10 @@ function showPaymentError(message) {
 // ============================================================
 
 async function handlePlaceOrder() {
-  // 1. Validate shipping form
   const form = document.getElementById('shipping-form');
-  if (!form.checkValidity()) {
-    form.reportValidity();
-    return;
-  }
+  if (!form) return;
 
-  // 2. Require shipping method
+  // 1. Require shipping method
   if (!selectedShippingMethod) {
     if (typeof showToast === 'function')
       showToast('Please enter your PIN code to select a shipping method.', 'error');
@@ -341,14 +388,38 @@ async function handlePlaceOrder() {
   }
 
   const formData = new FormData(form);
+  const address = (formData.get('address') || '').toString().trim();
+  const city = (formData.get('city') || '').toString().trim();
+  const state = (formData.get('state') || '').toString().trim();
+  const postalCode = (formData.get('postalCode') || '').toString().trim();
+  const fullName = (formData.get('fullName') || '').toString().trim();
+  const phone = (formData.get('phone') || '').toString().trim();
+  const email = (formData.get('email') || '').toString().trim();
+
+  // 2. Validate delivery address for non-local delivery
+  const isLocal = selectedShippingMethod.id === 'local_delivery';
+  if (!isLocal && (!address || address === 'Direct Shop Pickup (Mylapore, Chennai)')) {
+    if (typeof showToast === 'function') {
+      showToast('Please enter your delivery street address', 'error');
+    }
+    document.getElementById('address')?.focus();
+    return;
+  }
+
+  // 3. Validate shipping form
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
+
   const shippingAddress = {
-    name: formData.get('fullName'),
-    phone: formData.get('phone'),
-    email: formData.get('email') || '',
-    address: formData.get('address') || 'Direct Shop Pickup (Mylapore, Chennai)',
-    city: formData.get('city') || 'Chennai',
-    state: formData.get('state') || 'Tamil Nadu',
-    postalCode: formData.get('postalCode')
+    name: fullName,
+    phone: phone,
+    email: email,
+    address: address || (isLocal ? 'Direct Shop Pickup (Mylapore, Chennai)' : ''),
+    city: city || 'Chennai',
+    state: state || 'Tamil Nadu',
+    postalCode: postalCode
   };
   const upiId = (document.getElementById('upiId')?.value || '').trim();
 
@@ -481,9 +552,13 @@ async function handlePlaceOrder() {
         return;
       }
 
-      // 7. Success — clean up coupon state and redirect to confirmation
+      // 7. Success — clean up coupon state and cache order for confirmation receipt
       try {
         sessionStorage.removeItem('punnagai_checkout_coupon');
+        sessionStorage.setItem(
+          'punnagai_last_order',
+          JSON.stringify({ ...order, id: persistedOrderId, orderId: persistedOrderId })
+        );
       } catch (_) {}
 
       showPaymentOverlay(
@@ -495,6 +570,13 @@ async function handlePlaceOrder() {
       }, 1200);
     } else {
       // PunnagaiCheckout not loaded — minimal fallback
+      try {
+        sessionStorage.setItem(
+          'punnagai_last_order',
+          JSON.stringify({ ...order, id: persistedOrderId, orderId: persistedOrderId })
+        );
+      } catch (_) {}
+
       if (typeof PunnagaiCartStorage !== 'undefined') {
         PunnagaiCartStorage.clearCart();
       } else {

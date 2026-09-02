@@ -271,10 +271,12 @@
       }
 
       function buildTrackWhatsAppUrl(orderId) {
+        const settings = window.PunnagaiSettings ? window.PunnagaiSettings.get() : null;
+        const phone = ((settings && settings.whatsappNumber) || TRACKING_WHATSAPP_NUMBER).replace(/\D/g, '');
         const msg = encodeURIComponent(
           `Hello! 👋 I'd like to track my order from Punnagai Toy Store.\n\n*Order ID:* ${orderId}\n\nCould you please share the current status? Thank you! 🙏`
         );
-        return `https://wa.me/${TRACKING_WHATSAPP_NUMBER}?text=${msg}`;
+        return `https://wa.me/${phone}?text=${msg}`;
       }
 
       function statusBadgeColor(status) {
@@ -399,42 +401,35 @@
           return;
         }
 
+        // Try reading session cached order first (useful for guest checkouts in Firebase mode)
+        let cachedOrder = null;
+        try {
+          const raw = sessionStorage.getItem('punnagai_last_order');
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && (parsed.id === orderId || parsed.orderId === orderId)) {
+              cachedOrder = parsed;
+            }
+          }
+        } catch (_) {}
+
         // Try to load the order from the data layer
         if (typeof getOrderById === 'function') {
           try {
             const order = await getOrderById(orderId);
             if (order) {
               renderConfirmation(order);
-            } else {
-              // Could be a guest order without persistent data — show minimal confirmation
-              renderConfirmation({
-                id: orderId,
-                orderId,
-                orderStatus: 'confirmed',
-                items: [],
-                subtotal: 0,
-                shippingFee: 0,
-                discount: 0,
-                total: 0,
-                shippingAddress: {}
-              });
+              return;
             }
           } catch (err) {
-            console.warn('Could not load order:', err);
-            renderConfirmation({
-              id: orderId,
-              orderId,
-              orderStatus: 'confirmed',
-              items: [],
-              subtotal: 0,
-              shippingFee: 0,
-              discount: 0,
-              total: 0,
-              shippingAddress: {}
-            });
+            console.warn('Could not load order from remote data layer:', err);
           }
+        }
+
+        if (cachedOrder) {
+          renderConfirmation(cachedOrder);
         } else {
-          // Data layer not available — show minimal confirmation
+          // Minimal fallback
           renderConfirmation({
             id: orderId,
             orderId,

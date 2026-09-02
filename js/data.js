@@ -1047,15 +1047,31 @@ async function deleteDoc(collectionName, id) {
 // USERS
 // ============================================================
 
-async function createUser(userData) {
-  return createDoc(COLLECTIONS.USERS, {
+async function createUser(userData, uid) {
+  const targetUid = uid || (userData && (userData.uid || userData.userId));
+  const record = {
     email: userData.email,
     phone: userData.phone || '',
     name: userData.name || '',
     isAdmin: Boolean(userData.isAdmin),
     status: userData.status || 'active',
     lastLogin: userData.lastLogin || null
-  });
+  };
+
+  if (!window.USE_LOCAL_MODE && targetUid) {
+    try {
+      await db.collection(COLLECTIONS.USERS).doc(targetUid).set({
+        ...record,
+        createdAt: getServerTimestamp()
+      });
+      return { success: true, id: targetUid };
+    } catch (err) {
+      console.error('Error creating user doc:', err);
+      return { success: false, error: err.message };
+    }
+  }
+
+  return createDoc(COLLECTIONS.USERS, record);
 }
 
 async function getUserById(id) {

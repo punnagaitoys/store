@@ -8,6 +8,19 @@
   "functions": {
     "source": "functions"
   },
+  "hosting": {
+    "public": ".",
+    "cleanUrls": true,
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "functions/**",
+      "tests/**",
+      "package*.json",
+      "jest.config.js"
+    ]
+  },
   "emulators": {
     "singleProjectMode": true,
     "firestore": {

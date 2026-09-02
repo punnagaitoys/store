@@ -109,11 +109,38 @@ exports.sendWhatsAppReceipt = functions.firestore
  * This prevents malicious users from tampering with total prices on the frontend.
  */
 exports.createSecureOrder = functions.https.onCall(async (data, context) => {
-  if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'User must be logged in to checkout.');
-  }
+  const { items, shippingAddress, shippingMethod, paymentMethod, couponCode, notes } = data || {};
 
-  const { items, shippingAddress, shippingMethod, paymentMethod, couponCode, notes } = data;
+  let userId;
+  if (context.auth && context.auth.uid) {
+    userId = context.auth.uid;
+  } else {
+    userId = 'guest';
+    const addr = shippingAddress;
+    const isNameValid = Boolean(
+      addr && typeof addr.name === 'string' && addr.name.trim().length > 0
+    );
+    const phoneDigits =
+      addr && (typeof addr.phone === 'string' || typeof addr.phone === 'number')
+        ? String(addr.phone).replace(/\D/g, '')
+        : '';
+    const isPhoneValid = phoneDigits.length >= 10;
+    const postalStr =
+      addr && (typeof addr.postalCode === 'string' || typeof addr.postalCode === 'number')
+        ? String(addr.postalCode).trim()
+        : '';
+    const isPostalValid = /^\d{6}$/.test(postalStr);
+    const isAddressValid = Boolean(
+      addr && typeof addr.address === 'string' && addr.address.trim().length > 0
+    );
+
+    if (!isNameValid || !isPhoneValid || !isPostalValid || !isAddressValid) {
+      throw new functions.https.HttpsError(
+        'invalid-argument',
+        'Missing required shipping address details for guest checkout.'
+      );
+    }
+  }
 
   if (!items || !Array.isArray(items) || items.length === 0) {
     throw new functions.https.HttpsError('invalid-argument', 'Cart is empty.');
@@ -156,10 +183,17 @@ exports.createSecureOrder = functions.https.onCall(async (data, context) => {
     });
   }
 
-  // Handle shipping (Simulated logic based on method/pincode, replace with actual)
-  let shippingFee = 0;
-  if (shippingMethod === 'local') shippingFee = 0;
-  else if (shippingMethod === 'standard') shippingFee = 50;
+  // Handle shipping
+  let shippingFee = 50;
+  if (shippingMethod === 'local_delivery' || shippingMethod === 'local') {
+    shippingFee = 0;
+  } else if (shippingMethod === 'standard') {
+    shippingFee = 50;
+  } else if (shippingMethod === 'express') {
+    shippingFee = 100;
+  } else {
+    shippingFee = 50;
+  }
 
   // Handle coupon
   let discount = 0;
@@ -167,10 +201,12 @@ exports.createSecureOrder = functions.https.onCall(async (data, context) => {
     const couponDocs = await db.collection('coupons').where('code', '==', couponCode).get();
     if (!couponDocs.empty) {
       const coupon = couponDocs.docs[0].data();
-      if (coupon.type === 'fixed') {
-        discount = coupon.amount;
-      } else if (coupon.type === 'percentage') {
-        discount = (subtotal * coupon.amount) / 100;
+      const discountType = coupon.discountType || coupon.type;
+      const discountVal = Number(coupon.discountValue !== undefined ? coupon.discountValue : coupon.amount) || 0;
+      if (discountType === 'fixed') {
+        discount = discountVal;
+      } else if (discountType === 'percentage') {
+        discount = (subtotal * discountVal) / 100;
       }
     }
   }
@@ -178,7 +214,7 @@ exports.createSecureOrder = functions.https.onCall(async (data, context) => {
   const total = Math.max(0, subtotal + shippingFee - discount);
 
   const orderData = {
-    userId: context.auth.uid,
+    userId,
     items: processedItems,
     subtotal,
     shippingFee,
@@ -186,7 +222,7 @@ exports.createSecureOrder = functions.https.onCall(async (data, context) => {
     discount,
     total,
     couponCode: couponCode || null,
-    shippingAddress,
+    shippingAddress: shippingAddress || null,
     shippingMethod: shippingMethod || 'standard',
     paymentMethod: paymentMethod || 'upi',
     paymentStatus: 'pending',

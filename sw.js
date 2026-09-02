@@ -28,8 +28,12 @@ const PRECACHE_URLS = [
   '/js/auth.js',
   '/js/lib/cart-storage.js',
   '/js/lib/cart-logic.js',
+  '/js/lib/inventory-model.js',
+  '/js/lib/catalog.js',
+  '/js/lib/wishlist.js',
   '/js/lib/order.js',
   '/js/lib/shipping.js',
+  '/js/reviews.js',
   '/manifest.webmanifest'
 ];
 

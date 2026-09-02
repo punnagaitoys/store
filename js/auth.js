@@ -107,6 +107,10 @@
     return fn.apply(null, args || []);
   }
 
+  function createUserFn(userData, uid) {
+    return callDataFn('createUser', [userData, uid]);
+  }
+
   /** @returns {?Storage} sessionStorage if available, else null. */
   function getSessionStore() {
     try {
@@ -341,23 +345,14 @@
           return { success: false, error: (err && err.message) || 'Failed to create account' };
         }
 
-        // Create the matching users doc (data.js).
-        const created = await callDataFn('createUser', [
-          {
-            name: name,
-            email: normalizedEmail,
-            phone: normalizedPhone,
-            isAdmin: false,
-            status: 'active',
-            lastLogin: Date.now()
-          }
-        ]);
-        userId = created && created.success ? created.id : credential.user && credential.user.uid;
+        const cred = credential;
+        await createUserFn({ email, name, phone, isAdmin: false, status: 'active' }, cred.user.uid);
+        userId = cred.user.uid;
 
         try {
-          sessionToken = await credential.user.getIdToken();
+          sessionToken = await cred.user.getIdToken();
         } catch (e) {
-          sessionToken = (credential.user && credential.user.uid) || '';
+          sessionToken = (cred.user && cred.user.uid) || '';
         }
       }
 
@@ -518,7 +513,8 @@
     storeSession: storeSession,
     clearSession: clearSession,
     // testing/injection seam (data.js globals fallback)
-    setDataLayer: setDataLayer
+    setDataLayer: setDataLayer,
+    createUserFn: createUserFn
   };
 
   if (typeof window !== 'undefined') {

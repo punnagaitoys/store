@@ -146,6 +146,14 @@ service cloud.firestore {
       allow update: if false;                  // Reviews cannot be edited after submission
     }
 
+    // ── Store Settings ────────────────────────────────────────────────────────
+    // Public read for contact info / phone numbers; admin write only.
+
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // ── Deny everything else ──────────────────────────────────────────────────
 
     match /{document=**} {

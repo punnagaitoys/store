@@ -100,33 +100,58 @@ async function fetchReviews(productId) {
   }
 }
 
+function escapeHtml(str) {
+  if (typeof window !== 'undefined' && typeof window.escapeHtml === 'function') {
+    return window.escapeHtml(str);
+  }
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 function renderReviewCard(review) {
-  const initials = (review.displayName || 'A')
+  const rawName = review.displayName || 'Anonymous';
+  const initials = rawName
     .split(' ')
+    .filter(Boolean)
     .map((w) => w[0])
     .slice(0, 2)
     .join('')
-    .toUpperCase();
+    .toUpperCase() || 'A';
 
-  const date = review.createdAt
-    ? new Date(
-        review.createdAt.seconds ? review.createdAt.seconds * 1000 : review.createdAt
-      ).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })
-    : '';
+  let date = '';
+  if (review.createdAt) {
+    const createdMs = review.createdAt.seconds
+      ? review.createdAt.seconds * 1000
+      : (review.createdAt || Date.now());
+    const d = new Date(createdMs);
+    date = !isNaN(d.getTime())
+      ? d.toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })
+      : '';
+  }
+
+  const safeInitials = escapeHtml(initials);
+  const safeName = escapeHtml(rawName);
+  const safeComment = review.comment ? escapeHtml(review.comment) : '';
+  const safeDate = date ? escapeHtml(date) : '';
 
   return `
     <div class="review-card">
       <div class="review-header">
-        <div class="review-avatar" aria-hidden="true">${initials}</div>
+        <div class="review-avatar" aria-hidden="true">${safeInitials}</div>
         <div class="review-meta">
-          <span class="review-name">${review.displayName || 'Anonymous'}</span>
+          <span class="review-name">${safeName}</span>
           <div class="review-stars-date">
             ${renderStars(review.rating, '14')}
-            ${date ? `<span class="review-date">${date}</span>` : ''}
+            ${safeDate ? `<span class="review-date">${safeDate}</span>` : ''}
           </div>
         </div>
       </div>
-      ${review.comment ? `<p class="review-comment">${review.comment}</p>` : ''}
+      ${safeComment ? `<p class="review-comment">${safeComment}</p>` : ''}
     </div>`;
 }
 

@@ -201,11 +201,16 @@
     let successCount = 0;
     for (const id of checked) {
       try {
-        const res = await window.PunnagaiAdminOrders.markOrderShipped(
-          id,
-          'TRACK-BULK-' + Date.now(),
-          'user@example.com'
-        );
+        const orderForEmail = allOrders.find((o) => o.id === id);
+        const customerEmail =
+          orderForEmail?.shippingAddress?.email ||
+          orderForEmail?.shipping?.email ||
+          orderForEmail?.email ||
+          null;
+        const res = await window.PunnagaiAdminOrders.markOrderShipped(id, {
+          trackingNumber: 'TRACK-BULK-' + Date.now(),
+          customerEmail: customerEmail
+        });
         if (res.success) successCount++;
       } catch (err) {
         console.error('Failed to bulk ship order', id, err);
@@ -242,11 +247,16 @@
   async function actionMarkShipped(orderId) {
     if (!confirm('Mark this order as shipped and send tracking link?')) return;
     try {
-      const res = await window.PunnagaiAdminOrders.markOrderShipped(
-        orderId,
-        'TRACK-' + Date.now(),
-        'user@example.com'
-      );
+      const orderForEmail = allOrders.find((o) => o.id === orderId);
+      const customerEmail =
+        orderForEmail?.shippingAddress?.email ||
+        orderForEmail?.shipping?.email ||
+        orderForEmail?.email ||
+        null;
+      const res = await window.PunnagaiAdminOrders.markOrderShipped(orderId, {
+        trackingNumber: 'TRACK-' + Date.now(),
+        customerEmail: customerEmail
+      });
       if (res.success) {
         showToast('Order marked as shipped!', 'success');
         closeOrderModal();

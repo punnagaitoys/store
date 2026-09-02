@@ -17,6 +17,43 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .form-input {
+        width: 100%;
+        padding: 10px 14px;
+        border: 2px solid var(--border-gray, #e2e8f0);
+        border-radius: var(--radius-sm, 6px);
+        font-family: var(--font-body, inherit);
+        font-size: 0.9rem;
+        color: var(--text-primary, #1e293b);
+        background: white;
+        transition: var(--transition, all 0.2s ease);
+        outline: none;
+        box-sizing: border-box;
+      }
+      .form-input:focus {
+        border-color: var(--primary, #e53e3e);
+        box-shadow: 0 0 0 4px rgba(229, 62, 62, 0.07);
+      }
+      .form-row {
+        display: flex;
+        gap: 12px;
+      }
+      .form-row > .form-group {
+        flex: 1;
+      }
+      .form-label .required,
+      .required {
+        color: var(--danger, #ef4444);
+        font-weight: 700;
+      }
+      @media (max-width: 600px) {
+        .form-row {
+          flex-direction: column;
+          gap: 0;
+        }
+      }
+    </style>
   </head>
   <body>
     <div id="navbar"></div>
@@ -143,15 +180,23 @@
                     <div class="form-hint">For order updates</div>
                   </div>
                 </div>
-                <!-- Default fields for store pickup order schema -->
-                <input
-                  type="hidden"
-                  id="address"
-                  name="address"
-                  value="Direct Shop Pickup (Mylapore, Chennai)"
-                />
-                <input type="hidden" id="city" name="city" value="Chennai" />
-                <input type="hidden" id="state" name="state" value="Tamil Nadu" />
+                <!-- Courier Address Fields (shown for non-local delivery) -->
+                <div id="courier-address-fields" style="display:none; margin-top: 16px;">
+                  <div class="form-group" style="margin-bottom: 12px;">
+                    <label for="address" class="form-label">Street Address / Flat / Building <span class="required">*</span></label>
+                    <input type="text" id="address" name="address" class="form-input" placeholder="Door No, Street name, Locality" />
+                  </div>
+                  <div class="form-row" style="display: flex; gap: 12px;">
+                    <div class="form-group" style="flex: 1;">
+                      <label for="city" class="form-label">City <span class="required">*</span></label>
+                      <input type="text" id="city" name="city" class="form-input" placeholder="City" value="Chennai" />
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                      <label for="state" class="form-label">State <span class="required">*</span></label>
+                      <input type="text" id="state" name="state" class="form-input" placeholder="State" value="Tamil Nadu" />
+                    </div>
+                  </div>
+                </div>
               </form>
             </section>
 

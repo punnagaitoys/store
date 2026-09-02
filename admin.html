@@ -430,6 +430,29 @@ localStorage.setItem('__punnagai_admin_env', JSON.stringify({ password: 'admin' 
             </svg>
             <span>Activity Logs</span>
           </button>
+
+          <button
+            class="admin-nav-item"
+            data-section="settings"
+            onclick="showSection('settings')"
+            type="button"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="3"></circle>
+              <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+              ></path>
+            </svg>
+            <span>Store Settings</span>
+          </button>
         </nav>
 
         <div class="admin-sidebar-footer">
@@ -2012,6 +2035,121 @@ localStorage.setItem('__punnagai_admin_env', JSON.stringify({ password: 'admin' 
             "
           >
             <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- SECTION: STORE SETTINGS -->
+        <div id="section-settings" class="admin-section" style="display: none">
+          <div class="admin-page-header">
+            <div>
+              <h1 class="admin-page-title">Store &amp; Contact Settings</h1>
+              <p class="admin-page-subtitle">
+                Update store phone numbers, WhatsApp contact, support email, and UPI ID across the website.
+              </p>
+            </div>
+          </div>
+
+          <div style="max-width: 720px; background: #fff; padding: 28px; border-radius: 8px; border: 1px solid var(--border);">
+            <form id="admin-settings-form" onsubmit="handleSaveStoreSettings(event)">
+              <div class="form-group" style="margin-bottom: 20px;">
+                <label for="settings-phone-primary" class="form-label" style="font-weight: 600; display: block; margin-bottom: 6px;">
+                  Primary Phone Number (Store / WhatsApp Orders)
+                </label>
+                <input
+                  type="text"
+                  id="settings-phone-primary"
+                  class="form-control"
+                  placeholder="+91 75501 32101"
+                  required
+                />
+                <small style="color: var(--text-muted); display: block; margin-top: 4px;">
+                  Displayed in footer, contact sections, and policy pages.
+                </small>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 20px;">
+                <label for="settings-phone-secondary" class="form-label" style="font-weight: 600; display: block; margin-bottom: 6px;">
+                  Secondary Phone Number (Support / Inquiries)
+                </label>
+                <input
+                  type="text"
+                  id="settings-phone-secondary"
+                  class="form-control"
+                  placeholder="+91 72994 61657"
+                  required
+                />
+                <small style="color: var(--text-muted); display: block; margin-top: 4px;">
+                  Secondary helpline number shown alongside primary phone.
+                </small>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 20px;">
+                <label for="settings-wa-number" class="form-label" style="font-weight: 600; display: block; margin-bottom: 6px;">
+                  WhatsApp Chat Number (Digits only, including country code)
+                </label>
+                <input
+                  type="text"
+                  id="settings-wa-number"
+                  class="form-control"
+                  placeholder="917550132101"
+                  required
+                />
+                <small style="color: var(--text-muted); display: block; margin-top: 4px;">
+                  Used to generate floating WhatsApp chat and order enquiry links (e.g. 917550132101).
+                </small>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 20px;">
+                <label for="settings-email" class="form-label" style="font-weight: 600; display: block; margin-bottom: 6px;">
+                  Store Support Email
+                </label>
+                <input
+                  type="email"
+                  id="settings-email"
+                  class="form-control"
+                  placeholder="contact@punnaagitoystore.com"
+                  required
+                />
+              </div>
+
+              <div class="form-group" style="margin-bottom: 20px;">
+                <label for="settings-upi" class="form-label" style="font-weight: 600; display: block; margin-bottom: 6px;">
+                  Store Merchant UPI ID (VPA)
+                </label>
+                <input
+                  type="text"
+                  id="settings-upi"
+                  class="form-control"
+                  placeholder="punnagai@upi"
+                  required
+                />
+                <small style="color: var(--text-muted); display: block; margin-top: 4px;">
+                  UPI VPA presented to customers during manual checkout.
+                </small>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 24px;">
+                <label for="settings-address" class="form-label" style="font-weight: 600; display: block; margin-bottom: 6px;">
+                  Store Physical Address / Pickup Location
+                </label>
+                <textarea
+                  id="settings-address"
+                  class="form-control"
+                  rows="2"
+                  placeholder="4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai – 600 004"
+                  required
+                ></textarea>
+              </div>
+
+              <div style="display: flex; gap: 12px; align-items: center;">
+                <button type="submit" class="btn btn-primary" id="save-settings-btn">
+                  Save Store Settings
+                </button>
+                <span id="settings-save-status" style="font-size: 14px; color: var(--success); display: none;">
+                  ✓ Saved successfully
+                </span>
+              </div>
+            </form>
           </div>
         </div>
       </main>

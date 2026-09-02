@@ -75,6 +75,19 @@
     <script src="js/app.js"></script>
 
     <script>
+      function escapeHtml(str) {
+        if (typeof window !== 'undefined' && typeof window.escapeHtml === 'function') {
+          return window.escapeHtml(str);
+        }
+        if (str === null || str === undefined) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
       async function loadOrders() {
         renderNavbar();
         renderFooter();
@@ -86,7 +99,7 @@
         }
 
         try {
-          const orders = await getOrdersByUser(user.uid);
+          const orders = await getOrdersByUser(user.userId || user.uid);
           const container = document.getElementById('orders-list');
 
           if (orders.length === 0) {
@@ -95,30 +108,35 @@
           }
 
           // Sort orders by createdAt descending
-          orders.sort((a, b) => b.createdAt - a.createdAt);
+          orders.sort((a, b) => {
+            const timeA = a.createdAt?.seconds ? a.createdAt.seconds * 1000 : (a.createdAt || 0);
+            const timeB = b.createdAt?.seconds ? b.createdAt.seconds * 1000 : (b.createdAt || 0);
+            return timeB - timeA;
+          });
 
           container.innerHTML = orders
             .map((order) => {
-              const date = new Date(order.createdAt).toLocaleDateString();
+              const createdMs = order.createdAt?.seconds ? order.createdAt.seconds * 1000 : (order.createdAt || Date.now());
+              const date = new Date(createdMs).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' });
               return `
             <div class="order-card">
               <div class="order-header">
                 <div>
-                  <div style="font-size:12px; color:var(--text-secondary)">Order #${order.id}</div>
-                  <div style="font-weight:500">${date}</div>
+                  <div style="font-size:12px; color:var(--text-secondary)">Order #${escapeHtml(order.id)}</div>
+                  <div style="font-weight:500">${escapeHtml(date)}</div>
                 </div>
                 <div class="text-right">
-                  <div class="order-status">${order.status.toUpperCase()}</div>
-                  <div style="font-weight:600">₹${order.total.toLocaleString('en-IN')}</div>
+                  <div class="order-status">${escapeHtml((order.status || '').toUpperCase())}</div>
+                  <div style="font-weight:600">₹${(Number(order.total) || 0).toLocaleString('en-IN')}</div>
                 </div>
               </div>
               <div class="order-items">
-                ${order.items
+                ${(Array.isArray(order.items) ? order.items : [])
                   .map(
                     (item) => `
                   <div class="order-item">
-                    <span>${item.quantity}x ${item.name}</span>
-                    <span>₹${(item.price * item.quantity).toLocaleString('en-IN')}</span>
+                    <span>${Number(item.quantity) || 1}x ${escapeHtml(item.name || 'Item')}</span>
+                    <span>₹${((Number(item.price) || 0) * (Number(item.quantity) || 1)).toLocaleString('en-IN')}</span>
                   </div>
                 `
                   )
@@ -128,7 +146,7 @@
                 order.trackingNumber
                   ? `
                 <div style="margin-top:12px; padding-top:12px; border-top:1px dashed var(--border); font-size:13px;">
-                  <strong>Tracking Number:</strong> ${order.trackingNumber}
+                  <strong>Tracking Number:</strong> ${escapeHtml(order.trackingNumber)}
                 </div>
               `
                   : ''

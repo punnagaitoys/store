@@ -115,6 +115,10 @@ function wireAdminEvents() {
 
 /** Show the login screen or the admin panel depending on auth/session. */
 function resolveAuthState() {
+  checkAdminSession();
+}
+
+function checkAdminSession() {
   if (window.USE_LOCAL_MODE) {
     const signedIn = sessionStorage.getItem(ADMIN_SESSION_KEY) === 'true';
     if (signedIn) {
@@ -129,9 +133,27 @@ function resolveAuthState() {
 
   // Firebase auth
   if (window.auth && typeof window.auth.onAuthStateChanged === 'function') {
-    window.auth.onAuthStateChanged((user) => {
+    window.auth.onAuthStateChanged(async (user) => {
       if (user) {
-        enterAdminApp(user.email);
+        try {
+          const userDoc = await db.collection('users').doc(user.uid).get();
+          if (userDoc.exists && userDoc.data() && userDoc.data().isAdmin === true) {
+            enterAdminApp(user.email);
+          } else {
+            console.warn('Unauthorized admin access attempt:', user.email);
+            if (window.auth && typeof window.auth.signOut === 'function') {
+              await window.auth.signOut();
+            }
+            showLoginScreen();
+            const errEl = document.getElementById('login-error');
+            if (errEl) errEl.textContent = 'Access denied. You do not have administrator privileges.';
+          }
+        } catch (err) {
+          console.error('Error verifying admin role:', err);
+          showLoginScreen();
+          const errEl = document.getElementById('login-error');
+          if (errEl) errEl.textContent = 'Failed to verify admin privileges. Please try again.';
+        }
       } else {
         showLoginScreen();
       }
@@ -269,6 +291,8 @@ function showSection(name) {
     if (window.AdminUI) window.AdminUI.loadHomeVideos();
   } else if (name === 'media-library') {
     if (window.MediaLibrary) window.MediaLibrary.renderMediaGrid();
+  } else if (name === 'settings') {
+    loadAdminStoreSettings();
   }
 
   // Collapse the mobile sidebar after navigating.
@@ -276,6 +300,76 @@ function showSection(name) {
   const overlay = document.getElementById('admin-sidebar-overlay');
   if (sidebar) sidebar.classList.remove('open');
   if (overlay) overlay.classList.remove('show');
+}
+
+// ============================================================
+// STORE SETTINGS
+// ============================================================
+
+function loadAdminStoreSettings() {
+  const settings = window.PunnagaiSettings
+    ? window.PunnagaiSettings.get()
+    : {
+        phonePrimary: '+91 75501 32101',
+        phoneSecondary: '+91 72994 61657',
+        whatsappNumber: '917550132101',
+        storeEmail: 'contact@punnaagitoystore.com',
+        upiId: 'punnagai@upi',
+        storeAddress: '4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai – 600 004'
+      };
+
+  const p1 = document.getElementById('settings-phone-primary');
+  const p2 = document.getElementById('settings-phone-secondary');
+  const wa = document.getElementById('settings-wa-number');
+  const em = document.getElementById('settings-email');
+  const upi = document.getElementById('settings-upi');
+  const addr = document.getElementById('settings-address');
+
+  if (p1) p1.value = settings.phonePrimary || '';
+  if (p2) p2.value = settings.phoneSecondary || '';
+  if (wa) wa.value = settings.whatsappNumber || '';
+  if (em) em.value = settings.storeEmail || '';
+  if (upi) upi.value = settings.upiId || '';
+  if (addr) addr.value = settings.storeAddress || '';
+}
+
+function handleSaveStoreSettings(e) {
+  if (e && e.preventDefault) e.preventDefault();
+
+  const p1 = document.getElementById('settings-phone-primary')?.value.trim();
+  const p2 = document.getElementById('settings-phone-secondary')?.value.trim();
+  const wa = document.getElementById('settings-wa-number')?.value.trim();
+  const em = document.getElementById('settings-email')?.value.trim();
+  const upi = document.getElementById('settings-upi')?.value.trim();
+  const addr = document.getElementById('settings-address')?.value.trim();
+
+  const newSettings = {
+    phonePrimary: p1 || '+91 75501 32101',
+    phoneSecondary: p2 || '+91 72994 61657',
+    whatsappNumber: wa || '917550132101',
+    storeEmail: em || 'contact@punnaagitoystore.com',
+    upiId: upi || 'punnagai@upi',
+    storeAddress: addr || '4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai – 600 004'
+  };
+
+  if (window.PunnagaiSettings) {
+    window.PunnagaiSettings.save(newSettings);
+    if (typeof window.PunnagaiSettings.updateLinks === 'function') {
+      window.PunnagaiSettings.updateLinks();
+    }
+  }
+
+  const status = document.getElementById('settings-save-status');
+  if (status) {
+    status.style.display = 'inline';
+    setTimeout(() => {
+      status.style.display = 'none';
+    }, 3000);
+  }
+
+  if (typeof showToast === 'function') {
+    showToast('Store settings updated! New phone & contact info saved.', 'success');
+  }
 }
 
 // ============================================================
@@ -1193,6 +1287,8 @@ function decodeEntities(str) {
 // ============================================================
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
+    checkAdminSession,
+    resolveAuthState,
     buildVariantsFromForm,
     mergeVariantsForEdit,
     validateProductForPublish,

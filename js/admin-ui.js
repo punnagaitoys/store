@@ -128,15 +128,16 @@
 
     try {
       const res = await window.PunnagaiAdminOrders.loadOrders();
-      if (res && res.success) {
-        allOrders = res.orders || [];
+      const orders = Array.isArray(res) ? res : (res && res.success ? (res.orders || []) : null);
+      if (orders !== null) {
+        allOrders = orders;
         if (countEl) countEl.textContent = `${allOrders.length} total orders`;
         renderOrdersTable(allOrders);
       } else {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center text-error">Failed to load orders: ${escapeHtml(res?.error || '')}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center text-error">Failed to load orders: ${escapeHtml(res?.error || '')}</td></tr>`;
       }
     } catch (err) {
-      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-error">Failed to load orders</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center text-error">Failed to load orders</td></tr>`;
     }
   }
 
@@ -358,8 +359,9 @@
 
     try {
       const res = await window.PunnagaiAdminCoupons.listActiveCoupons();
-      if (res && res.success) {
-        renderCouponsTable(res.coupons || []);
+      const coupons = Array.isArray(res) ? res : (res && res.success ? (res.coupons || []) : null);
+      if (coupons !== null) {
+        renderCouponsTable(coupons);
       } else {
         tbody.innerHTML = `<tr><td colspan="6" class="text-center text-error">Failed to load coupons</td></tr>`;
       }

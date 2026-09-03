@@ -144,7 +144,7 @@ function renderNavbar(activePage = '') {
   const pages = [
     { href: 'index.html', label: 'Home', id: 'home' },
     { href: 'shop.html', label: 'Shop', id: 'shop' },
-    { href: 'shop?sale=true', label: 'Sale', id: 'sale' },
+    { href: 'shop.html?sale=true', label: 'Sale', id: 'sale' },
     { href: 'index.html#contact', label: 'Contact', id: 'contact' }
   ];
 
@@ -278,10 +278,10 @@ function renderFooter() {
             <ul class="footer-links">
               <li><a href="index.html">Home</a></li>
               <li><a href="shop.html">All Toys</a></li>
-              <li><a href="shop?sale=true">Sale &amp; Offers</a></li>
-              <li><a href="shop?ageGroup=0-2">Baby Toys (0–2)</a></li>
-              <li><a href="shop?ageGroup=3-5">Toddler Toys (3–5)</a></li>
-              <li><a href="shop?ageGroup=6-8">Kids Toys (6–8)</a></li>
+              <li><a href="shop.html?sale=true">Sale &amp; Offers</a></li>
+              <li><a href="shop.html?ageGroup=0-2">Baby Toys (0–2)</a></li>
+              <li><a href="shop.html?ageGroup=3-5">Toddler Toys (3–5)</a></li>
+              <li><a href="shop.html?ageGroup=6-8">Kids Toys (6–8)</a></li>
             </ul>
           </div>
 
@@ -289,12 +289,12 @@ function renderFooter() {
           <div>
             <h4 class="footer-col-title">Categories</h4>
             <ul class="footer-links">
-              <li><a href="shop?category=Educational+%26+Learning">Educational</a></li>
-              <li><a href="shop?category=Building+Blocks">Building Blocks</a></li>
-              <li><a href="shop?category=Board+Games+%26+Puzzles">Board Games</a></li>
-              <li><a href="shop?category=Outdoor+%26+Sports">Outdoor &amp; Sports</a></li>
-              <li><a href="shop?category=Arts+%26+Crafts">Arts &amp; Crafts</a></li>
-              <li><a href="shop?category=Remote+Control">Remote Control</a></li>
+              <li><a href="shop.html?category=Educational+%26+Learning">Educational</a></li>
+              <li><a href="shop.html?category=Building+Blocks">Building Blocks</a></li>
+              <li><a href="shop.html?category=Board+Games+%26+Puzzles">Board Games</a></li>
+              <li><a href="shop.html?category=Outdoor+%26+Sports">Outdoor &amp; Sports</a></li>
+              <li><a href="shop.html?category=Arts+%26+Crafts">Arts &amp; Crafts</a></li>
+              <li><a href="shop.html?category=Remote+Control">Remote Control</a></li>
             </ul>
           </div>
 
@@ -459,7 +459,7 @@ function initGlobalSearch() {
           const imgEl = p.imageUrl
             ? `<img src="${p.imageUrl}" alt="" loading="lazy" class="search-result-img" onerror="this.style.display='none'">`
             : `<div class="search-result-img-placeholder">${emoji}</div>`;
-          return `<a href="product?id=${p.id}" class="search-result-item" role="option" onclick="closeGlobalSearch()">
+          return `<a href="product.html?id=${p.id}" class="search-result-item" role="option" onclick="closeGlobalSearch()">
           ${imgEl}
           <div class="search-result-info">
             <div class="search-result-name">${window.escapeHtml(p.name)}</div>
@@ -470,7 +470,7 @@ function initGlobalSearch() {
         })
         .join('');
 
-      const footer = `<div class="search-results-footer"><a href="shop?search=${encodeURIComponent(term)}" onclick="closeGlobalSearch()">See all results for "${window.escapeHtml(term)}" →</a></div>`;
+      const footer = `<div class="search-results-footer"><a href="shop.html?search=${encodeURIComponent(term)}" onclick="closeGlobalSearch()">See all results for "${window.escapeHtml(term)}" →</a></div>`;
       resultsBox.innerHTML = items + footer;
       inp.setAttribute('aria-expanded', 'true');
     }, 220);
@@ -483,7 +483,7 @@ function initGlobalSearch() {
       const term = inp.value.trim();
       if (term) {
         closeGlobalSearch();
-        window.location = 'shop?search=' + encodeURIComponent(term);
+        window.location = 'shop.html?search=' + encodeURIComponent(term);
       }
     }
   });
@@ -572,8 +572,8 @@ function renderProductCard(product) {
 
   return `
     <div class="product-card" data-id="${product.id}"
-         onclick="window.location='product?id=${product.id}'"
-         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location='product?id=${product.id}'}"
+         onclick="window.location='product.html?id=${product.id}'"
+         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location='product.html?id=${product.id}'}"
          tabindex="0" role="article"
          aria-label="${product.name}, &#8377;${product.price.toLocaleString('en-IN')}"
          style="cursor:pointer">
@@ -1181,7 +1181,7 @@ async function initShopPage() {
     autocompleteBox.querySelectorAll('.autocomplete-item').forEach((item) => {
       item.addEventListener('mousedown', (e) => {
         e.preventDefault();
-        window.location = 'product?id=' + item.dataset.id;
+        window.location = 'product.html?id=' + item.dataset.id;
       });
     });
   }
@@ -1559,11 +1559,11 @@ function renderWishlistCard(product) {
       <button class="wishlist-remove-btn" type="button" aria-label="Remove from wishlist" onclick="event.stopPropagation(); handleRemoveFromWishlist('${product.id}')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
-      <div class="product-card-image" onclick="window.location='product?id=${product.id}'">
+      <div class="product-card-image" onclick="window.location='product.html?id=${product.id}'">
         <img src="${product.imageUrl || 'https://via.placeholder.com/400x400?text=Toy'}" alt="${product.name}" loading="lazy"/>
         ${badgeHtml}
       </div>
-      <div class="product-card-body" onclick="window.location='product?id=${product.id}'">
+      <div class="product-card-body" onclick="window.location='product.html?id=${product.id}'">
         <p class="product-category">${product.category}</p>
         <h3 class="product-name">${product.name}</h3>
         <p class="product-age">Age: ${product.ageGroup} yrs</p>
@@ -1799,7 +1799,7 @@ window.openQuickView = function (productId) {
               WhatsApp Pre-Order
             </a>
           </div>
-          <button class="btn btn-outline" onclick="window.location='product?id=${product.id}'" style="width:100%; margin-top:10px;">
+          <button class="btn btn-outline" onclick="window.location='product.html?id=${product.id}'" style="width:100%; margin-top:10px;">
             View Full Detail Page &rarr;
           </button>
         </div>

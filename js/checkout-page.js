@@ -569,7 +569,7 @@ async function handlePlaceOrder() {
       );
 
       setTimeout(() => {
-        window.location.href = `order-confirmation?orderId=${encodeURIComponent(persistedOrderId)}`;
+        window.location.href = `order-confirmation.html?orderId=${encodeURIComponent(persistedOrderId)}`;
       }, 1200);
     } else {
       // PunnagaiCheckout not loaded — minimal fallback
@@ -592,7 +592,7 @@ async function handlePlaceOrder() {
         '<span style="color:var(--success)">✓ Order placed! Redirecting...</span>'
       );
       setTimeout(() => {
-        window.location.href = `order-confirmation?orderId=${encodeURIComponent(persistedOrderId)}`;
+        window.location.href = `order-confirmation.html?orderId=${encodeURIComponent(persistedOrderId)}`;
       }, 1200);
     }
   } catch (err) {

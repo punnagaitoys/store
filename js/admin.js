@@ -402,6 +402,10 @@ async function loadAdminProducts() {
   updateDashboardStats(adminProducts);
   renderRecentProducts(adminProducts);
   renderProductsTable(adminProducts);
+  if (window.AdminUI) {
+    window.AdminUI.loadLowStock(adminProducts);
+    window.AdminUI.loadDashboardCharts();
+  }
   if (window.MediaLibrary) {
     window.MediaLibrary.init(adminProducts);
   }
@@ -1265,15 +1269,17 @@ function setText(id, val) {
   if (el) el.textContent = val;
 }
 
-// Minimal HTML/attribute escaping for table rendering.
-function escapeHtml(str) {
-  return String(str == null ? '' : str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+if (!window.escapeHtml) {
+  window.escapeHtml = function (str) {
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  };
 }
+var escapeHtml = window.escapeHtml;
 function escapeAttr(str) {
   return escapeHtml(str);
 }

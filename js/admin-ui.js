@@ -34,6 +34,9 @@
   }
 
   function escapeHtml(str) {
+    if (typeof window !== 'undefined' && typeof window.escapeHtml === 'function') {
+      return window.escapeHtml(str);
+    }
     return String(str == null ? '' : str)
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
@@ -654,27 +657,40 @@
     }
   }
 
+  function getProductEffectiveStock(p) {
+    if (typeof p.stock === 'number' && !isNaN(p.stock)) return p.stock;
+    if (typeof p.quantity === 'number' && !isNaN(p.quantity)) return p.quantity;
+    if (Array.isArray(p.variants) && p.variants.length > 0) {
+      return p.variants.reduce((sum, v) => sum + (Number(v.stock) || 0), 0);
+    }
+    return p.inStock ? 12 : 0;
+  }
+
   function loadLowStock(adminProducts) {
     const tbody = el('low-stock-table-body');
     if (!tbody || !adminProducts) return;
 
     const lowStock = adminProducts
-      .filter((p) => p.quantity < 5)
-      .sort((a, b) => a.quantity - b.quantity);
+      .map((p) => ({
+        ...p,
+        effectiveStock: getProductEffectiveStock(p)
+      }))
+      .filter((p) => p.effectiveStock < 5)
+      .sort((a, b) => a.effectiveStock - b.effectiveStock);
 
     if (lowStock.length === 0) {
       tbody.innerHTML =
-        '<tr><td colspan="3" class="text-center">Inventory levels are healthy!</td></tr>';
+        '<tr><td colspan="3" class="text-center" style="color:var(--success); padding:20px; font-weight:600">✅ All inventory levels healthy!</td></tr>';
       return;
     }
 
     let html = '';
     lowStock.forEach((p) => {
-      const isOut = p.quantity <= 0;
+      const isOut = p.effectiveStock <= 0;
       html += `<tr>
         <td>${escapeHtml(p.skuId || p.id.substring(0, 8))}</td>
         <td>${escapeHtml(p.name)}</td>
-        <td style="color:${isOut ? 'var(--error)' : 'var(--warning)'}; font-weight:bold">${p.quantity}</td>
+        <td style="color:${isOut ? 'var(--error, #ef4444)' : 'var(--warning, #f59e0b)'}; font-weight:bold">${p.effectiveStock} ${isOut ? '(Out of Stock)' : 'left'}</td>
       </tr>`;
     });
     tbody.innerHTML = html;

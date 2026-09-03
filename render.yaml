@@ -1,0 +1,59 @@
+services:
+  - type: web
+    name: punnagai-toy-store
+    env: static
+    buildCommand: npm run build
+    staticPublishPath: .
+    routes:
+      - type: rewrite
+        source: /shop
+        destination: /shop.html
+      - type: rewrite
+        source: /cart
+        destination: /cart.html
+      - type: rewrite
+        source: /checkout
+        destination: /checkout.html
+      - type: rewrite
+        source: /product
+        destination: /product.html
+      - type: rewrite
+        source: /admin
+        destination: /admin.html
+      - type: rewrite
+        source: /wishlist
+        destination: /wishlist.html
+      - type: rewrite
+        source: /orders
+        destination: /orders.html
+      - type: rewrite
+        source: /order-confirmation
+        destination: /order-confirmation.html
+      - type: rewrite
+        source: /account
+        destination: /account.html
+      - type: rewrite
+        source: /terms
+        destination: /terms.html
+      - type: rewrite
+        source: /privacy
+        destination: /privacy.html
+      - type: rewrite
+        source: /returns
+        destination: /returns.html
+      - type: rewrite
+        source: /delivery
+        destination: /delivery.html
+      - type: rewrite
+        source: /payments
+        destination: /payments.html
+      - type: rewrite
+        source: /sale-terms
+        destination: /sale-terms.html
+    headers:
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN

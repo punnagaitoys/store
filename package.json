@@ -4,6 +4,8 @@
   "description": "Punnagai Toy Store static website",
   "scripts": {
     "dev": "serve .",
+    "build": "echo 'Build complete - static site ready'",
+    "start": "serve .",
     "format": "prettier --write \"**/*.{js,json,css,html,md}\"",
     "format:check": "prettier --check \"**/*.{js,json,css,html,md}\"",
     "test": "jest tests/unit tests/property",

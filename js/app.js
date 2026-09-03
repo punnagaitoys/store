@@ -18,7 +18,7 @@ if (!window.escapeHtml) {
       .replace(/'/g, '&#039;');
   };
 }
-const escapeHtml = window.escapeHtml;
+var escapeHtml = window.escapeHtml;
 
 // ============================================================
 // STORE SETTINGS / CONTACT DETAILS
@@ -1409,7 +1409,7 @@ function renderProductDetailsUI() {
     <div class="product-detail-layout">
       <div class="product-gallery">
         <div class="main-image-container">
-          <img src="${product.imageUrl || 'https://via.placeholder.com/600x600?text=Toy'}" alt="${product.name}" id="main-product-image">
+          <img src="${product.imageUrl || 'logo.png'}" alt="${escapeHtml(product.name)}" id="main-product-image" onerror="this.onerror=null; this.src='logo.png';">
         </div>
         ${videoEmbedHtml}
       </div>

@@ -38,6 +38,46 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="css/style.css" />
+    <!-- Schema.org JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ToyStore",
+      "name": "Punnagai Toy Store",
+      "image": "https://punnagaitoystore.com/logo.png",
+      "@id": "https://punnagaitoystore.com",
+      "url": "https://punnagaitoystore.com",
+      "telephone": "+917550132101",
+      "priceRange": "₹₹",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "4/7 Luz Bazar Complex, R.K. Mutt Road",
+        "addressLocality": "Mylapore, Chennai",
+        "addressRegion": "Tamil Nadu",
+        "postalCode": "600004",
+        "addressCountry": "IN"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 13.0336,
+        "longitude": 80.2677
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+          "opens": "10:00",
+          "closes": "22:00"
+        },
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Sunday",
+          "opens": "11:00",
+          "closes": "18:00"
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="navbar"></div>
@@ -136,7 +176,7 @@
           </p>
         </div>
         <div class="age-cards">
-          <a href="shop?ageGroup=0-2" class="age-card">
+          <a href="shop.html?ageGroup=0-2" class="age-card">
             <div class="age-icon">
               <svg
                 width="28"
@@ -156,7 +196,7 @@
             <span class="age-label">Baby</span>
             <span class="age-range">0 – 2 years</span>
           </a>
-          <a href="shop?ageGroup=3-5" class="age-card">
+          <a href="shop.html?ageGroup=3-5" class="age-card">
             <div class="age-icon">
               <svg
                 width="28"
@@ -178,7 +218,7 @@
             <span class="age-label">Toddler</span>
             <span class="age-range">3 – 5 years</span>
           </a>
-          <a href="shop?ageGroup=6-8" class="age-card">
+          <a href="shop.html?ageGroup=6-8" class="age-card">
             <div class="age-icon">
               <svg
                 width="28"
@@ -197,7 +237,7 @@
             <span class="age-label">Kids</span>
             <span class="age-range">6 – 8 years</span>
           </a>
-          <a href="shop?ageGroup=9-12" class="age-card">
+          <a href="shop.html?ageGroup=9-12" class="age-card">
             <div class="age-icon">
               <svg
                 width="28"
@@ -216,7 +256,7 @@
             <span class="age-label">Tween</span>
             <span class="age-range">9 – 12 years</span>
           </a>
-          <a href="shop?ageGroup=12+" class="age-card">
+          <a href="shop.html?ageGroup=12%2B" class="age-card">
             <div class="age-icon">
               <svg
                 width="28"
@@ -251,7 +291,7 @@
           </p>
         </div>
         <div class="category-grid">
-          <a href="shop?category=Educational+%26+Learning" class="category-card cat-educational">
+          <a href="shop.html?category=Educational+%26+Learning" class="category-card cat-educational">
             <div class="cat-card-content">
               <div class="cat-icon">
                 <svg
@@ -270,7 +310,7 @@
               <span class="cat-sub">Learn &amp; Discover</span>
             </div>
           </a>
-          <a href="shop?category=Building+Blocks" class="category-card cat-building">
+          <a href="shop.html?category=Building+Blocks" class="category-card cat-building">
             <div class="cat-card-content">
               <div class="cat-icon">
                 <svg
@@ -291,7 +331,7 @@
               <span class="cat-sub">Build &amp; Create</span>
             </div>
           </a>
-          <a href="shop?category=Board+Games+%26+Puzzles" class="category-card cat-games">
+          <a href="shop.html?category=Board+Games+%26+Puzzles" class="category-card cat-games">
             <div class="cat-card-content">
               <div class="cat-icon">
                 <svg
@@ -313,7 +353,7 @@
               <span class="cat-sub">Play Together</span>
             </div>
           </a>
-          <a href="shop?category=Outdoor+%26+Sports" class="category-card cat-outdoor">
+          <a href="shop.html?category=Outdoor+%26+Sports" class="category-card cat-outdoor">
             <div class="cat-card-content">
               <div class="cat-icon">
                 <svg
@@ -334,7 +374,7 @@
               <span class="cat-sub">Move &amp; Explore</span>
             </div>
           </a>
-          <a href="shop?category=Arts+%26+Crafts" class="category-card cat-arts">
+          <a href="shop.html?category=Arts+%26+Crafts" class="category-card cat-arts">
             <div class="cat-card-content">
               <div class="cat-icon">
                 <svg
@@ -358,7 +398,7 @@
               <span class="cat-sub">Create &amp; Express</span>
             </div>
           </a>
-          <a href="shop?category=Remote+Control" class="category-card cat-rc">
+          <a href="shop.html?category=Remote+Control" class="category-card cat-rc">
             <div class="cat-card-content">
               <div class="cat-icon">
                 <svg
@@ -379,7 +419,7 @@
               <span class="cat-sub">Speed &amp; Thrill</span>
             </div>
           </a>
-          <a href="shop?category=Dolls+%26+Fashion" class="category-card cat-dolls">
+          <a href="shop.html?category=Dolls+%26+Fashion" class="category-card cat-dolls">
             <div class="cat-card-content">
               <div class="cat-icon">
                 <svg
@@ -399,7 +439,7 @@
               <span class="cat-sub">Imagine &amp; Play</span>
             </div>
           </a>
-          <a href="shop?category=Soft+Toys+%26+Plush" class="category-card cat-plush">
+          <a href="shop.html?category=Soft+Toys+%26+Plush" class="category-card cat-plush">
             <div class="cat-card-content">
               <div class="cat-icon">
                 <svg

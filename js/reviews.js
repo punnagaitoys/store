@@ -100,18 +100,18 @@ async function fetchReviews(productId) {
   }
 }
 
-function escapeHtml(str) {
-  if (typeof window !== 'undefined' && typeof window.escapeHtml === 'function') {
-    return window.escapeHtml(str);
-  }
-  if (str === null || str === undefined) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+if (!window.escapeHtml) {
+  window.escapeHtml = function (str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  };
 }
+var escapeHtml = window.escapeHtml;
 
 function renderReviewCard(review) {
   const rawName = review.displayName || 'Anonymous';

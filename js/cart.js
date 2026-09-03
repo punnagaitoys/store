@@ -281,14 +281,17 @@ let appliedCouponCode = '';
 let appliedCouponRecord = null;
 let couponFeedback = null; // { message, type: 'success' | 'error' }
 
-function escapeHtml(value) {
-  return String(value == null ? '' : value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+if (!window.escapeHtml) {
+  window.escapeHtml = function (value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  };
 }
+var escapeHtml = window.escapeHtml;
 
 function renderCartItemHtml(item) {
   const key = cartItemKey(item);
@@ -302,7 +305,7 @@ function renderCartItemHtml(item) {
 
   return `
     <div class="cart-item" data-key="${escapeHtml(key)}">
-      <img src="${escapeHtml(item.imageUrl || 'https://via.placeholder.com/120x120?text=Toy')}" alt="${escapeHtml(item.name)}" class="cart-item-image">
+      <img src="${escapeHtml(item.imageUrl || 'logo.png')}" alt="${escapeHtml(item.name)}" class="cart-item-image" onerror="this.onerror=null; this.src='logo.png';">
       <div class="cart-item-info">
         <p class="cart-item-category">${escapeHtml(item.category || '')}</p>
         <h3 class="cart-item-name">${escapeHtml(item.name || 'Item')}</h3>

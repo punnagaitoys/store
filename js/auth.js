@@ -497,6 +497,90 @@
     }
   }
 
+  /**
+   * Authenticate with Google Sign-In (Firebase Auth provider).
+   * Supports Google popup sign-in and auto-provisions customer profile in Firestore.
+   *
+   * @returns {Promise<{success:boolean, user?:object, error?:string}>}
+   */
+  async function signInWithGoogle() {
+    if (isLocalMode()) {
+      const mockUser = {
+        userId: 'mock_google_user',
+        uid: 'mock_google_user',
+        email: 'customer@punnaagitoystore.com',
+        name: 'Demo Google Customer',
+        phone: '+919876543210',
+        isAdmin: false
+      };
+      storeSession(mockUser, 'mock_google_token');
+      return { success: true, user: mockUser };
+    }
+
+    if (!window.auth || typeof firebase === 'undefined') {
+      return { success: false, error: 'Firebase Authentication is not available.' };
+    }
+
+    try {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      provider.addScope('profile');
+      provider.addScope('email');
+      const result = await window.auth.signInWithPopup(provider);
+      const fbUser = result.user;
+
+      if (!fbUser) {
+        return { success: false, error: 'Google sign-in was cancelled or returned no user.' };
+      }
+
+      const idToken = await fbUser.getIdToken();
+      const getUserFn = getDataFn('getUserById');
+      const createUserFn_ = getDataFn('createUser');
+      let userProfile = null;
+
+      if (getUserFn) {
+        try {
+          userProfile = await getUserFn(fbUser.uid);
+        } catch (_) {}
+      }
+
+      if (!userProfile && createUserFn_) {
+        try {
+          await createUserFn_({
+            id: fbUser.uid,
+            name: fbUser.displayName || 'Customer',
+            email: fbUser.email,
+            phone: fbUser.phoneNumber || '',
+            isAdmin: false,
+            status: 'active',
+            createdAt: Date.now()
+          });
+          userProfile = {
+            userId: fbUser.uid,
+            name: fbUser.displayName || 'Customer',
+            email: fbUser.email,
+            phone: fbUser.phoneNumber || '',
+            isAdmin: false
+          };
+        } catch (_) {}
+      }
+
+      const sessionUser = {
+        userId: fbUser.uid,
+        uid: fbUser.uid,
+        email: fbUser.email,
+        name: fbUser.displayName || (userProfile && userProfile.name) || 'Customer',
+        phone: fbUser.phoneNumber || (userProfile && userProfile.phone) || '',
+        isAdmin: Boolean(userProfile && userProfile.isAdmin)
+      };
+
+      storeSession(sessionUser, idToken);
+      return { success: true, user: sessionUser };
+    } catch (err) {
+      console.error('Google Sign-in error:', err);
+      return { success: false, error: (err && err.message) || 'Failed to sign in with Google' };
+    }
+  }
+
   // ──────────────────────────────────────────────────────────────────────
   // Expose the API.
   // ──────────────────────────────────────────────────────────────────────
@@ -505,6 +589,7 @@
     SESSION_KEY: SESSION_KEY,
     register: register,
     login: login,
+    signInWithGoogle: signInWithGoogle,
     logout: logout,
     getCurrentUser: getCurrentUser,
     getSession: getSession,

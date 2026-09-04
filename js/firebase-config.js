@@ -47,14 +47,15 @@
  * Once done, paste YOUR config below:
  */
 
-// ⚠️ REPLACE THESE VALUES WITH YOUR ACTUAL FIREBASE CONFIG:
+// ⚠️ Production Firebase Configuration:
 const DEFAULT_FIREBASE_CONFIG = {
-  apiKey: 'YOUR_API_KEY_HERE',
-  authDomain: 'YOUR_PROJECT_ID.firebaseapp.com',
-  projectId: 'YOUR_PROJECT_ID',
-  storageBucket: 'YOUR_PROJECT_ID.appspot.com',
-  messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
-  appId: 'YOUR_APP_ID'
+  apiKey: "AIzaSyDJsabqiKNFmBPgskZmgbAdAIOq__zI-os",
+  authDomain: "punnagai-toy-store.firebaseapp.com",
+  projectId: "punnagai-toy-store",
+  storageBucket: "punnagai-toy-store.firebasestorage.app",
+  messagingSenderId: "748480682670",
+  appId: "1:748480682670:web:ba4ded0c0c3ec92f4deb3f",
+  measurementId: "G-FNSVGV3KPK"
 };
 
 /**
@@ -62,8 +63,7 @@ const DEFAULT_FIREBASE_CONFIG = {
  *
  * For environments that can inject configuration at runtime (e.g. integration
  * tests, staging, or a server-rendered shell), set `window.__FIREBASE_CONFIG__`
- * BEFORE this script loads to override the placeholders above. Falls back to the
- * default placeholder config so the site keeps working out-of-the-box in local mode.
+ * BEFORE this script loads to override the placeholders above.
  */
 const firebaseConfig = Object.assign(
   {},
@@ -71,17 +71,21 @@ const firebaseConfig = Object.assign(
   (typeof window !== 'undefined' && window.__FIREBASE_CONFIG__) || {}
 );
 
-// Check for mock mode — local mode whenever the API key is still the placeholder.
-window.USE_LOCAL_MODE = firebaseConfig.apiKey === 'YOUR_API_KEY_HERE';
+// Check for mock mode — only activate local mode if explicitly requested or API key is missing
+if (typeof window !== 'undefined') {
+  if (typeof window.USE_LOCAL_MODE === 'undefined') {
+    window.USE_LOCAL_MODE =
+      Boolean(localStorage && localStorage.getItem('punnagai_force_local')) ||
+      firebaseConfig.apiKey === 'YOUR_API_KEY_HERE';
+  }
+}
 
 /**
  * Emulator toggle.
  *
  * Set `window.USE_FIREBASE_EMULATOR = true` (and provide a real config via
  * `window.__FIREBASE_CONFIG__`) before this script loads to route Firestore,
- * Auth, and Storage to the local Firebase Emulator Suite. This is what the
- * integration tests (task 1.3) use. Host/ports can be overridden via
- * `window.FIREBASE_EMULATOR_HOSTS`.
+ * Auth, and Storage to the local Firebase Emulator Suite.
  */
 const EMULATOR_DEFAULTS = {
   firestore: { host: 'localhost', port: 8080 },
@@ -93,31 +97,41 @@ let db = null;
 let auth = null;
 let storage = null;
 let functions = null;
+let analytics = null;
 
-if (!window.USE_LOCAL_MODE) {
+if (typeof window !== 'undefined' && !window.USE_LOCAL_MODE) {
   // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  db = firebase.firestore();
-  auth = firebase.auth();
-  storage = firebase.storage ? firebase.storage() : null;
-  functions = firebase.functions ? firebase.functions() : null;
+  if (typeof firebase !== 'undefined' && typeof firebase.initializeApp === 'function') {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore ? firebase.firestore() : null;
+    auth = firebase.auth ? firebase.auth() : null;
+    storage = firebase.storage ? firebase.storage() : null;
+    functions = firebase.functions ? firebase.functions() : null;
 
-  if (window.USE_FIREBASE_EMULATOR) {
-    const hosts = Object.assign({}, EMULATOR_DEFAULTS, window.FIREBASE_EMULATOR_HOSTS || {});
-    try {
-      db.useEmulator(hosts.firestore.host, hosts.firestore.port);
-      auth.useEmulator(hosts.auth.url, { disableWarnings: true });
-      if (storage) storage.useEmulator(hosts.storage.host, hosts.storage.port);
-      console.log('🧪 Firebase Emulator Suite connected — Punnagai Toy Store');
-    } catch (err) {
-      console.error('Failed to connect to Firebase Emulator Suite:', err);
+    if (firebase.analytics && typeof firebase.analytics === 'function') {
+      try {
+        analytics = firebase.analytics();
+      } catch (err) {
+        console.warn('Analytics initialization skipped:', err);
+      }
     }
-  } else {
-    console.log('🔥 Firebase initialized — Punnagai Toy Store');
+
+    if (window.USE_FIREBASE_EMULATOR && db) {
+      const hosts = Object.assign({}, EMULATOR_DEFAULTS, window.FIREBASE_EMULATOR_HOSTS || {});
+      try {
+        db.useEmulator(hosts.firestore.host, hosts.firestore.port);
+        if (auth) auth.useEmulator(hosts.auth.url, { disableWarnings: true });
+        if (storage) storage.useEmulator(hosts.storage.host, hosts.storage.port);
+        console.log('🧪 Firebase Emulator Suite connected — Punnagai Toy Store');
+      } catch (err) {
+        console.error('Failed to connect to Firebase Emulator Suite:', err);
+      }
+    } else {
+      console.log('🔥 Firebase initialized — Punnagai Toy Store');
+    }
   }
 } else {
   console.log('⚡ Local Mode Activated — Using LocalStorage instead of Firebase');
-  // Dummy objects so scripts don't crash when looking up db/auth/storage properties
   db = {};
   auth = {};
   storage = {};
@@ -129,4 +143,5 @@ if (typeof window !== 'undefined') {
   window.auth = auth;
   window.storage = storage;
   window.functions = functions;
+  window.analytics = analytics;
 }

@@ -77,7 +77,8 @@ service cloud.firestore {
     // - Customers may NOT update or delete — those actions are admin-only.
 
     match /orders/{orderId} {
-      allow create: if false;               // Securely created via Cloud Functions only
+      allow create: if (isAuthenticated() && request.resource.data.userId == request.auth.uid) ||
+                       (request.resource.data.userId == null && request.resource.data.total is number);
       allow read:   if isAdmin() || isOwner(resource);
       allow update: if isAdmin();
       allow delete: if false;               // Orders are never deleted

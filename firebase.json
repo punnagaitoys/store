@@ -1,4 +1,18 @@
 {
+  "auth": {
+    "authorizedDomains": [
+      "localhost",
+      "punnagai-toy-store.firebaseapp.com",
+      "punnagai-toy-store.web.app"
+    ],
+    "providers": {
+      "emailPassword": true,
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "Punnagai Toy Store",
+        "supportEmail": "punnagaitoystore@gmail.com"
+      }
+    }
+  },
   "firestore": {
     "rules": "firestore.rules"
   },

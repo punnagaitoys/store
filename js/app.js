@@ -28,7 +28,7 @@ const DEFAULT_STORE_SETTINGS = {
   phonePrimary: '+91 75501 32101',
   phoneSecondary: '+91 72994 61657',
   whatsappNumber: '917550132101',
-  storeEmail: 'contact@punnaagitoystore.com',
+  storeEmail: 'contact@punnagaitoystore.com',
   upiId: 'punnagai@upi',
   storeAddress: '4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai – 600 004'
 };

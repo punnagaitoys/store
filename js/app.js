@@ -84,7 +84,7 @@ window.PunnagaiSettings = {
 // TOAST NOTIFICATIONS
 // ============================================================
 
-function showToast(message, type = 'success') {
+function showToast(message, type = 'success', options = {}) {
   let container = document.getElementById('toast-container');
   if (!container) {
     container = document.createElement('div');
@@ -94,25 +94,41 @@ function showToast(message, type = 'success') {
   }
 
   const toast = document.createElement('div');
-  toast.className = `toast toast-${type}`;
+  toast.className = `toast toast-${type} ${options.image ? 'toast-with-media' : ''}`;
 
-  const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : type === 'warning' ? '⚠️' : 'ℹ';
+  let mediaHtml = '';
+  if (options.image) {
+    mediaHtml = `<img src="${options.image}" alt="" class="toast-media-img" onerror="this.src='logo.png'">`;
+  } else {
+    const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : type === 'warning' ? '⚠️' : 'ℹ';
+    mediaHtml = `<span class="toast-icon">${icon}</span>`;
+  }
+
+  let actionHtml = '';
+  if (options.actionUrl && options.actionText) {
+    actionHtml = `<a href="${options.actionUrl}" class="toast-action-btn">${options.actionText} →</a>`;
+  }
+
   toast.innerHTML = `
-    <span class="toast-icon">${icon}</span>
-    <span class="toast-msg">${message}</span>
+    <div class="toast-content-wrapper">
+      ${mediaHtml}
+      <div class="toast-text-group">
+        <span class="toast-msg">${escapeHtml(message)}</span>
+      </div>
+      ${actionHtml}
+    </div>
   `;
 
   container.appendChild(toast);
 
   setTimeout(() => {
-    toast.style.opacity = '0';
-    toast.style.transform = 'translateX(100px)';
-    setTimeout(() => toast.remove(), 300);
-  }, 3000);
+    toast.classList.add('toast-fade-out');
+    setTimeout(() => toast.remove(), 350);
+  }, 3600);
 }
 
 // ============================================================
-// NAVBAR INJECTION
+// NAVBAR & MOBILE APP BOTTOM NAVIGATION INJECTION
 // ============================================================
 
 function getWishlistCount() {
@@ -127,7 +143,7 @@ function getWishlistCount() {
 
 function updateWishlistBadge() {
   const count = getWishlistCount();
-  const badges = document.querySelectorAll('.wishlist-badge');
+  const badges = document.querySelectorAll('.wishlist-badge, .bottom-nav-wishlist-badge');
   badges.forEach((badge) => {
     badge.textContent = count;
     badge.style.display = count > 0 ? 'flex' : 'none';
@@ -136,6 +152,81 @@ function updateWishlistBadge() {
   mobileBadges.forEach((badge) => {
     badge.textContent = count;
   });
+
+  // Micro-interaction: Playful wishlist pop
+  document.querySelectorAll('.wishlist-btn, .bottom-nav-item[href="wishlist.html"]').forEach((btn) => {
+    btn.classList.remove('wishlist-burst');
+    void btn.offsetWidth;
+    btn.classList.add('wishlist-burst');
+  });
+}
+
+function renderMobileBottomNav(activePage = '') {
+  let existing = document.getElementById('mobile-bottom-nav');
+  if (existing) existing.remove();
+
+  const cartCount = typeof getCartCount === 'function' ? getCartCount() : 0;
+  const wishlistCount = typeof getWishlistCount === 'function' ? getWishlistCount() : 0;
+
+  const bottomNavHtml = `
+    <nav class="mobile-bottom-nav" id="mobile-bottom-nav" aria-label="Quick Mobile Navigation">
+      <a href="index.html" class="bottom-nav-item ${activePage === 'home' ? 'active' : ''}">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span>Home</span>
+      </a>
+      <a href="shop.html" class="bottom-nav-item ${activePage === 'shop' ? 'active' : ''}">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+          <path d="M3 6h18"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        <span>Shop</span>
+      </a>
+      <button type="button" class="bottom-nav-item bottom-nav-search-trigger" id="bottom-nav-search-btn" aria-label="Search toys">
+        <div class="bottom-nav-search-bubble">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.35-4.35"/>
+          </svg>
+        </div>
+        <span>Search</span>
+      </button>
+      <a href="wishlist.html" class="bottom-nav-item ${activePage === 'wishlist' ? 'active' : ''}">
+        <div class="bottom-nav-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+          <span class="bottom-nav-wishlist-badge" style="display:${wishlistCount > 0 ? 'flex' : 'none'}">${wishlistCount}</span>
+        </div>
+        <span>Wishlist</span>
+      </a>
+      <a href="cart.html" class="bottom-nav-item ${activePage === 'cart' ? 'active' : ''}">
+        <div class="bottom-nav-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+          <span class="bottom-nav-cart-badge" style="display:${cartCount > 0 ? 'flex' : 'none'}">${cartCount}</span>
+        </div>
+        <span>Cart</span>
+      </a>
+    </nav>
+  `;
+
+  document.body.insertAdjacentHTML('beforeend', bottomNavHtml);
+
+  const searchBtn = document.getElementById('bottom-nav-search-btn');
+  if (searchBtn) {
+    searchBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (typeof window.openGlobalSearch === 'function') {
+        window.openGlobalSearch();
+      }
+    });
+  }
 }
 
 function renderNavbar(activePage = '') {
@@ -200,10 +291,23 @@ function renderNavbar(activePage = '') {
           </div>
         </div>
 
+        <div class="mobile-menu-backdrop" id="mobile-menu-backdrop"></div>
         <div class="mobile-menu" id="mobile-menu">
-          ${pages.map((p) => `<a href="${p.href}" class="mobile-nav-link ${activePage === p.id ? 'active' : ''}">${p.label}</a>`).join('')}
-          <a href="wishlist.html" class="mobile-nav-link ${activePage === 'wishlist' ? 'active' : ''}">Wishlist (<span class="wishlist-badge-mobile">${wishlistCount}</span>)</a>
-          <a href="cart.html" class="mobile-nav-link">Cart (<span class="cart-badge-mobile">${cartCount}</span>)</a>
+          <div class="mobile-menu-header">
+            <span class="mobile-menu-title">🧸 Browse Punnagai</span>
+            <button type="button" class="mobile-menu-close" id="mobile-menu-close" aria-label="Close menu">✕</button>
+          </div>
+          <div class="mobile-menu-links">
+            ${pages.map((p) => `<a href="${p.href}" class="mobile-nav-link ${activePage === p.id ? 'active' : ''}">${p.label}</a>`).join('')}
+            <a href="wishlist.html" class="mobile-nav-link ${activePage === 'wishlist' ? 'active' : ''}">Wishlist (<span class="wishlist-badge-mobile">${wishlistCount}</span>)</a>
+            <a href="cart.html" class="mobile-nav-link ${activePage === 'cart' ? 'active' : ''}">Cart (<span class="cart-badge-mobile">${cartCount}</span>)</a>
+            <a href="account.html" class="mobile-nav-link ${activePage === 'account' ? 'active' : ''}">My Account</a>
+          </div>
+          <div class="mobile-menu-footer">
+            <a href="https://wa.me/917550132101?text=Hi! I have a question about toys at Punnagai." class="btn btn-whatsapp-subtle" target="_blank" rel="noopener">
+              <span>💬 Chat with Store Owner</span>
+            </a>
+          </div>
         </div>
       </div>
     </nav>
@@ -216,14 +320,40 @@ function renderNavbar(activePage = '') {
     document.body.insertAdjacentHTML('afterbegin', html);
   }
 
-  // Hamburger toggle
+  // Hamburger toggle with backdrop and close button
   const hamburger = document.getElementById('hamburger');
   const mobileMenu = document.getElementById('mobile-menu');
+  const mobileBackdrop = document.getElementById('mobile-menu-backdrop');
+  const mobileCloseBtn = document.getElementById('mobile-menu-close');
+
+  const closeMenu = () => {
+    if (mobileMenu) mobileMenu.classList.remove('open');
+    if (mobileBackdrop) mobileBackdrop.classList.remove('active');
+    if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('mobile-menu-locked');
+  };
+
+  const openMenu = () => {
+    if (mobileMenu) mobileMenu.classList.add('open');
+    if (mobileBackdrop) mobileBackdrop.classList.add('active');
+    if (hamburger) hamburger.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('mobile-menu-locked');
+  };
+
   if (hamburger && mobileMenu) {
     hamburger.addEventListener('click', () => {
-      const isOpen = mobileMenu.classList.toggle('open');
-      hamburger.setAttribute('aria-expanded', isOpen);
+      const isOpen = mobileMenu.classList.contains('open');
+      if (isOpen) closeMenu();
+      else openMenu();
     });
+  }
+
+  if (mobileBackdrop) {
+    mobileBackdrop.addEventListener('click', closeMenu);
+  }
+
+  if (mobileCloseBtn) {
+    mobileCloseBtn.addEventListener('click', closeMenu);
   }
 
   // Navbar scroll effect
@@ -233,6 +363,9 @@ function renderNavbar(activePage = '') {
       navbar.classList.toggle('scrolled', window.scrollY > 20);
     }
   });
+
+  // Inject Mobile Bottom App Navigation
+  renderMobileBottomNav(activePage);
 }
 
 // ============================================================
@@ -1170,7 +1303,7 @@ async function initShopPage() {
       .map(
         (p) =>
           `<li role="option" class="autocomplete-item" data-id="${p.id}">
-        <img src="${p.imageUrl || 'https://via.placeholder.com/40x40?text=Toy'}" alt="" loading="lazy">
+        <img src="${p.imageUrl || 'logo.png'}" alt="" loading="lazy" onerror="this.src='logo.png'">
         <span class="autocomplete-name">${p.name}</span>
         <span class="autocomplete-price">₹${p.price.toLocaleString('en-IN')}</span>
       </li>`
@@ -1454,10 +1587,48 @@ function renderProductDetailsUI() {
             </button>`
             : ''
         }
-        <div style="margin-top:24px;border-top:1px solid var(--border);padding-top:24px;display:flex;flex-direction:column;gap:12px;color:var(--text-secondary)">
-          <div class="flex align-center gap-8"><svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Available at Mylapore Store</div>
-          <div class="flex align-center gap-8"><svg width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Safe & Non-toxic Materials</div>
+        <div class="product-trust-badges-list">
+          <div class="trust-badge-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <div>
+              <strong>Available at Mylapore Store</strong>
+              <small>Luz Bazar Complex, R.K. Mutt Rd</small>
+            </div>
+          </div>
+          <div class="trust-badge-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <div>
+              <strong>100% Non-Toxic &amp; BIS Certified</strong>
+              <small>Laboratory tested child-safe materials</small>
+            </div>
+          </div>
+          <div class="trust-badge-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2.2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            <div>
+              <strong>Fast Chennai Delivery</strong>
+              <small>Same day in Mylapore, 1-2 days across TN</small>
+            </div>
+          </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Mobile Sticky Bottom Buy Bar (visible on mobile only) -->
+    <div class="mobile-sticky-buy-bar" id="mobile-sticky-buy-bar">
+      <div class="sticky-buy-price-wrap">
+        <span class="sticky-buy-price">₹${displayInfo.discounted.toLocaleString('en-IN')}</span>
+        ${displayInfo.hasDiscount ? `<span class="sticky-buy-orig">₹${displayInfo.original.toLocaleString('en-IN')}</span>` : ''}
+      </div>
+      <div class="sticky-buy-btn-group">
+        <button type="button" class="btn btn-whatsapp-sticky" onclick="handleDetailWhatsApp()" aria-label="Order on WhatsApp">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+          <span>WhatsApp</span>
+        </button>
+        ${
+          displayInfo.stock.inStock
+            ? `<button type="button" class="btn btn-primary btn-sticky-cart" onclick="handleDetailAddToCart()">Add to Cart</button>`
+            : `<button type="button" class="btn btn-disabled btn-sticky-cart" disabled>Out of Stock</button>`
+        }
       </div>
     </div>
   `;
@@ -1560,7 +1731,7 @@ function renderWishlistCard(product) {
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
       <div class="product-card-image" onclick="window.location='product.html?id=${product.id}'">
-        <img src="${product.imageUrl || 'https://via.placeholder.com/400x400?text=Toy'}" alt="${product.name}" loading="lazy"/>
+        <img src="${product.imageUrl || 'logo.png'}" alt="${escapeHtml(product.name)}" loading="lazy" onerror="this.src='logo.png'"/>
         ${badgeHtml}
       </div>
       <div class="product-card-body" onclick="window.location='product.html?id=${product.id}'">

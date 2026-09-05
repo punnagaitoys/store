@@ -80,6 +80,18 @@
             <!-- Autocomplete suggestions (top 5 products) -->
             <ul id="search-autocomplete" class="search-autocomplete" role="listbox" hidden></ul>
           </div>
+        <!-- Mobile Category Chips Carousel -->
+        <div class="mobile-category-carousel" role="navigation" aria-label="Quick Category Filter">
+          <a href="shop.html" class="category-chip active" data-cat="all">🌟 All Toys</a>
+          <a href="shop.html?sale=true" class="category-chip" data-sale="true">🔥 Hot Offers</a>
+          <a href="shop.html?ageGroup=0-2" class="category-chip" data-age="0-2">🍼 Baby (0-2)</a>
+          <a href="shop.html?ageGroup=3-5" class="category-chip" data-age="3-5">🧸 Toddler (3-5)</a>
+          <a href="shop.html?ageGroup=6-8" class="category-chip" data-age="6-8">🎮 Kids (6-8)</a>
+          <a href="shop.html?category=Building+Blocks" class="category-chip">🧱 LEGO &amp; Blocks</a>
+          <a href="shop.html?category=Educational+%26+Learning" class="category-chip">🧠 Educational</a>
+          <a href="shop.html?category=Board+Games+%26+Puzzles" class="category-chip">🎲 Board Games</a>
+          <a href="shop.html?category=Outdoor+%26+Sports" class="category-chip">⚽ Outdoor</a>
+          <a href="shop.html?category=Soft+Toys+%26+Plush" class="category-chip">🐻 Soft Plush</a>
         </div>
 
         <div class="shop-layout">
@@ -388,25 +400,27 @@
             <!-- Empty State -->
             <div id="shop-empty-state" class="empty-state" style="display: none">
               <div class="empty-state-icon">
-                <svg
-                  width="64"
-                  height="64"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#D1D5DB"
-                  stroke-width="1.5"
-                >
-                  <circle cx="11" cy="11" r="8" />
-                  <path d="m21 21-4.35-4.35" />
-                </svg>
+                <span style="font-size: 3.5rem;">🧸</span>
               </div>
-              <h3 class="empty-state-title">No toys found</h3>
+              <h3 class="empty-state-title">No toys matched your filters</h3>
               <p class="empty-state-desc">
-                Try adjusting your filters or search term to find what you're looking for.
+                Don't worry! Try clearing your filters or explore one of our popular collections below:
               </p>
-              <button class="btn btn-primary" onclick="clearAllFilters()" type="button">
-                Clear All Filters
-              </button>
+              <div class="empty-state-actions">
+                <button class="btn btn-primary" onclick="clearAllFilters()" type="button">
+                  Clear All Filters
+                </button>
+              </div>
+              <div class="empty-state-popular-tags">
+                <span class="popular-tags-label">Popular Collections:</span>
+                <div class="popular-chips-wrap">
+                  <a href="shop.html?sale=true" class="mini-tag-chip">🔥 Hot Offers</a>
+                  <a href="shop.html?category=Building+Blocks" class="mini-tag-chip">🧱 Building Blocks</a>
+                  <a href="shop.html?category=Educational+%26+Learning" class="mini-tag-chip">🧠 STEM &amp; Learning</a>
+                  <a href="shop.html?category=Board+Games+%26+Puzzles" class="mini-tag-chip">🎲 Board Games</a>
+                  <a href="shop.html?ageGroup=0-2" class="mini-tag-chip">🍼 Baby Toys</a>
+                </div>
+              </div>
             </div>
 
             <!-- Pagination -->

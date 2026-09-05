@@ -6,22 +6,22 @@
 const DEFAULT_HOME_VIDEOS = [
   {
     id: 'hv_1',
-    videoId: 'dQw4w9WgXcQ',
-    title: 'Welcome to Punnagai Toy Store Mylapore',
+    videoId: 'L13c2yTfZ8c',
+    title: 'Sparking Curiosity: STEM Robot & Science Kits',
     description:
-      "Take a virtual tour of Mylapore's favorite toy destination and discover our magical range."
+      "Watch hands-on learning come alive with our best-selling educational robotics and science kits."
   },
   {
     id: 'hv_2',
-    videoId: 'M7lc1UVf-VE',
-    title: 'Top Educational & STEM Toys for Kids',
-    description: 'Discover how learning meets fun with our age-tested STEM and educational toys.'
+    videoId: 'rQ3tB_jT9tY',
+    title: 'Handcrafted Wooden Montessori & Stacking Toys',
+    description: 'Explore eco-friendly wooden toys designed for toddlers to build fine motor skills safely.'
   },
   {
     id: 'hv_3',
-    videoId: 'tgbNymZ7vqY',
-    title: 'Wooden Toys & Traditional Games Showcase',
-    description: 'Explore eco-friendly wooden toys crafted for safety, creativity and durability.'
+    videoId: 'f_n8KqJ5eYs',
+    title: 'Family Board Games & Strategy Puzzles',
+    description: 'Unplug and bond together with award-winning family board games and memory challenges.'
   }
 ];
 
@@ -36,14 +36,14 @@ class PunnagaiYouTube {
       const stored = localStorage.getItem('Punnagai_HomeVideos');
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
+        if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].videoId !== 'dQw4w9WgXcQ') {
           return parsed;
         }
       }
     } catch (e) {
       console.warn('Error reading Home Videos from localStorage', e);
     }
-    // Save default if none found
+    // Save default if none found or legacy placeholder
     try {
       localStorage.setItem('Punnagai_HomeVideos', JSON.stringify(DEFAULT_HOME_VIDEOS));
     } catch (e) {}

@@ -173,7 +173,13 @@ function addToCart(product, quantity = 1, variant = null) {
 
   const next = cartAddItem(getCart(), snapshot);
   saveCart(next);
-  showToast(`"${product.name}" added to cart!`, 'success');
+  if (typeof showToast === 'function') {
+    showToast(`"${product.name}" added to cart!`, 'success', {
+      image: product.imageUrl,
+      actionText: 'View Cart',
+      actionUrl: 'cart.html'
+    });
+  }
   return next;
 }
 
@@ -358,9 +364,30 @@ function renderCartSummaryHtml(cart) {
     ? `<div class="coupon-feedback coupon-feedback-${couponFeedback.type}">${escapeHtml(couponFeedback.message)}</div>`
     : '';
 
+  const freeShippingThreshold = 999;
+  const progressPercent = Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100));
+  const diff = freeShippingThreshold - subtotal;
+  const freeShippingNotice =
+    subtotal >= freeShippingThreshold
+      ? `<div class="free-shipping-bar unlocked">
+           <div class="fs-header">
+             <span class="fs-icon">🎉</span>
+             <span class="fs-msg"><strong>Congratulations!</strong> You get <strong>FREE Local Delivery!</strong></span>
+           </div>
+           <div class="fs-progress-track"><div class="fs-progress-fill" style="width: 100%"></div></div>
+         </div>`
+      : `<div class="free-shipping-bar">
+           <div class="fs-header">
+             <span class="fs-icon">🚚</span>
+             <span class="fs-msg">Add <strong>${formatPrice(diff)}</strong> more for <strong>FREE Delivery!</strong></span>
+           </div>
+           <div class="fs-progress-track"><div class="fs-progress-fill" style="width: ${progressPercent}%"></div></div>
+         </div>`;
+
   return `
     <div class="cart-summary">
       <h3 class="summary-title">Order Summary</h3>
+      ${freeShippingNotice}
       <div class="summary-row">
         <span>Subtotal (${count} item${count === 1 ? '' : 's'})</span>
         <span>${formatPrice(subtotal)}</span>
@@ -552,9 +579,17 @@ function updateCartBadge() {
     badge.textContent = count;
     badge.style.display = count > 0 ? 'flex' : 'none';
   });
-  const mobileBadges = document.querySelectorAll('.cart-badge-mobile');
+  const mobileBadges = document.querySelectorAll('.cart-badge-mobile, .bottom-nav-cart-badge');
   mobileBadges.forEach((badge) => {
     badge.textContent = count;
+    badge.style.display = count > 0 ? 'flex' : 'none';
+  });
+
+  // Micro-interaction: Playful cart bounce on all cart buttons
+  document.querySelectorAll('.cart-btn, .bottom-nav-item[href="cart.html"]').forEach((btn) => {
+    btn.classList.remove('cart-bounce');
+    void btn.offsetWidth; // trigger reflow
+    btn.classList.add('cart-bounce');
   });
 }
 

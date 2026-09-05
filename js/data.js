@@ -391,11 +391,33 @@ const SEED_PRODUCTS = [
 // LOCAL STORAGE HELPERS
 // ============================================================
 function getLocalProducts() {
-  return JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || [];
+  try {
+    const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+    const prods = raw ? JSON.parse(raw) : [];
+    if (Array.isArray(prods) && prods.length > 0) {
+      return prods;
+    }
+  } catch (e) {}
+
+  // Automatically seed from SEED_PRODUCTS if empty
+  if (Array.isArray(SEED_PRODUCTS) && SEED_PRODUCTS.length > 0) {
+    const seeded = SEED_PRODUCTS.map((p, i) => ({
+      ...p,
+      id: p.id || 'prod_seed_' + (i + 1),
+      createdAt: p.createdAt || (Date.now() - i * 60000)
+    }));
+    try {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(seeded));
+    } catch (e) {}
+    return seeded;
+  }
+  return [];
 }
 
 function saveLocalProducts(products) {
-  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(products));
+  try {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(products));
+  } catch (e) {}
 }
 
 // ============================================================
@@ -407,7 +429,7 @@ function generateId() {
 }
 
 function getServerTimestamp() {
-  return window.USE_LOCAL_MODE ? Date.now() : firebase.firestore.FieldValue.serverTimestamp();
+  return window.USE_LOCAL_MODE ? Date.now() : (firebase && firebase.firestore ? firebase.firestore.FieldValue.serverTimestamp() : Date.now());
 }
 
 /**
@@ -417,49 +439,54 @@ async function getProducts(filters = {}) {
   try {
     let products = [];
 
-    if (window.USE_LOCAL_MODE) {
+    if (window.USE_LOCAL_MODE || !window.db) {
       products = getLocalProducts();
-
-      // Local Filter
-      if (filters.category && filters.category !== 'all') {
-        products = products.filter((p) => p.category === filters.category);
-      }
-      if (filters.ageGroup && filters.ageGroup !== 'all') {
-        products = products.filter((p) => p.ageGroup === filters.ageGroup);
-      }
-      if (filters.inStock === true) {
-        products = products.filter((p) => p.inStock === true);
-      }
-      if (filters.featured === true) {
-        products = products.filter((p) => p.featured === true);
-      }
-
-      // Default Sort (Newest first)
-      if (!filters.sortBy) {
-        products.sort((a, b) => b.createdAt - a.createdAt);
-      }
     } else {
-      let query = db.collection(COLLECTIONS.PRODUCTS);
+      try {
+        let query = db.collection(COLLECTIONS.PRODUCTS);
 
-      if (filters.category && filters.category !== 'all') {
-        query = query.where('category', '==', filters.category);
-      }
-      if (filters.ageGroup && filters.ageGroup !== 'all') {
-        query = query.where('ageGroup', '==', filters.ageGroup);
-      }
-      if (filters.inStock === true) {
-        query = query.where('inStock', '==', true);
-      }
-      if (filters.featured === true) {
-        query = query.where('featured', '==', true);
+        if (filters.category && filters.category !== 'all') {
+          query = query.where('category', '==', filters.category);
+        }
+        if (filters.ageGroup && filters.ageGroup !== 'all') {
+          query = query.where('ageGroup', '==', filters.ageGroup);
+        }
+        if (filters.inStock === true) {
+          query = query.where('inStock', '==', true);
+        }
+        if (filters.featured === true) {
+          query = query.where('featured', '==', true);
+        }
+
+        if (!filters.category && !filters.ageGroup && !filters.sortBy) {
+          query = query.orderBy('createdAt', 'desc');
+        }
+
+        const snapshot = await query.get();
+        products = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      } catch (fsErr) {
+        console.warn('Firestore fetch failed, falling back to local products:', fsErr);
+        products = [];
       }
 
-      if (!filters.category && !filters.ageGroup && !filters.sortBy) {
-        query = query.orderBy('createdAt', 'desc');
+      // Resilience Fallback: If Firestore returned 0 products, fall back to local seed products
+      if (!products || products.length === 0) {
+        products = getLocalProducts();
       }
+    }
 
-      const snapshot = await query.get();
-      products = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    // Apply local filters (for local mode or local fallback)
+    if (filters.category && filters.category !== 'all') {
+      products = products.filter((p) => p.category === filters.category);
+    }
+    if (filters.ageGroup && filters.ageGroup !== 'all') {
+      products = products.filter((p) => p.ageGroup === filters.ageGroup);
+    }
+    if (filters.inStock === true) {
+      products = products.filter((p) => p.inStock === true);
+    }
+    if (filters.featured === true) {
+      products = products.filter((p) => p.featured === true);
     }
 
     // Client-side search filter
@@ -500,14 +527,16 @@ async function getProducts(filters = {}) {
  */
 async function getProductById(id) {
   try {
-    if (window.USE_LOCAL_MODE) {
-      const products = getLocalProducts();
-      return products.find((p) => p.id === id) || null;
-    } else {
-      const doc = await db.collection(COLLECTIONS.PRODUCTS).doc(id).get();
-      if (!doc.exists) return null;
-      return { id: doc.id, ...doc.data() };
+    if (!window.USE_LOCAL_MODE && window.db) {
+      try {
+        const doc = await db.collection(COLLECTIONS.PRODUCTS).doc(id).get();
+        if (doc.exists) return { id: doc.id, ...doc.data() };
+      } catch (e) {
+        console.warn('Firestore getProductById failed, checking local:', e);
+      }
     }
+    const products = getLocalProducts();
+    return products.find((p) => p.id === id || p.name === id) || null;
   } catch (err) {
     console.error('Error fetching product:', err);
     return null;

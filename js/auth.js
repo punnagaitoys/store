@@ -508,7 +508,7 @@
       const mockUser = {
         userId: 'mock_google_user',
         uid: 'mock_google_user',
-        email: 'customer@punnaagitoystore.com',
+        email: 'customer@punnagaitoystore.com',
         name: 'Demo Google Customer',
         phone: '+919876543210',
         isAdmin: false

@@ -33,7 +33,7 @@
 // CONSTANTS & MODULE STATE
 // ============================================================
 
-const ADMIN_LOCAL_EMAIL = 'admin@punnaagitoystore.com';
+const ADMIN_LOCAL_EMAIL = 'admin@punnagaitoystore.com';
 // Password is NOT stored in source. In local mode it is read at runtime from:
 //   localStorage.setItem('__punnagai_admin_env', JSON.stringify({ password: 'your-password' }))
 // Set this once in the browser console on your development machine.
@@ -313,7 +313,7 @@ function loadAdminStoreSettings() {
         phonePrimary: '+91 75501 32101',
         phoneSecondary: '+91 72994 61657',
         whatsappNumber: '917550132101',
-        storeEmail: 'contact@punnaagitoystore.com',
+        storeEmail: 'contact@punnagaitoystore.com',
         upiId: 'punnagai@upi',
         storeAddress: '4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai – 600 004'
       };
@@ -347,7 +347,7 @@ function handleSaveStoreSettings(e) {
     phonePrimary: p1 || '+91 75501 32101',
     phoneSecondary: p2 || '+91 72994 61657',
     whatsappNumber: wa || '917550132101',
-    storeEmail: em || 'contact@punnaagitoystore.com',
+    storeEmail: em || 'contact@punnagaitoystore.com',
     upiId: upi || 'punnagai@upi',
     storeAddress: addr || '4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai – 600 004'
   };
@@ -1269,17 +1269,21 @@ function setText(id, val) {
   if (el) el.textContent = val;
 }
 
-if (!window.escapeHtml) {
-  window.escapeHtml = function (str) {
-    return String(str == null ? '' : str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
-  };
+function localEscapeHtml(str) {
+  return String(str == null ? '' : str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
-var escapeHtml = window.escapeHtml;
+
+if (typeof window !== 'undefined') {
+  if (!window.escapeHtml) {
+    window.escapeHtml = localEscapeHtml;
+  }
+}
+var escapeHtml = (typeof window !== 'undefined' && window.escapeHtml) || localEscapeHtml;
 function escapeAttr(str) {
   return escapeHtml(str);
 }

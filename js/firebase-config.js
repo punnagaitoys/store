@@ -24,7 +24,7 @@
  *
  * STEP 5 — Create the Admin User
  *   a. Authentication → Users → Add user
- *   b. Email:    admin@punnaagitoystore.com
+ *   b. Email:    admin@punnagaitoystore.com
  *      Password: Punnagai@admin321
  *   c. Click "Add user"
  *

@@ -68,7 +68,7 @@
 * **Current Verified Numbers:**
   - **Primary Number:** `+91 75501 32101` (Shop phone & WhatsApp orders)
   - **Secondary Number:** `+91 72994 61657` (Support & Inquiry WhatsApp)
-  - **Store Email:** `contact@punnaagitoystore.com` / `punnagaitoystore@gmail.com`
+  - **Store Email:** `contact@punnagaitoystore.com` / `punnagaitoystore@gmail.com`
   - **Store Physical Address:** Mylapore, Chennai, Tamil Nadu - 600004
 * **Locations in Code:**
   - `terms.html`, `privacy.html`, `returns.html`, `delivery.html`, `sale-terms.html`, `payments.html`, `index.html`, `product.html`, `wishlist.html`, and `js/app.js`.
@@ -99,13 +99,13 @@
 
 ## 7. Initial Admin Account Setup
 
-* **Default Admin Email:** `admin@punnaagitoystore.com`
+* **Default Admin Email:** `admin@punnagaitoystore.com`
 * **Recommended Production Password:** Client should set a unique strong password during Firebase Auth user creation.
 * **Firestore Document:**
   In Firestore `users` collection, create a document where **Document ID** matches the admin's `uid` from Firebase Auth:
   ```json
   {
-    "email": "admin@punnaagitoystore.com",
+    "email": "admin@punnagaitoystore.com",
     "name": "Punnagai Store Admin",
     "isAdmin": true,
     "status": "active",

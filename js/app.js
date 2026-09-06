@@ -1587,6 +1587,12 @@ function renderProductDetailsUI() {
             </button>`
             : ''
         }
+        
+        <div class="product-urgency-badge">
+          <span class="urgency-pulse"></span>
+          <span>🔥 <strong>14 parents in Chennai</strong> viewed this toy today</span>
+        </div>
+        
         <div class="product-trust-badges-list">
           <div class="trust-badge-item">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -1609,6 +1615,40 @@ function renderProductDetailsUI() {
               <small>Same day in Mylapore, 1-2 days across TN</small>
             </div>
           </div>
+        </div>
+        
+        <!-- Pincode Delivery Estimator -->
+        <div class="pincode-checker-box">
+          <div class="pincode-header">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>Delivery &amp; COD Availability Checker</span>
+          </div>
+          <div class="pincode-input-group">
+            <input type="text" id="pincode-input" maxlength="6" placeholder="Enter PIN code (e.g. 600004)" aria-label="Enter PIN code" onkeydown="if(event.key==='Enter')checkPincodeDelivery()">
+            <button type="button" class="btn btn-primary btn-sm" onclick="checkPincodeDelivery()">Check</button>
+          </div>
+          <div id="pincode-result" class="pincode-result" style="display:none"></div>
+        </div>
+
+        <!-- Parent FAQ Accordion -->
+        <div class="product-faq-accordion">
+          <h4 class="faq-accordion-title">Parent Questions &amp; Safety Details</h4>
+          <details class="faq-item" open>
+            <summary>Is this toy BIS certified &amp; safe for children?</summary>
+            <p>Yes! All toys at Punnagai Toy Store undergo strict quality checks, comply with BIS (Bureau of Indian Standards) child-safety guidelines, and use 100% non-toxic, child-safe, BPA-free materials with smooth rounded edges.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Can I request complimentary gift wrapping &amp; a handwritten note?</summary>
+            <p>Absolutely! We offer complimentary festive gift wrapping with ribbon and a personalized greeting card. Simply check "Gift Wrap" during checkout or send us a quick WhatsApp message with your order ID.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Can I see a demo or pick it up at the Mylapore store?</summary>
+            <p>Yes! Visit us at Luz Bazar Complex, R.K. Mutt Road, Mylapore. You can also video call us on WhatsApp (+91 75501 32101) for a live product demo before purchasing!</p>
+          </details>
+          <details class="faq-item">
+            <summary>What is your exchange and return policy?</summary>
+            <p>We provide a 7-day hassle-free exchange or replacement policy for any transit damages or manufacturing defects. You can also exchange items in-person at our Mylapore store.</p>
+          </details>
         </div>
       </div>
     </div>
@@ -1639,6 +1679,35 @@ function renderProductDetailsUI() {
 window.handleVariantSelect = function (type, value) {
   currentVariantSelection[type] = value;
   renderProductDetailsUI();
+};
+
+window.checkPincodeDelivery = function () {
+  const input = document.getElementById('pincode-input');
+  const result = document.getElementById('pincode-result');
+  if (!input || !result) return;
+  const pin = input.value.trim();
+  if (!/^\d{6}$/.test(pin)) {
+    result.style.display = 'block';
+    result.className = 'pincode-result error';
+    result.innerHTML = '⚠️ Please enter a valid 6-digit Indian PIN code.';
+    return;
+  }
+  result.style.display = 'block';
+  if (pin.startsWith('600')) {
+    if (['600004', '600028', '600018', '600020', '600086', '600005'].includes(pin)) {
+      result.className = 'pincode-result success';
+      result.innerHTML = '🚀 <strong>Superfast Mylapore / Central Chennai:</strong> Same-day delivery available if ordered before 4 PM! Free delivery on orders over ₹499. Cash on Delivery supported.';
+    } else {
+      result.className = 'pincode-result success';
+      result.innerHTML = '⚡ <strong>Greater Chennai Delivery:</strong> Delivered within 24 hours (Next-Day Delivery). Free delivery over ₹499. Cash on Delivery supported.';
+    }
+  } else if (pin.startsWith('6')) {
+    result.className = 'pincode-result success';
+    result.innerHTML = '📦 <strong>Tamil Nadu &amp; South India Delivery:</strong> Standard courier delivery within 2-3 business days. Cash on Delivery supported.';
+  } else {
+    result.className = 'pincode-result success';
+    result.innerHTML = '✈️ <strong>All India Express Delivery:</strong> 3-5 business days via BlueDart/Delhivery air express.';
+  }
 };
 
 window.handleDetailAddToCart = function () {

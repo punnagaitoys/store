@@ -384,6 +384,108 @@ const SEED_PRODUCTS = [
     newArrival: false,
     badge: '',
     videoUrl: ''
+  },
+  {
+    name: 'Montessori Wooden Shape Sorter Box',
+    description:
+      'Classic Montessori sensory sorting cube with 12 brightly colored geometric shapes. Handcrafted from smooth beechwood with water-based organic dyes. Encourages cognitive sorting and tactile exploration.',
+    price: 749,
+    originalPrice: 999,
+    category: 'Educational & Learning',
+    ageGroup: '0-2',
+    imageUrl: 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=500&q=80',
+    inStock: true,
+    stock: 18,
+    quantity: 18,
+    featured: true,
+    newArrival: true,
+    badge: 'Best Seller',
+    videoUrl: ''
+  },
+  {
+    name: 'Magnetic 3D Building Tiles Deluxe (64 Pcs)',
+    description:
+      'Vibrant translucent magnetic geometric tiles that click together effortlessly in 3D. Kids can build castles, rocket ships, bridges and towers while mastering geometry and magnetics.',
+    price: 1499,
+    originalPrice: 1999,
+    category: 'Building Blocks',
+    ageGroup: '3-5',
+    imageUrl: 'https://images.unsplash.com/photo-1585366119957-e9730b6d0f60?w=500&q=80',
+    inStock: true,
+    stock: 12,
+    quantity: 12,
+    featured: true,
+    newArrival: false,
+    badge: 'Hot Offer',
+    videoUrl: ''
+  },
+  {
+    name: 'Solar Powered Mars Rover Robot STEM Kit',
+    description:
+      'Eco-friendly STEM engineering kit with solar panel, planetary gearbox, and adjustable mechanical suspension. Runs under real sunlight without batteries. Inspires young space explorers!',
+    price: 1899,
+    originalPrice: 2399,
+    category: 'Educational & Learning',
+    ageGroup: '9-12',
+    imageUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=500&q=80',
+    inStock: true,
+    stock: 8,
+    quantity: 8,
+    featured: true,
+    newArrival: true,
+    badge: 'Trending',
+    videoUrl: ''
+  },
+  {
+    name: 'Organic Cotton Musical Elephant Plush',
+    description:
+      'Ultra-soft organic cotton plush elephant with gentle lullaby chime pull-string. Hypoallergenic, zero loose beads, completely baby-safe and machine washable. An heirloom-quality nursery companion.',
+    price: 699,
+    originalPrice: 899,
+    category: 'Soft Toys & Plush',
+    ageGroup: '0-2',
+    imageUrl: 'https://images.unsplash.com/photo-1563089145-599997674d42?w=500&q=80',
+    inStock: true,
+    stock: 15,
+    quantity: 15,
+    featured: false,
+    newArrival: true,
+    badge: 'New',
+    videoUrl: ''
+  },
+  {
+    name: 'Traditional Indian Heritage Wooden Board Game Set',
+    description:
+      'Artisan crafted reversible teakwood board featuring Pachisi on one side and Pallanguzhi on the other. Comes with cowrie shells and tamarind seeds in a hand-embroidered drawstring pouch. Pure nostalgia!',
+    price: 1099,
+    originalPrice: 1399,
+    category: 'Board Games & Puzzles',
+    ageGroup: '6-8',
+    imageUrl: 'https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?w=500&q=80',
+    inStock: true,
+    stock: 6,
+    quantity: 6,
+    featured: true,
+    newArrival: false,
+    badge: 'Mylapore Special',
+    videoUrl: ''
+  },
+  {
+    name: 'Kids High-Speed Drone with Obstacle Avoidance',
+    description:
+      'User-friendly quadcopter with infrared 360° obstacle sensors, one-key takeoff/landing, and altitude hold. Safe enclosed propeller guards protect fingers. Includes 2 rechargeable battery packs.',
+    price: 2799,
+    originalPrice: 3499,
+    category: 'Remote Control',
+    ageGroup: '12+',
+    imageUrl: 'https://images.unsplash.com/photo-1507582020474-9a35b7d455d9?w=500&q=80',
+    inStock: true,
+    stock: 5,
+    quantity: 5,
+    featured: true,
+    newArrival: false,
+    badge: 'Top Rated',
+    videoUrl: ''
   }
 ];
 
@@ -394,12 +496,13 @@ function getLocalProducts() {
   try {
     const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
     const prods = raw ? JSON.parse(raw) : [];
-    if (Array.isArray(prods) && prods.length > 0) {
+    // If cache has at least 25 products, use it; otherwise reseed with full upgraded catalog
+    if (Array.isArray(prods) && prods.length >= 25) {
       return prods;
     }
   } catch (e) {}
 
-  // Automatically seed from SEED_PRODUCTS if empty
+  // Automatically seed from SEED_PRODUCTS if empty or needing upgrade
   if (Array.isArray(SEED_PRODUCTS) && SEED_PRODUCTS.length > 0) {
     const seeded = SEED_PRODUCTS.map((p, i) => ({
       ...p,

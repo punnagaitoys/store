@@ -95,13 +95,15 @@
         </div>
 
         <div class="shop-layout">
-          <!-- Filter Sidebar -->
+          <!-- Filter Sidebar (Desktop Sidebar / Mobile Slide-up Bottom Sheet) -->
           <aside class="filter-sidebar" id="filter-sidebar" aria-label="Product filters">
+            <div class="filter-drag-handle"></div>
             <div class="filter-header">
               <h3>Filters</h3>
-              <button class="clear-filters-btn" onclick="clearAllFilters()" type="button">
+              <button class="clear-filters-btn desktop-only" onclick="clearAllFilters()" type="button">
                 Clear All
               </button>
+              <button class="filter-header-close-btn" onclick="toggleFilterSidebar()" type="button" aria-label="Close filters">✕</button>
             </div>
 
             <!-- Age Group Filter -->
@@ -317,26 +319,13 @@
               </div>
             </div>
 
-            <!-- Mobile Close Button -->
-            <button
-              class="close-filters-btn"
-              id="close-filters"
-              onclick="toggleFilterSidebar()"
-              type="button"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-              Close Filters
-            </button>
+            <!-- Mobile Sticky Bottom Sheet Actions -->
+            <div class="mobile-filter-footer">
+              <button class="btn btn-outline mobile-filter-reset-btn" onclick="clearAllFilters()" type="button">Reset</button>
+              <button class="btn btn-primary mobile-filter-apply-btn" id="mobile-apply-filters" onclick="toggleFilterSidebar()" type="button">
+                Apply Filters
+              </button>
+            </div>
           </aside>
 
           <!-- Main Product Area -->

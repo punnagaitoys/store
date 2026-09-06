@@ -49,6 +49,12 @@ const server = http.createServer((req, res) => {
   fs.stat(filePath, (err, stats) => {
     if (err || !stats.isFile()) {
       // 404 fallback
+      const notFoundPage = path.join(ROOT, '404.html');
+      if (fs.existsSync(notFoundPage)) {
+        res.writeHead(404, { 'Content-Type': 'text/html; charset=UTF-8' });
+        fs.createReadStream(notFoundPage).pipe(res);
+        return;
+      }
       res.writeHead(404, { 'Content-Type': 'text/html; charset=UTF-8' });
       res.end('<h1>404 Not Found</h1><p><a href="/">Return to Home</a></p>');
       return;

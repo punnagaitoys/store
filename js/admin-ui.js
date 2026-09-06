@@ -761,24 +761,24 @@
     const defaults = [
       {
         id: 'hv_1',
-        videoId: 'dQw4w9WgXcQ',
-        title: 'Welcome to Punnagai Toy Store Mylapore',
+        videoId: 'L13c2yTfZ8c',
+        title: 'Sparking Curiosity: STEM Robot & Science Kits',
         description:
-          "Take a virtual tour of Mylapore's favorite toy destination and discover our magical range."
+          "Watch hands-on learning come alive with our best-selling educational robotics and science kits."
       },
       {
         id: 'hv_2',
-        videoId: 'M7lc1UVf-VE',
-        title: 'Top Educational & STEM Toys for Kids',
+        videoId: 'rQ3tB_jT9tY',
+        title: 'Handcrafted Wooden Montessori & Stacking Toys',
         description:
-          'Discover how learning meets fun with our age-tested STEM and educational toys.'
+          'Explore eco-friendly wooden toys designed for toddlers to build fine motor skills safely.'
       },
       {
         id: 'hv_3',
-        videoId: 'tgbNymZ7vqY',
-        title: 'Wooden Toys & Traditional Games Showcase',
+        videoId: 'f_n8KqJ5eYs',
+        title: 'Family Board Games & Strategy Puzzles',
         description:
-          'Explore eco-friendly wooden toys crafted for safety, creativity and durability.'
+          'Unplug and bond together with award-winning family board games and memory challenges.'
       }
     ];
     try {
@@ -788,7 +788,7 @@
   }
 
   function extractYouTubeID(input) {
-    if (!input) return 'dQw4w9WgXcQ';
+    if (!input) return 'L13c2yTfZ8c';
     const trimmed = String(input).trim();
     if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
       return trimmed;

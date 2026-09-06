@@ -53,6 +53,9 @@ services:
       - type: rewrite
         source: /sale-terms
         destination: /sale-terms.html
+      - type: rewrite
+        source: /404
+        destination: /404.html
     headers:
       - path: /*
         name: X-Content-Type-Options

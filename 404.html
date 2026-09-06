@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 — Page Not Found | Punnagai Toy Store Mylapore</title>
+    <meta
+      name="description"
+      content="Page not found. Discover 500+ educational toys, board games, wooden puzzles, and gifts at Punnagai Toy Store, Mylapore, Chennai."
+    />
+    <meta name="robots" content="noindex, follow" />
+
+    <link rel="icon" href="logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+
+    <style>
+      .error-hero {
+        padding: 80px 20px 100px;
+        text-align: center;
+        background: radial-gradient(circle at 50% 30%, #eff6ff 0%, #f8fafc 100%);
+        min-height: 70vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .error-illustration {
+        font-size: 5rem;
+        margin-bottom: 20px;
+        animation: floatToy 3s ease-in-out infinite;
+        display: inline-block;
+      }
+      @keyframes floatToy {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-12px) rotate(4deg); }
+      }
+      .error-code {
+        font-family: 'Fredoka', cursive, sans-serif;
+        font-size: clamp(3.5rem, 8vw, 6rem);
+        font-weight: 700;
+        color: var(--primary, #2563eb);
+        line-height: 1;
+        margin: 0 0 12px;
+        letter-spacing: 2px;
+      }
+      .error-title {
+        font-family: 'Fredoka', cursive, sans-serif;
+        font-size: clamp(1.5rem, 4vw, 2.25rem);
+        color: #0f172a;
+        margin: 0 0 16px;
+      }
+      .error-desc {
+        font-size: 1.05rem;
+        color: #475569;
+        max-width: 520px;
+        margin: 0 auto 32px;
+        line-height: 1.6;
+      }
+      .error-search-box {
+        max-width: 480px;
+        width: 100%;
+        margin: 0 auto 36px;
+      }
+      .error-search-form {
+        display: flex;
+        gap: 8px;
+        background: white;
+        padding: 6px;
+        border-radius: 50px;
+        border: 2px solid #e2e8f0;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06);
+        transition: border-color 0.2s;
+      }
+      .error-search-form:focus-within {
+        border-color: var(--primary, #2563eb);
+      }
+      .error-search-input {
+        flex: 1;
+        border: none;
+        padding: 10px 20px;
+        font-size: 0.95rem;
+        outline: none;
+        background: transparent;
+        font-family: 'Nunito', sans-serif;
+      }
+      .error-search-btn {
+        background: var(--primary, #2563eb);
+        color: white;
+        border: none;
+        padding: 10px 22px;
+        border-radius: 50px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: 'Nunito', sans-serif;
+        transition: background 0.2s;
+      }
+      .error-search-btn:hover {
+        background: var(--primary-dark, #1d4ed8);
+      }
+      .quick-chips-wrapper {
+        margin-bottom: 36px;
+      }
+      .quick-chips-title {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 700;
+        color: #64748b;
+        margin-bottom: 12px;
+      }
+      .quick-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        max-width: 600px;
+      }
+      .quick-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        border-radius: 20px;
+        background: white;
+        border: 1px solid #cbd5e1;
+        color: #334155;
+        font-size: 0.88rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s;
+      }
+      .quick-chip:hover {
+        border-color: var(--primary, #2563eb);
+        color: var(--primary, #2563eb);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12);
+      }
+      .error-actions {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .btn-wa-help {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #25d366;
+        color: white;
+        font-weight: 700;
+        padding: 12px 24px;
+        border-radius: 50px;
+        text-decoration: none;
+        box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+        transition: all 0.2s;
+      }
+      .btn-wa-help:hover {
+        background: #1eb956;
+        transform: translateY(-2px);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="navbar"></div>
+    <div id="toast-container" class="toast-container"></div>
+
+    <main class="page-wrapper">
+      <section class="error-hero">
+        <div class="error-illustration">🧸💨</div>
+        <div class="error-code">404</div>
+        <h1 class="error-title">Oops! This Toy Has Rolled Away!</h1>
+        <p class="error-desc">
+          We couldn't find the page you're looking for. It might have been moved, renamed, or vanished like a missing puzzle piece under the sofa!
+        </p>
+
+        <!-- Search Form -->
+        <div class="error-search-box">
+          <form class="error-search-form" onsubmit="event.preventDefault(); const q = document.getElementById('err-search').value.trim(); if (q) window.location.href = 'shop.html?search=' + encodeURIComponent(q); else window.location.href = 'shop.html';">
+            <input
+              type="text"
+              id="err-search"
+              class="error-search-input"
+              placeholder="Search toys by name or age (e.g. LEGO, Wooden, Board Games)..."
+              aria-label="Search toys"
+              autocomplete="off"
+            />
+            <button type="submit" class="error-search-btn">Find Toys</button>
+          </form>
+        </div>
+
+        <!-- Quick Jump Categories -->
+        <div class="quick-chips-wrapper">
+          <div class="quick-chips-title">Or browse popular categories</div>
+          <div class="quick-chips">
+            <a href="shop.html?category=Educational%20%26%20Learning" class="quick-chip">🧩 Educational</a>
+            <a href="shop.html?category=Building%20Blocks" class="quick-chip">🧱 Building Blocks</a>
+            <a href="shop.html?category=Board%20Games%20%26%20Puzzles" class="quick-chip">🎲 Board Games</a>
+            <a href="shop.html?category=Soft%20Toys%20%26%20Plush" class="quick-chip">🧸 Plush &amp; Soft Toys</a>
+            <a href="shop.html?category=Remote%20Control" class="quick-chip">🏎️ Remote Control</a>
+            <a href="shop.html?age=0-2" class="quick-chip">🍼 Baby (0–2 yrs)</a>
+            <a href="shop.html?age=3-5" class="quick-chip">🎨 Toddler (3–5 yrs)</a>
+          </div>
+        </div>
+
+        <!-- Action CTAs -->
+        <div class="error-actions">
+          <a href="shop.html" class="btn btn-primary">
+            Explore All 26+ Toys →
+          </a>
+          <a
+            href="https://wa.me/917550132101?text=Hi! I was browsing punnagaitoysfancy.in and couldn't find what I was looking for. Can you help?"
+            target="_blank"
+            class="btn-wa-help"
+            rel="noopener"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+            </svg>
+            Ask Us on WhatsApp
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <!-- WhatsApp Floating Action Button -->
+    <a
+      href="https://wa.me/917550132101?text=Hi! I need help finding a toy at Punnagai."
+      target="_blank"
+      class="whatsapp-float"
+      aria-label="Chat on WhatsApp"
+      rel="noopener"
+    >
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+        <path
+          d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"
+        />
+      </svg>
+    </a>
+
+    <div id="footer"></div>
+
+    <!-- Firebase SDK & App Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>

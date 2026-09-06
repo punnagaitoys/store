@@ -2128,44 +2128,68 @@ window.filterFeaturedToys = function (category, btnEl) {
 // DYNAMIC INTERACTIVE FEATURE 3: Live Store Activity Social Proof
 // ============================================================
 window.initLiveStoreActivity = function () {
+  // Disable if dismissed in this session or on checkout page
+  if (typeof window !== 'undefined') {
+    if (window.location.pathname.includes('checkout')) return;
+    try {
+      if (sessionStorage.getItem('punnagai_dismissed_live_activity') === 'true') return;
+    } catch (e) {}
+  }
+
   const activities = [
     {
       name: 'Sowmya from Alwarpet',
       action: 'pre-ordered',
-      item: 'LEGO City Police Station',
+      item: 'LEGO Classic Creative Bricks',
       time: '2 mins ago'
     },
     {
       name: 'Karthik from T. Nagar',
       action: 'bought',
-      item: 'Remote Control Stunt Car',
+      item: 'Remote Control Racing Car 4WD',
       time: '5 mins ago'
     },
     {
       name: 'Priya from Mandaveli',
       action: 'added to wishlist',
-      item: 'Wooden Montessori Puzzle',
+      item: 'Wooden Rainbow Stacker',
       time: 'Just now'
     },
     {
       name: 'Anand from Adyar',
       action: 'pre-ordered',
-      item: 'Remote Control Drone',
+      item: 'STEM Robot Building Kit',
       time: '12 mins ago'
     },
     {
       name: 'Divya from Mylapore',
       action: 'bought',
-      item: 'Barbie Fashionista Doll',
+      item: 'Montessori Wooden Shape Sorter',
       time: '7 mins ago'
     }
   ];
 
   let index = 0;
-  setInterval(() => {
+
+  function showToast() {
     if (document.hidden) return;
+    try {
+      if (sessionStorage.getItem('punnagai_dismissed_live_activity') === 'true') return;
+    } catch (e) {}
+
     const activity = activities[index % activities.length];
     index++;
+
+    let container = document.getElementById('live-activity-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'live-activity-container';
+      container.className = 'live-activity-container';
+      document.body.appendChild(container);
+    }
+
+    // Remove any existing toast first so they never stack
+    container.innerHTML = '';
 
     const toast = document.createElement('div');
     toast.className = 'live-activity-toast';
@@ -2176,21 +2200,21 @@ window.initLiveStoreActivity = function () {
         <p class="live-activity-item">${activity.item}</p>
         <span class="live-activity-time">${activity.time} • Verified in Chennai</span>
       </div>
-      <button class="live-activity-close" onclick="this.parentElement.remove()" aria-label="Close notification">&times;</button>
+      <button class="live-activity-close" onclick="try{sessionStorage.setItem('punnagai_dismissed_live_activity','true');}catch(e){} this.parentElement.remove()" aria-label="Close notification">&times;</button>
     `;
-
-    let container = document.getElementById('live-activity-container');
-    if (!container) {
-      container = document.createElement('div');
-      container.id = 'live-activity-container';
-      container.className = 'live-activity-container';
-      document.body.appendChild(container);
-    }
 
     container.appendChild(toast);
     setTimeout(() => {
-      toast.classList.add('fade-out');
-      setTimeout(() => toast.remove(), 400);
-    }, 6000);
-  }, 40000);
+      if (toast.parentElement) {
+        toast.classList.add('fade-out');
+        setTimeout(() => toast.remove(), 400);
+      }
+    }, 5500);
+  }
+
+  // Graceful initial delay: wait 14 seconds before first activity toast
+  setTimeout(() => {
+    showToast();
+    setInterval(showToast, 38000);
+  }, 14000);
 };

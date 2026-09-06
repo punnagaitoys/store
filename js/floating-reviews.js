@@ -16,6 +16,13 @@ class FloatingReviews {
     if (typeof window !== 'undefined' && window.innerWidth <= 768) {
       return;
     }
+    // Check if user dismissed it in this session
+    try {
+      if (sessionStorage.getItem('punnagai_hide_floating_reviews') === 'true') {
+        return;
+      }
+    } catch (e) {}
+
     if (
       window.GOOGLE_MAPS_REVIEWS_DATA &&
       Array.isArray(window.GOOGLE_MAPS_REVIEWS_DATA) &&
@@ -50,8 +57,15 @@ class FloatingReviews {
         }
       ];
     }
-    this.render();
-    this.startAutoScroll();
+
+    // Graceful initial delay so user can view hero and catalog first without instant popups
+    setTimeout(() => {
+      try {
+        if (sessionStorage.getItem('punnagai_hide_floating_reviews') === 'true') return;
+      } catch (e) {}
+      this.render();
+      this.startAutoScroll();
+    }, 6000);
   }
 
   render() {
@@ -79,14 +93,14 @@ class FloatingReviews {
     container.innerHTML = `
       <div class="floating-review-card" style="
         position: fixed; 
-        bottom: 20px; 
-        right: 20px; 
+        bottom: 96px; 
+        right: 24px; 
         width: 320px; 
         background: var(--bg-card, white); 
         border-radius: 14px; 
         box-shadow: 0 12px 28px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.08); 
         padding: 16px; 
-        z-index: 50;
+        z-index: 850;
         transition: transform 0.3s ease, opacity 0.3s ease;
         border: 1px solid var(--border-gray, #e5e7eb);
       "
@@ -102,9 +116,9 @@ class FloatingReviews {
             <div style="color: #FBBF24; font-size: 0.9rem; letter-spacing: 1px; margin-top: 2px;">${stars}</div>
           </div>
           <div style="display: flex; gap: 4px; align-items: center;">
-            <button onclick="window.PunnagaiFloatingReviewsInst.prev()" style="background: none; border: none; cursor: pointer; color: #9CA3AF; padding: 4px; font-size: 1.1rem;">‹</button>
-            <button onclick="window.PunnagaiFloatingReviewsInst.next()" style="background: none; border: none; cursor: pointer; color: #9CA3AF; padding: 4px; font-size: 1.1rem;">›</button>
-            <button onclick="window.PunnagaiFloatingReviewsInst.close()" style="background: none; border: none; cursor: pointer; color: #9CA3AF; padding: 4px; font-size: 1.2rem; margin-left: 4px;" title="Close">×</button>
+            <button onclick="window.PunnagaiFloatingReviewsInst.prev()" style="background: none; border: none; cursor: pointer; color: #9CA3AF; padding: 4px; font-size: 1.1rem;" aria-label="Previous review">‹</button>
+            <button onclick="window.PunnagaiFloatingReviewsInst.next()" style="background: none; border: none; cursor: pointer; color: #9CA3AF; padding: 4px; font-size: 1.1rem;" aria-label="Next review">›</button>
+            <button onclick="window.PunnagaiFloatingReviewsInst.close()" style="background: none; border: none; cursor: pointer; color: #9CA3AF; padding: 4px; font-size: 1.2rem; margin-left: 4px;" title="Dismiss" aria-label="Dismiss reviews">×</button>
           </div>
         </div>
         
@@ -112,7 +126,7 @@ class FloatingReviews {
         
         <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem;">
           <span style="color: #9CA3AF;">${review.date}</span>
-          <a href="#google-reviews" style="color: var(--primary, #DC2626); text-decoration: none; font-weight: 600;">View All Google Reviews</a>
+          <a href="#google-reviews" style="color: var(--primary, #2563eb); text-decoration: none; font-weight: 600;">View All Google Reviews</a>
         </div>
       </div>
     `;
@@ -144,10 +158,17 @@ class FloatingReviews {
 
   close() {
     this.pauseAutoScroll();
+    try {
+      sessionStorage.setItem('punnagai_hide_floating_reviews', 'true');
+    } catch (e) {}
     const container = document.getElementById(this.containerId);
     if (container) {
-      container.style.display = 'none';
-      container.innerHTML = '';
+      container.style.opacity = '0';
+      container.style.pointerEvents = 'none';
+      setTimeout(() => {
+        container.style.display = 'none';
+        container.innerHTML = '';
+      }, 300);
     }
   }
 }

@@ -83,7 +83,7 @@ const SEED_PRODUCTS = [
     originalPrice: 1199,
     category: 'Educational & Learning',
     ageGroup: '0-2',
-    imageUrl: 'https://images.unsplash.com/photo-1560785496-3c9d27877182?w=500&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=500&q=80',
     inStock: true,
     stock: 20,
     quantity: 20,
@@ -117,7 +117,7 @@ const SEED_PRODUCTS = [
     originalPrice: 699,
     category: 'Arts & Crafts',
     ageGroup: '3-5',
-    imageUrl: 'https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=500&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1596870230751-ebdfce98ec42?w=500&q=80',
     inStock: true,
     stock: 25,
     quantity: 25,
@@ -151,7 +151,7 @@ const SEED_PRODUCTS = [
     originalPrice: 1799,
     category: 'Remote Control',
     ageGroup: '9-12',
-    imageUrl: 'https://images.unsplash.com/photo-1546792557-bd04f6a3d5ce?w=500&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=500&q=80',
     inStock: true,
     stock: 2,
     quantity: 2,
@@ -198,7 +198,7 @@ const SEED_PRODUCTS = [
     originalPrice: null,
     category: 'Dolls & Fashion',
     ageGroup: '6-8',
-    imageUrl: 'https://images.unsplash.com/photo-1591729651662-185a7ef34999?w=500&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=500&q=80',
     inStock: true,
     featured: false,
     newArrival: true,
@@ -228,7 +228,7 @@ const SEED_PRODUCTS = [
     originalPrice: null,
     category: 'Action & Adventure',
     ageGroup: '3-5',
-    imageUrl: 'https://images.unsplash.com/photo-1612364527103-25e8083c7a8c?w=500&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&q=80',
     inStock: true,
     featured: true,
     newArrival: false,
@@ -243,7 +243,7 @@ const SEED_PRODUCTS = [
     originalPrice: 549,
     category: 'Educational & Learning',
     ageGroup: '3-5',
-    imageUrl: 'https://images.unsplash.com/photo-1596870230751-ebdfce98ec42?w=500&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=500&q=80',
     inStock: true,
     featured: false,
     newArrival: false,
@@ -303,7 +303,7 @@ const SEED_PRODUCTS = [
     originalPrice: 2499,
     category: 'Board Games & Puzzles',
     ageGroup: '9-12',
-    imageUrl: 'https://images.unsplash.com/photo-1611996575749-79a3a250f948?w=500&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?w=500&q=80',
     inStock: true,
     featured: true,
     newArrival: false,
@@ -333,7 +333,7 @@ const SEED_PRODUCTS = [
     originalPrice: null,
     category: 'Outdoor & Sports',
     ageGroup: '6-8',
-    imageUrl: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=500&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=500&q=80',
     inStock: true,
     featured: false,
     newArrival: false,
@@ -348,7 +348,7 @@ const SEED_PRODUCTS = [
     originalPrice: 1999,
     category: 'Dolls & Fashion',
     ageGroup: '3-5',
-    imageUrl: 'https://images.unsplash.com/photo-1558048878-cd0ea68db0f4?w=500&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1584824486509-112e4181ff6b?w=500&q=80',
     inStock: true,
     featured: false,
     newArrival: true,
@@ -363,7 +363,7 @@ const SEED_PRODUCTS = [
     originalPrice: 899,
     category: 'Board Games & Puzzles',
     ageGroup: '6-8',
-    imageUrl: 'https://images.unsplash.com/photo-1611996575749-79a3a250f948?w=500&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=500&q=80',
     inStock: true,
     featured: false,
     newArrival: false,
@@ -378,7 +378,7 @@ const SEED_PRODUCTS = [
     originalPrice: null,
     category: 'Building Blocks',
     ageGroup: '0-2',
-    imageUrl: 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=500&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=500&q=80',
     inStock: true,
     featured: false,
     newArrival: false,
@@ -492,17 +492,20 @@ const SEED_PRODUCTS = [
 // ============================================================
 // LOCAL STORAGE HELPERS
 // ============================================================
+const LOCAL_STORAGE_CATALOG_VERSION = 'punnagai_catalog_v2026';
+
 function getLocalProducts() {
   try {
+    const version = localStorage.getItem('punnagai_catalog_version');
     const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
     const prods = raw ? JSON.parse(raw) : [];
-    // If cache has at least 25 products, use it; otherwise reseed with full upgraded catalog
-    if (Array.isArray(prods) && prods.length >= 25) {
+    // If cache matches the upgraded version and has at least 25 products, use it
+    if (version === LOCAL_STORAGE_CATALOG_VERSION && Array.isArray(prods) && prods.length >= 25) {
       return prods;
     }
   } catch (e) {}
 
-  // Automatically seed from SEED_PRODUCTS if empty or needing upgrade
+  // Automatically seed from SEED_PRODUCTS if empty or needing version upgrade
   if (Array.isArray(SEED_PRODUCTS) && SEED_PRODUCTS.length > 0) {
     const seeded = SEED_PRODUCTS.map((p, i) => ({
       ...p,
@@ -511,6 +514,7 @@ function getLocalProducts() {
     }));
     try {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(seeded));
+      localStorage.setItem('punnagai_catalog_version', LOCAL_STORAGE_CATALOG_VERSION);
     } catch (e) {}
     return seeded;
   }

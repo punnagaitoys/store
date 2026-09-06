@@ -2832,6 +2832,63 @@ body.mobile-menu-locked {
   margin-top: 10px;
 }
 
+.qty-selector {
+  display: inline-flex;
+  align-items: center;
+  border: 2px solid var(--border-gray, #e2e8f0);
+  border-radius: var(--radius-md, 10px);
+  background: white;
+  overflow: hidden;
+  height: 48px;
+}
+
+.qty-selector .qty-btn {
+  width: 44px;
+  height: 100%;
+  border: none;
+  border-radius: 0;
+  background: #f8fafc;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary, #1e293b);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.qty-selector .qty-btn:hover {
+  background: var(--primary-50, #eff6ff);
+  color: var(--primary, #2563eb);
+}
+
+.qty-selector .qty-btn:active {
+  background: #e2e8f0;
+  transform: scale(0.95);
+}
+
+.qty-selector .qty-input {
+  width: 52px;
+  height: 100%;
+  border: none;
+  text-align: center;
+  font-family: var(--font-heading, 'Fredoka', sans-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+  outline: none;
+  background: white;
+  -moz-appearance: textfield;
+}
+
+.qty-selector .qty-input::-webkit-outer-spin-button,
+.qty-selector .qty-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 .qty-btn {
   width: 30px;
   height: 30px;
@@ -5657,7 +5714,7 @@ table {
     padding: 20px;
   }
   .live-activity-container {
-    bottom: 80px; /* offset for bottom app nav */
+    bottom: calc(78px + env(safe-area-inset-bottom)); /* offset for bottom app nav */
     left: 16px;
     right: 16px;
   }

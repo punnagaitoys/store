@@ -57,3 +57,24 @@ services:
       - path: /*
         name: X-Frame-Options
         value: SAMEORIGIN
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /*
+        name: Permissions-Policy
+        value: "camera=(), microphone=(), geolocation=()"
+      - path: /sw.js
+        name: Cache-Control
+        value: "no-cache, no-store, must-revalidate"
+      - path: /manifest.webmanifest
+        name: Cache-Control
+        value: "public, max-age=86400"
+      - path: /css/*
+        name: Cache-Control
+        value: "public, max-age=604800, stale-while-revalidate=86400"
+      - path: /js/*
+        name: Cache-Control
+        value: "public, max-age=604800, stale-while-revalidate=86400"
+      - path: /logo.png
+        name: Cache-Control
+        value: "public, max-age=2592000"

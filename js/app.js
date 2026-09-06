@@ -28,7 +28,7 @@ const DEFAULT_STORE_SETTINGS = {
   phonePrimary: '+91 75501 32101',
   phoneSecondary: '+91 72994 61657',
   whatsappNumber: '917550132101',
-  storeEmail: 'contact@punnagaitoystore.com',
+  storeEmail: 'contact@punnagaitoysfancy.in',
   upiId: 'punnagai@upi',
   storeAddress: '4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai – 600 004'
 };
@@ -797,11 +797,11 @@ async function handleAddToCart(productId) {
 
 function updateProductPageMeta(product) {
   if (!product) return;
-  const desc = (product.description || '').slice(0, 160);
-  const img = product.imageUrl || 'https://punnagaitoys.com/logo.png';
-  const url = window.location.href;
+  const desc = (product.description || 'Quality educational toys, board games and return gifts at Punnagai Toy Store, Mylapore, Chennai.').slice(0, 160);
+  const img = product.imageUrl || 'https://punnagaitoysfancy.in/images/store-hero.jpg';
+  const prodUrl = `https://punnagaitoysfancy.in/product.html?id=${encodeURIComponent(product.id || '')}`;
 
-  document.title = `${product.name} | Punnagai Toy Store`;
+  document.title = `${product.name} — Buy Online | Punnagai Toy Store Chennai`;
 
   function setMeta(sel, val) {
     let el = document.querySelector(sel);
@@ -816,14 +816,23 @@ function updateProductPageMeta(product) {
     el.setAttribute('content', val);
   }
 
+  // Update Canonical
+  let canEl = document.querySelector('link[rel="canonical"]');
+  if (!canEl) {
+    canEl = document.createElement('link');
+    canEl.setAttribute('rel', 'canonical');
+    document.head.appendChild(canEl);
+  }
+  canEl.setAttribute('href', prodUrl);
+
   setMeta('meta[name="description"]', desc);
-  setMeta('meta[property="og:title"]', product.name);
+  setMeta('meta[property="og:title"]', `${product.name} | Punnagai Toy Store`);
   setMeta('meta[property="og:description"]', desc);
   setMeta('meta[property="og:image"]', img);
-  setMeta('meta[property="og:url"]', url);
+  setMeta('meta[property="og:url"]', prodUrl);
   setMeta('meta[property="og:type"]', 'product');
   setMeta('meta[name="twitter:card"]', 'summary_large_image');
-  setMeta('meta[name="twitter:title"]', product.name);
+  setMeta('meta[name="twitter:title"]', `${product.name} | Punnagai Toy Store`);
   setMeta('meta[name="twitter:description"]', desc);
   setMeta('meta[name="twitter:image"]', img);
 }
@@ -837,22 +846,34 @@ function injectProductStructuredData(product, reviewCount, avgRating) {
   const availability = isProductAvailable(product)
     ? 'https://schema.org/InStock'
     : 'https://schema.org/OutOfStock';
+  const prodUrl = `https://punnagaitoysfancy.in/product.html?id=${encodeURIComponent(product.id || '')}`;
 
   const ld = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: product.name,
-    description: product.description || '',
-    image: product.imageUrl ? [product.imageUrl] : [],
+    sku: String(product.id || ''),
+    category: product.category || 'Toys',
+    description: product.description || 'Quality toy available at Punnagai Toy Store, Mylapore, Chennai.',
+    image: product.imageUrl ? [product.imageUrl] : ['https://punnagaitoysfancy.in/images/store-hero.jpg'],
+    url: prodUrl,
     brand: { '@type': 'Brand', name: 'Punnagai Toy Store' },
     offers: {
       '@type': 'Offer',
       priceCurrency: 'INR',
       price: product.price,
+      priceValidUntil: '2027-12-31',
+      itemCondition: 'https://schema.org/NewCondition',
       availability,
-      seller: { '@type': 'Organization', name: 'Punnagai Toy Store' }
+      url: prodUrl,
+      seller: {
+        '@type': 'ToyStore',
+        name: 'Punnagai Toy Store',
+        url: 'https://punnagaitoysfancy.in/'
+      }
     }
   };
+
   if (reviewCount > 0 && avgRating > 0) {
     ld.aggregateRating = {
       '@type': 'AggregateRating',
@@ -877,19 +898,22 @@ function injectLocalBusinessStructuredData() {
     '@context': 'https://schema.org',
     '@type': 'ToyStore',
     name: 'Punnagai Toy Store',
+    alternateName: 'Punnagai Toys & Fancy',
     description:
       "Mylapore's favourite toy destination. Quality toys for every age from babies to teens.",
-    url: 'https://punnagaitoys.com',
+    url: 'https://punnagaitoysfancy.in/',
+    logo: 'https://punnagaitoysfancy.in/logo.png',
+    image: 'https://punnagaitoysfancy.in/images/store-hero.jpg',
     telephone: ['+917550132101', '+917299461657'],
     address: {
       '@type': 'PostalAddress',
       streetAddress: '4/7 Luz Bazar Complex, R.K. Mutt Road',
-      addressLocality: 'Mylapore',
+      addressLocality: 'Mylapore, Chennai',
       addressRegion: 'Tamil Nadu',
       postalCode: '600004',
       addressCountry: 'IN'
     },
-    geo: { '@type': 'GeoCoordinates', latitude: 13.0337, longitude: 80.2671 },
+    geo: { '@type': 'GeoCoordinates', latitude: 13.0336, longitude: 80.2677 },
     openingHoursSpecification: [
       {
         '@type': 'OpeningHoursSpecification',
@@ -901,7 +925,7 @@ function injectLocalBusinessStructuredData() {
         '@type': 'OpeningHoursSpecification',
         dayOfWeek: ['Sunday'],
         opens: '11:00',
-        closes: '18:00'
+        closes: '20:00'
       }
     ],
     priceRange: '₹₹'

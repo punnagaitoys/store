@@ -313,7 +313,7 @@ function loadAdminStoreSettings() {
         phonePrimary: '+91 75501 32101',
         phoneSecondary: '+91 72994 61657',
         whatsappNumber: '917550132101',
-        storeEmail: 'contact@punnagaitoystore.com',
+        storeEmail: 'contact@punnagaitoysfancy.in',
         upiId: 'punnagai@upi',
         storeAddress: '4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai – 600 004'
       };
@@ -347,7 +347,7 @@ function handleSaveStoreSettings(e) {
     phonePrimary: p1 || '+91 75501 32101',
     phoneSecondary: p2 || '+91 72994 61657',
     whatsappNumber: wa || '917550132101',
-    storeEmail: em || 'contact@punnagaitoystore.com',
+    storeEmail: em || 'contact@punnagaitoysfancy.in',
     upiId: upi || 'punnagai@upi',
     storeAddress: addr || '4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai – 600 004'
   };

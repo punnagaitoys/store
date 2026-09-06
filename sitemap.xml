@@ -1,53 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <!-- Homepage -->
   <url>
-    <loc>https://punnagaitoystore.com/</loc>
-    <changefreq>weekly</changefreq>
+    <loc>https://punnagaitoysfancy.in/</loc>
+    <lastmod>2026-09-06</lastmod>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://punnagaitoysfancy.in/images/store-hero.jpg</image:loc>
+      <image:title>Punnagai Toy Store Mylapore Chennai Storefront</image:title>
+      <image:caption>Quality educational toys and games at Punnagai Toy Store in Mylapore, Chennai</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://punnagaitoysfancy.in/logo.png</image:loc>
+      <image:title>Punnagai Toy Store Logo</image:title>
+    </image:image>
   </url>
+
+  <!-- Shop Catalog -->
   <url>
-    <loc>https://punnagaitoystore.com/shop.html</loc>
+    <loc>https://punnagaitoysfancy.in/shop.html</loc>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://punnagaitoysfancy.in/logo.png</image:loc>
+      <image:title>Punnagai Toy Store Online Catalog</image:title>
+    </image:image>
   </url>
+
+  <!-- Product Detail Showcase -->
   <url>
-    <loc>https://punnagaitoystore.com/cart.html</loc>
+    <loc>https://punnagaitoysfancy.in/product.html</loc>
+    <lastmod>2026-09-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Delivery Policy & Chennai Local Delivery -->
+  <url>
+    <loc>https://punnagaitoysfancy.in/delivery.html</loc>
+    <lastmod>2026-09-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Payments & UPI Options -->
+  <url>
+    <loc>https://punnagaitoysfancy.in/payments.html</loc>
+    <lastmod>2026-09-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Returns & Replacements -->
+  <url>
+    <loc>https://punnagaitoysfancy.in/returns.html</loc>
+    <lastmod>2026-09-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Sale & Discount Terms -->
+  <url>
+    <loc>https://punnagaitoysfancy.in/sale-terms.html</loc>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
+
+  <!-- Privacy Policy -->
   <url>
-    <loc>https://punnagaitoystore.com/wishlist.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://punnagaitoystore.com/delivery.html</loc>
-    <changefreq>monthly</changefreq>
+    <loc>https://punnagaitoysfancy.in/privacy.html</loc>
+    <lastmod>2026-09-06</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
+
+  <!-- Terms & Conditions -->
   <url>
-    <loc>https://punnagaitoystore.com/payments.html</loc>
-    <changefreq>monthly</changefreq>
+    <loc>https://punnagaitoysfancy.in/terms.html</loc>
+    <lastmod>2026-09-06</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.4</priority>
-  </url>
-  <url>
-    <loc>https://punnagaitoystore.com/sale-terms.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.4</priority>
-  </url>
-  <url>
-    <loc>https://punnagaitoystore.com/privacy.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://punnagaitoystore.com/terms.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://punnagaitoystore.com/returns.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
   </url>
 </urlset>

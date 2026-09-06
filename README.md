@@ -2,7 +2,7 @@
 
 > **10/10 Gold Standard Omnichannel Retail Storefront**  
 > Physical Store: 4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai — 600004  
-> Live Storefront & PWA: [https://punnagaitoys.com](https://punnagaitoys.com) | [Render Blueprint Deployment Guide](./RENDER_DEPLOYMENT_GUIDE.md)
+> Live Storefront & PWA: [https://punnagaitoysfancy.in](https://punnagaitoysfancy.in) | [Render Blueprint Deployment Guide](./RENDER_DEPLOYMENT_GUIDE.md)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Web%20%7C%20PWA%20%7C%20Mobile-green.svg)](#dual-view-architecture)

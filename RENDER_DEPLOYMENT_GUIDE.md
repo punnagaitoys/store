@@ -46,17 +46,23 @@ If you prefer to configure the service manually in the Render dashboard:
 
 ---
 
-## 🌐 Custom Domain Setup (Optional)
+## 🌐 Custom Domain Setup (Live & Verified)
 
-To connect your custom domain (e.g. `punnagaitoystore.com` or `punnagaitoys.in`):
+Your custom domain **`punnagaitoysfancy.in`** is live and connected via GoDaddy:
 
-1. In your Render Dashboard, click into your Static Site.
-2. Go to **Settings** > **Custom Domains**.
-3. Click **Add Custom Domain** and enter your domain name (e.g., `www.punnagaitoystore.com` and `punnagaitoystore.com`).
-4. Update DNS records at your domain registrar (GoDaddy, Cloudflare, Namecheap, Spaceship):
-   - **CNAME record** for `www` pointing to `[your-app-name].onrender.com`.
-   - **ANAME/ALIAS or A record** for root domain pointing to Render's provided IP.
-5. Render will automatically issue and renew a free Let's Encrypt SSL certificate within a few minutes.
+1. **Domain Registrar**: GoDaddy DNS Management
+2. **Configured DNS Records**:
+   - **`CNAME` Record**:
+     - Host / Name: `www`
+     - Points to / Data: `punnagai-toy-store.onrender.com`
+     - TTL: `1/2 Hour` (or 1 Hour)
+   - **`A` Record**:
+     - Host / Name: `@`
+     - Points to / Data: `216.24.57.1` (Render Apex IP)
+     - TTL: `1/2 Hour` (or 1 Hour)
+3. **SSL/TLS & Canonical Redirection**:
+   - Render automatically provisions and renews free edge SSL certificates.
+   - `https://www.punnagaitoysfancy.in` automatically redirects via canonical 301 to `https://punnagaitoysfancy.in`.
 
 ---
 

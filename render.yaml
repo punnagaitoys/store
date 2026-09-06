@@ -4,6 +4,9 @@ services:
     env: static
     buildCommand: npm run build
     staticPublishPath: .
+    customDomains:
+      - punnagaitoysfancy.in
+      - www.punnagaitoysfancy.in
     routes:
       - type: rewrite
         source: /shop
@@ -63,9 +66,21 @@ services:
       - path: /*
         name: Permissions-Policy
         value: "camera=(), microphone=(), geolocation=()"
+      - path: /admin*
+        name: X-Robots-Tag
+        value: "noindex, nofollow"
       - path: /sw.js
         name: Cache-Control
         value: "no-cache, no-store, must-revalidate"
+      - path: /robots.txt
+        name: Cache-Control
+        value: "public, max-age=3600"
+      - path: /sitemap.xml
+        name: Cache-Control
+        value: "public, max-age=3600"
+      - path: /llms.txt
+        name: Cache-Control
+        value: "public, max-age=86400"
       - path: /manifest.webmanifest
         name: Cache-Control
         value: "public, max-age=86400"
@@ -76,5 +91,8 @@ services:
         name: Cache-Control
         value: "public, max-age=604800, stale-while-revalidate=86400"
       - path: /logo.png
+        name: Cache-Control
+        value: "public, max-age=2592000"
+      - path: /images/*
         name: Cache-Control
         value: "public, max-age=2592000"

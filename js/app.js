@@ -500,7 +500,7 @@ function renderSearchOverlay() {
                placeholder="Search for toys, categories…"
                autocomplete="off" aria-label="Search toys" role="combobox"
                aria-expanded="false" aria-controls="global-search-results"/>
-        <button class="search-overlay-close" onclick="closeGlobalSearch()" aria-label="Close search">Esc</button>
+        <button class="search-overlay-close" onclick="closeGlobalSearch()" aria-label="Close search" title="Close">✕</button>
       </div>
       <div id="global-search-results" class="search-overlay-results" role="listbox"></div>
     </div>`;

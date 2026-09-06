@@ -12,6 +12,10 @@ class FloatingReviews {
   }
 
   async loadReviews() {
+    // Disable floating popup on mobile devices so it doesn't block hero CTAs or bottom navigation
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+      return;
+    }
     if (
       window.GOOGLE_MAPS_REVIEWS_DATA &&
       Array.isArray(window.GOOGLE_MAPS_REVIEWS_DATA) &&

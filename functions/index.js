@@ -202,7 +202,8 @@ exports.createSecureOrder = functions.https.onCall(async (data, context) => {
     if (!couponDocs.empty) {
       const coupon = couponDocs.docs[0].data();
       const discountType = coupon.discountType || coupon.type;
-      const discountVal = Number(coupon.discountValue !== undefined ? coupon.discountValue : coupon.amount) || 0;
+      const discountVal =
+        Number(coupon.discountValue !== undefined ? coupon.discountValue : coupon.amount) || 0;
       if (discountType === 'fixed') {
         discount = discountVal;
       } else if (discountType === 'percentage') {

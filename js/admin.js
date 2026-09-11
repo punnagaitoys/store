@@ -146,7 +146,8 @@ function checkAdminSession() {
             }
             showLoginScreen();
             const errEl = document.getElementById('login-error');
-            if (errEl) errEl.textContent = 'Access denied. You do not have administrator privileges.';
+            if (errEl)
+              errEl.textContent = 'Access denied. You do not have administrator privileges.';
           }
         } catch (err) {
           console.error('Error verifying admin role:', err);
@@ -207,7 +208,7 @@ function handleAdminLogin(e) {
         enterAdminApp('Admin');
       } else {
         setLoginLoading(false);
-        if (errEl) errEl.textContent = 'Incorrect password. Use: 123';
+        if (errEl) errEl.textContent = 'Incorrect password. In local demo mode, use: 123';
       }
     }, 400);
   } else {
@@ -223,6 +224,9 @@ function handleAdminLogin(e) {
 }
 
 function handleAdminLogout() {
+  if (window.AdminUI && typeof window.AdminUI.stopOrdersListener === 'function') {
+    window.AdminUI.stopOrdersListener();
+  }
   if (window.USE_LOCAL_MODE) {
     sessionStorage.removeItem(ADMIN_SESSION_KEY);
     showLoginScreen();
@@ -323,6 +327,9 @@ function loadAdminStoreSettings() {
   const wa = document.getElementById('settings-wa-number');
   const em = document.getElementById('settings-email');
   const upi = document.getElementById('settings-upi');
+  const yt = document.getElementById('settings-youtube');
+  const insta = document.getElementById('settings-instagram');
+  const fb = document.getElementById('settings-facebook');
   const addr = document.getElementById('settings-address');
 
   if (p1) p1.value = settings.phonePrimary || '';
@@ -330,6 +337,9 @@ function loadAdminStoreSettings() {
   if (wa) wa.value = settings.whatsappNumber || '';
   if (em) em.value = settings.storeEmail || '';
   if (upi) upi.value = settings.upiId || '';
+  if (yt) yt.value = settings.youtubeChannel || 'https://www.youtube.com/@PunnagaiRahim';
+  if (insta) insta.value = settings.instagramUrl || 'https://www.instagram.com/punnagaitoys.fancy/';
+  if (fb) fb.value = settings.facebookUrl || 'https://www.facebook.com/punnagaitoys/';
   if (addr) addr.value = settings.storeAddress || '';
 }
 
@@ -341,6 +351,9 @@ function handleSaveStoreSettings(e) {
   const wa = document.getElementById('settings-wa-number')?.value.trim();
   const em = document.getElementById('settings-email')?.value.trim();
   const upi = document.getElementById('settings-upi')?.value.trim();
+  const yt = document.getElementById('settings-youtube')?.value.trim();
+  const insta = document.getElementById('settings-instagram')?.value.trim();
+  const fb = document.getElementById('settings-facebook')?.value.trim();
   const addr = document.getElementById('settings-address')?.value.trim();
 
   const newSettings = {
@@ -349,6 +362,9 @@ function handleSaveStoreSettings(e) {
     whatsappNumber: wa || '917550132101',
     storeEmail: em || 'contact@punnagaitoysfancy.in',
     upiId: upi || 'punnagai@upi',
+    youtubeChannel: yt || 'https://www.youtube.com/@PunnagaiRahim',
+    instagramUrl: insta || 'https://www.instagram.com/punnagaitoys.fancy/',
+    facebookUrl: fb || 'https://www.facebook.com/punnagaitoys/',
     storeAddress: addr || '4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai – 600 004'
   };
 

@@ -113,8 +113,20 @@
       this.selectedFilter = 'all';
     }
 
-    init(catalogProducts = []) {
-      const customItems = this.getCustomItems();
+    async init(catalogProducts = []) {
+      let customItems = [];
+      if (!window.USE_LOCAL_MODE && window.db && typeof window.db.collection === 'function') {
+        try {
+          const snap = await window.db.collection('media').orderBy('createdAt', 'desc').get();
+          customItems = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        } catch (e) {
+          console.warn('[media-library] Firestore fetch failed, checking local:', e);
+          customItems = this.getCustomItems();
+        }
+      } else {
+        customItems = this.getCustomItems();
+      }
+
       const catalogItems = [];
 
       // Import any product images from catalog that aren't already in default or custom items
@@ -138,6 +150,8 @@
       });
 
       this.items = [...customItems, ...DEFAULT_MEDIA_ITEMS, ...catalogItems];
+      this.renderMediaGrid();
+      this.renderModalGrid();
     }
 
     getCustomItems() {
@@ -160,20 +174,37 @@
 
     addMediaItem({ title, url, category = 'custom', dimensions = '600x600' }) {
       const newItem = {
-        id: 'med_cust_' + Date.now(),
+        id: 'med_cust_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
         title: title || 'Custom Image ' + new Date().toLocaleDateString(),
         category: category,
         url: url,
         date: new Date().toISOString().split('T')[0],
         dimensions: dimensions,
+        createdAt: Date.now(),
         isCustom: true
       };
 
-      const customItems = this.getCustomItems();
+      if (
+        typeof window !== 'undefined' &&
+        !window.USE_LOCAL_MODE &&
+        window.db &&
+        typeof window.db.collection === 'function'
+      ) {
+        window.db
+          .collection('media')
+          .doc(newItem.id)
+          .set(newItem)
+          .catch((err) => {
+            console.warn('[media-library] Firestore add failed, saved locally:', err);
+          });
+      }
+
+      // Also preserve in local storage for offline resilience
+      const customItems = this.getCustomItems().filter((i) => i.id !== newItem.id);
       customItems.unshift(newItem);
       this.saveCustomItems(customItems);
-      this.items.unshift(newItem);
 
+      this.items.unshift(newItem);
       this.renderMediaGrid();
       this.renderModalGrid();
       if (typeof showToast === 'function') showToast('Image added to Media Library!', 'success');
@@ -185,11 +216,40 @@
       if (idx > -1) {
         const item = this.items[idx];
         this.items.splice(idx, 1);
+
+        if (
+          typeof window !== 'undefined' &&
+          !window.USE_LOCAL_MODE &&
+          window.db &&
+          typeof window.db.collection === 'function'
+        ) {
+          window.db
+            .collection('media')
+            .doc(id)
+            .delete()
+            .then(() => {
+              if (
+                item.url &&
+                item.url.includes('firebasestorage.googleapis.com') &&
+                window.storage &&
+                typeof window.storage.refFromURL === 'function'
+              ) {
+                window.storage
+                  .refFromURL(item.url)
+                  .delete()
+                  .catch(() => {});
+              }
+            })
+            .catch((err) => {
+              console.warn('[media-library] Firestore delete error:', err);
+            });
+        }
+
         const customItems = this.getCustomItems().filter((i) => i.id !== id);
         this.saveCustomItems(customItems);
         this.renderMediaGrid();
         this.renderModalGrid();
-        if (typeof showToast === 'function') showToast('Image removed from Media Library', 'info');
+        if (typeof showToast === 'function') showToast('Media item removed.', 'info');
       }
     }
 
@@ -418,69 +478,118 @@
       }
     }
 
-    handleUploadSubmit(e) {
+    async handleUploadSubmit(e) {
       e.preventDefault();
       const title = (document.getElementById('upload-media-title') || {}).value || '';
       const urlInput = (document.getElementById('upload-media-url') || {}).value || '';
       const fileInput = document.getElementById('upload-media-file');
       const category = (document.getElementById('upload-media-category') || {}).value || 'custom';
+      const submitBtn = e.target.querySelector('button[type="submit"]');
 
-      if (fileInput && fileInput.files && fileInput.files[0]) {
-        const file = fileInput.files[0];
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const dataUrl = event.target.result;
-          this.addMediaItem({
-            title: title || file.name.replace(/\.[^/.]+$/, ''),
-            url: dataUrl,
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Uploading...';
+      }
+
+      try {
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+          const file = fileInput.files[0];
+          const cleanName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+
+          // If Firebase Storage is available, upload directly
+          if (
+            !window.USE_LOCAL_MODE &&
+            window.storage &&
+            typeof window.storage.ref === 'function'
+          ) {
+            const storagePath = `media/${Date.now()}_${cleanName}`;
+            const fileRef = window.storage.ref().child(storagePath);
+            await fileRef.put(file);
+            const downloadUrl = await fileRef.getDownloadURL();
+
+            await this.addMediaItem({
+              title: title || file.name.replace(/\.[^/.]+$/, ''),
+              url: downloadUrl,
+              category: category
+            });
+            this.closeUploadModal();
+          } else {
+            // Local fallback
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+              const dataUrl = event.target.result;
+              await this.addMediaItem({
+                title: title || file.name.replace(/\.[^/.]+$/, ''),
+                url: dataUrl,
+                category: category
+              });
+              this.closeUploadModal();
+            };
+            reader.readAsDataURL(file);
+          }
+        } else if (urlInput.trim()) {
+          await this.addMediaItem({
+            title: title || 'Image ' + new Date().toLocaleDateString(),
+            url: urlInput.trim(),
             category: category
           });
           this.closeUploadModal();
-        };
-        reader.readAsDataURL(file);
-      } else if (urlInput.trim()) {
-        this.addMediaItem({
-          title: title || 'Image ' + new Date().toLocaleDateString(),
-          url: urlInput.trim(),
-          category: category
-        });
-        this.closeUploadModal();
-      } else {
+        } else {
+          if (typeof showToast === 'function')
+            showToast('Please provide an image URL or choose a file.', 'error');
+        }
+      } catch (uploadErr) {
+        console.error('[media-library] Upload error:', uploadErr);
         if (typeof showToast === 'function')
-          showToast('Please provide an image URL or choose a file.', 'error');
+          showToast('Upload failed: ' + (uploadErr.message || uploadErr), 'error');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Upload / Add Image';
+        }
       }
     }
   }
 
-  window.MediaLibrary = new MediaLibraryManager();
+  if (typeof window !== 'undefined') {
+    window.MediaLibrary = new MediaLibraryManager();
 
-  // Global HTML handlers
-  window.openMediaLibraryModal = function (inputId) {
-    if (window.MediaLibrary) window.MediaLibrary.openModal(inputId);
-  };
-  window.closeMediaLibraryModal = function () {
-    if (window.MediaLibrary) window.MediaLibrary.closeModal();
-  };
-  window.openUploadMediaModal = function () {
-    if (window.MediaLibrary) window.MediaLibrary.openUploadModal();
-  };
-  window.closeUploadMediaModal = function () {
-    if (window.MediaLibrary) window.MediaLibrary.closeUploadModal();
-  };
-  window.filterMediaLibrary = function () {
-    if (!window.MediaLibrary) return;
-    const searchEl = document.getElementById('media-library-search');
-    const filterEl = document.getElementById('media-library-filter');
-    window.MediaLibrary.searchTerm = searchEl ? searchEl.value : '';
-    window.MediaLibrary.selectedFilter = filterEl ? filterEl.value : 'all';
-    window.MediaLibrary.renderMediaGrid();
-  };
-  window.filterModalMediaLibrary = function () {
-    if (!window.MediaLibrary) return;
-    const searchEl = document.getElementById('media-modal-search');
-    const filterEl = document.getElementById('media-modal-filter');
-    window.MediaLibrary.searchTerm = searchEl ? searchEl.value : '';
-    window.MediaLibrary.selectedFilter = filterEl ? filterEl.value : 'all';
-    window.MediaLibrary.renderModalGrid();
-  };
+    // Global HTML handlers
+    window.openMediaLibraryModal = function (inputId) {
+      if (window.MediaLibrary) window.MediaLibrary.openModal(inputId);
+    };
+    window.closeMediaLibraryModal = function () {
+      if (window.MediaLibrary) window.MediaLibrary.closeModal();
+    };
+    window.openUploadMediaModal = function () {
+      if (window.MediaLibrary) window.MediaLibrary.openUploadModal();
+    };
+    window.closeUploadMediaModal = function () {
+      if (window.MediaLibrary) window.MediaLibrary.closeUploadModal();
+    };
+    window.filterMediaLibrary = function () {
+      if (!window.MediaLibrary) return;
+      const searchEl = document.getElementById('media-library-search');
+      const filterEl = document.getElementById('media-library-filter');
+      window.MediaLibrary.searchTerm = searchEl ? searchEl.value : '';
+      window.MediaLibrary.selectedFilter = filterEl ? filterEl.value : 'all';
+      window.MediaLibrary.renderMediaGrid();
+    };
+    window.filterModalMediaLibrary = function () {
+      if (!window.MediaLibrary) return;
+      const searchEl = document.getElementById('media-modal-search');
+      const filterEl = document.getElementById('media-modal-filter');
+      window.MediaLibrary.searchTerm = searchEl ? searchEl.value : '';
+      window.MediaLibrary.selectedFilter = filterEl ? filterEl.value : 'all';
+      window.MediaLibrary.renderModalGrid();
+    };
+  }
+
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+      MediaLibraryManager,
+      DEFAULT_MEDIA_ITEMS,
+      CUSTOM_MEDIA_KEY
+    };
+  }
 })();

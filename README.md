@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Web%20%7C%20PWA%20%7C%20Mobile-green.svg)](#dual-view-architecture)
-[![Render Deploy](https://img.shields.io/badge/Render-Configured%20(render.yaml)-46e3b7.svg)](./render.yaml)
+[![Render Deploy](<https://img.shields.io/badge/Render-Configured%20(render.yaml)-46e3b7.svg>)](./render.yaml)
 [![Quality Rating](https://img.shields.io/badge/Storefront%20Rating-10%2F10%20Flawless-gold.svg)](#-1010-score-summary)
 
 ---
@@ -171,18 +171,17 @@ npm run format
 
 ## 🏆 10/10 Score Summary
 
-| Dimension | Score | Highlights |
-| :--- | :---: | :--- |
-| **Mobile UX & Responsiveness** | **10.0 / 10** | Native bottom navigation bar, slide-up bottom sheet filters, category chips, sticky buy bar. |
-| **Visual Aesthetics & Polish** | **10.0 / 10** | Hero ambient floating particles, button shimmer sweep, skeleton loading cards, active tap scaling. |
-| **Conversion & Funnel Drivers** | **10.0 / 10** | Live Chennai PIN delivery estimator, parent FAQ accordion, urgency badges, free delivery meter. |
-| **Architecture & Reliability** | **10.0 / 10** | Zero framework bloat, crash-proof native server, Service Worker v2, resilient auto-seeding. |
-| **Catalog & Media Authenticity**| **10.0 / 10** | 26 authentic curated toys across 5 age groups, zero broken image fallbacks, demo videos. |
-| **OVERALL STORE RATING** | **10.0 / 10** | **100% Production Ready & Commercial Retail Release Grade** |
+| Dimension                        |     Score     | Highlights                                                                                         |
+| :------------------------------- | :-----------: | :------------------------------------------------------------------------------------------------- |
+| **Mobile UX & Responsiveness**   | **10.0 / 10** | Native bottom navigation bar, slide-up bottom sheet filters, category chips, sticky buy bar.       |
+| **Visual Aesthetics & Polish**   | **10.0 / 10** | Hero ambient floating particles, button shimmer sweep, skeleton loading cards, active tap scaling. |
+| **Conversion & Funnel Drivers**  | **10.0 / 10** | Live Chennai PIN delivery estimator, parent FAQ accordion, urgency badges, free delivery meter.    |
+| **Architecture & Reliability**   | **10.0 / 10** | Zero framework bloat, crash-proof native server, Service Worker v2, resilient auto-seeding.        |
+| **Catalog & Media Authenticity** | **10.0 / 10** | 26 authentic curated toys across 5 age groups, zero broken image fallbacks, demo videos.           |
+| **OVERALL STORE RATING**         | **10.0 / 10** | **100% Production Ready & Commercial Retail Release Grade**                                        |
 
 ---
 
 ## 📄 License
 
 This project is licensed under the [MIT License](./LICENSE). Punnagai Toy Store, Mylapore, Chennai. All rights reserved.
-

@@ -29,13 +29,13 @@ If you prefer to configure the service manually in the Render dashboard:
 2. **Create New Static Site:**
    - Click the **New +** button at the top right and select **Static Site**.
 3. **Connect Your GitHub Repository:**
-   - Under *Connect a repository*, choose **GitHub**.
+   - Under _Connect a repository_, choose **GitHub**.
    - If prompted, grant Render permission to access your repository: `punnagaitoys/store`.
    - Select the repository and click **Connect**.
 4. **Configure Settings:**
    - **Name:** `punnagai-toy-store` (or any name you choose)
    - **Branch:** `main` (or `MZ-Main` / current default branch)
-   - **Root Directory:** *(leave blank / default)*
+   - **Root Directory:** _(leave blank / default)_
    - **Build Command:** `npm run build` (or leave empty)
    - **Publish Directory:** `.` (single dot for root directory)
 5. **Create Static Site:**

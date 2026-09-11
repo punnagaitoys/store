@@ -47,35 +47,40 @@
  * Once done, paste YOUR config below:
  */
 
-// ⚠️ Production Firebase Configuration:
+// Default Firebase Configuration template:
 const DEFAULT_FIREBASE_CONFIG = {
-  apiKey: "AIzaSyDJsabqiKNFmBPgskZmgbAdAIOq__zI-os",
-  authDomain: "punnagai-toy-store.firebaseapp.com",
-  projectId: "punnagai-toy-store",
-  storageBucket: "punnagai-toy-store.firebasestorage.app",
-  messagingSenderId: "748480682670",
-  appId: "1:748480682670:web:ba4ded0c0c3ec92f4deb3f",
-  measurementId: "G-FNSVGV3KPK"
+  apiKey: 'YOUR_API_KEY_HERE',
+  authDomain: 'punnagai-toy-store.firebaseapp.com',
+  projectId: 'punnagai-toy-store',
+  storageBucket: 'punnagai-toy-store.firebasestorage.app',
+  messagingSenderId: '748480682670',
+  appId: 'YOUR_APP_ID_HERE',
+  measurementId: ''
 };
 
 /**
  * Environment-based config resolution.
- *
- * For environments that can inject configuration at runtime (e.g. integration
- * tests, staging, or a server-rendered shell), set `window.__FIREBASE_CONFIG__`
- * BEFORE this script loads to override the placeholders above.
+ * Resolved dynamically from js/env-config.js (via window.__FIREBASE_CONFIG__)
+ * or injected by test harness / server environment.
  */
 const firebaseConfig = Object.assign(
   {},
   DEFAULT_FIREBASE_CONFIG,
-  (typeof window !== 'undefined' && window.__FIREBASE_CONFIG__) || {}
+  (typeof window !== 'undefined' &&
+    (window.__FIREBASE_CONFIG__ || (window.ENV && window.ENV.FIREBASE_CONFIG))) ||
+    {}
 );
 
 // Check for mock mode — only activate local mode if explicitly requested or API key is missing
 if (typeof window !== 'undefined') {
   if (typeof window.USE_LOCAL_MODE === 'undefined') {
+    const isMockQuery =
+      typeof location !== 'undefined' &&
+      new URLSearchParams(location.search).get('mock') === 'true';
     window.USE_LOCAL_MODE =
+      isMockQuery ||
       Boolean(localStorage && localStorage.getItem('punnagai_force_local')) ||
+      !firebaseConfig.apiKey ||
       firebaseConfig.apiKey === 'YOUR_API_KEY_HERE';
   }
 }

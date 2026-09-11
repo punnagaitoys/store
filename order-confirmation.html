@@ -34,6 +34,7 @@
         padding: 48px;
         max-width: 640px;
         width: 100%;
+        margin: 0 auto;
         text-align: center;
         box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
         animation: fadeSlideUp 0.4s ease;
@@ -241,10 +242,11 @@
     <div id="footer"></div>
 
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
     <!-- App Scripts -->
+    <script src="js/env-config.js"></script>
     <script src="js/firebase-config.js"></script>
     <script src="js/data.js"></script>
     <script src="js/lib/cart-storage.js"></script>
@@ -272,7 +274,10 @@
 
       function buildTrackWhatsAppUrl(orderId) {
         const settings = window.PunnagaiSettings ? window.PunnagaiSettings.get() : null;
-        const phone = ((settings && settings.whatsappNumber) || TRACKING_WHATSAPP_NUMBER).replace(/\D/g, '');
+        const phone = ((settings && settings.whatsappNumber) || TRACKING_WHATSAPP_NUMBER).replace(
+          /\D/g,
+          ''
+        );
         const msg = encodeURIComponent(
           `Hello! 👋 I'd like to track my order from Punnagai Toy Store.\n\n*Order ID:* ${orderId}\n\nCould you please share the current status? Thank you! 🙏`
         );
@@ -413,34 +418,66 @@
           }
         } catch (_) {}
 
-        // Try to load the order from the data layer
-        if (typeof getOrderById === 'function') {
+        // Attach real-time onSnapshot listener in Firebase mode so status transitions (shipped, delivered) reflect live
+        let unsubscribeOrder = null;
+        if (!window.USE_LOCAL_MODE && window.db && typeof window.db.collection === 'function') {
           try {
-            const order = await getOrderById(orderId);
-            if (order) {
-              renderConfirmation(order);
-              return;
-            }
+            unsubscribeOrder = window.db
+              .collection('orders')
+              .doc(orderId)
+              .onSnapshot(
+                (doc) => {
+                  if (doc.exists) {
+                    renderConfirmation({ id: doc.id, ...doc.data() });
+                  } else if (cachedOrder) {
+                    renderConfirmation(cachedOrder);
+                  }
+                },
+                (err) => {
+                  console.warn('[order-confirmation] onSnapshot error, falling back:', err);
+                  loadOrderFallback();
+                }
+              );
+            window.addEventListener('beforeunload', () => {
+              if (typeof unsubscribeOrder === 'function') unsubscribeOrder();
+            });
+            return;
           } catch (err) {
-            console.warn('Could not load order from remote data layer:', err);
+            console.warn('[order-confirmation] Could not attach listener:', err);
           }
         }
 
-        if (cachedOrder) {
-          renderConfirmation(cachedOrder);
-        } else {
-          // Minimal fallback
-          renderConfirmation({
-            id: orderId,
-            orderId,
-            orderStatus: 'confirmed',
-            items: [],
-            subtotal: 0,
-            shippingFee: 0,
-            discount: 0,
-            total: 0,
-            shippingAddress: {}
-          });
+        await loadOrderFallback();
+
+        async function loadOrderFallback() {
+          if (typeof getOrderById === 'function') {
+            try {
+              const order = await getOrderById(orderId);
+              if (order) {
+                renderConfirmation(order);
+                return;
+              }
+            } catch (err) {
+              console.warn('Could not load order from remote data layer:', err);
+            }
+          }
+
+          if (cachedOrder) {
+            renderConfirmation(cachedOrder);
+          } else {
+            // Minimal fallback
+            renderConfirmation({
+              id: orderId,
+              orderId,
+              orderStatus: 'confirmed',
+              items: [],
+              subtotal: 0,
+              shippingFee: 0,
+              discount: 0,
+              total: 0,
+              shippingAddress: {}
+            });
+          }
         }
       });
     </script>

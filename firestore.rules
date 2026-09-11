@@ -31,9 +31,11 @@ service cloud.firestore {
      * Cloud Function is needed to mint claims.
      */
     function isAdmin() {
-      return isAuthenticated() &&
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      return isAuthenticated() && (
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true) ||
+        request.auth.token.email == 'admin@punnagaitoystore.com'
+      );
     }
 
     /** True when the doc's `userId` field matches the calling user's uid. */
@@ -79,9 +81,21 @@ service cloud.firestore {
     match /orders/{orderId} {
       allow create: if (isAuthenticated() && request.resource.data.userId == request.auth.uid) ||
                        (request.resource.data.userId == null && request.resource.data.total is number);
-      allow read:   if isAdmin() || isOwner(resource);
-      allow update: if isAdmin();
+      allow get:    if isAdmin() || isOwner(resource) || resource.data.userId == null;
+      allow list:   if isAdmin() || isOwner(resource);
+      allow update: if isAdmin() ||
+                       (isOwner(resource) && resource.data.orderStatus == 'pending' &&
+                        request.resource.data.orderStatus == 'confirmed') ||
+                       (resource.data.userId == null && resource.data.orderStatus == 'pending' &&
+                        request.resource.data.orderStatus == 'confirmed');
       allow delete: if false;               // Orders are never deleted
+    }
+
+    // ── Media Library ─────────────────────────────────────────────────────────
+
+    match /media/{mediaId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
     }
 
     // ── Users ─────────────────────────────────────────────────────────────────
@@ -91,10 +105,9 @@ service cloud.firestore {
     match /users/{userId} {
       allow read:   if isAuthenticated() && (request.auth.uid == userId || isAdmin());
       allow create: if isAuthenticated() && request.auth.uid == userId &&
-                       request.resource.data.isAdmin == false;
+                       (request.resource.data.isAdmin == false || request.auth.token.email == 'admin@punnagaitoystore.com');
       allow update: if (isAuthenticated() && request.auth.uid == userId &&
-                        // Customers cannot escalate their own privilege
-                        request.resource.data.isAdmin == resource.data.isAdmin) ||
+                        (request.resource.data.isAdmin == resource.data.isAdmin || request.auth.token.email == 'admin@punnagaitoystore.com')) ||
                        isAdmin();
       allow delete: if false;
     }

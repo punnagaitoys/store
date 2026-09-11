@@ -114,21 +114,74 @@
   }
 
   // ==========================================================================
-  // ORDERS
+  // ORDERS (Real-time onSnapshot in Firebase mode, Local fallback)
   // ==========================================================================
   let allOrders = [];
+  let unsubscribeOrdersListener = null;
+
+  function stopOrdersListener() {
+    if (typeof unsubscribeOrdersListener === 'function') {
+      try {
+        unsubscribeOrdersListener();
+      } catch (_) {}
+      unsubscribeOrdersListener = null;
+    }
+  }
 
   async function loadOrders() {
     const tbody = el('admin-orders-table-body');
     const countEl = el('orders-section-count');
     if (!tbody || !window.PunnagaiAdminOrders) return;
 
+    // In Firebase mode, attach real-time onSnapshot listener
+    if (!window.USE_LOCAL_MODE && window.db && typeof window.db.collection === 'function') {
+      if (!unsubscribeOrdersListener) {
+        tbody.innerHTML =
+          '<tr><td colspan="7" class="table-loading-cell"><div class="loading-spinner" style="margin:auto"></div></td></tr>';
+        try {
+          unsubscribeOrdersListener = window.db
+            .collection('orders')
+            .orderBy('createdAt', 'desc')
+            .onSnapshot(
+              (snapshot) => {
+                allOrders = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+                if (countEl) countEl.textContent = `${allOrders.length} total orders`;
+                renderOrdersTable(allOrders);
+                const statOrders = el('stat-total-orders');
+                if (statOrders) statOrders.textContent = allOrders.length;
+              },
+              (err) => {
+                console.warn('[admin-ui] Orders onSnapshot listener error, falling back:', err);
+                stopOrdersListener();
+                loadOrdersFallback();
+              }
+            );
+          return;
+        } catch (subErr) {
+          console.warn('[admin-ui] Could not attach orders listener:', subErr);
+        }
+      } else {
+        // Listener is already active; update display
+        if (countEl) countEl.textContent = `${allOrders.length} total orders`;
+        renderOrdersTable(allOrders);
+        return;
+      }
+    }
+
+    await loadOrdersFallback();
+  }
+
+  async function loadOrdersFallback() {
+    const tbody = el('admin-orders-table-body');
+    const countEl = el('orders-section-count');
+    if (!tbody || !window.PunnagaiAdminOrders) return;
+
     tbody.innerHTML =
-      '<tr><td colspan="6" class="table-loading-cell"><div class="loading-spinner" style="margin:auto"></div></td></tr>';
+      '<tr><td colspan="7" class="table-loading-cell"><div class="loading-spinner" style="margin:auto"></div></td></tr>';
 
     try {
       const res = await window.PunnagaiAdminOrders.loadOrders();
-      const orders = Array.isArray(res) ? res : (res && res.success ? (res.orders || []) : null);
+      const orders = Array.isArray(res) ? res : res && res.success ? res.orders || [] : null;
       if (orders !== null) {
         allOrders = orders;
         if (countEl) countEl.textContent = `${allOrders.length} total orders`;
@@ -359,7 +412,7 @@
 
     try {
       const res = await window.PunnagaiAdminCoupons.listActiveCoupons();
-      const coupons = Array.isArray(res) ? res : (res && res.success ? (res.coupons || []) : null);
+      const coupons = Array.isArray(res) ? res : res && res.success ? res.coupons || [] : null;
       if (coupons !== null) {
         renderCouponsTable(coupons);
       } else {
@@ -751,7 +804,12 @@
       const stored = localStorage.getItem('Punnagai_HomeVideos');
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
+        if (
+          Array.isArray(parsed) &&
+          parsed.length > 0 &&
+          parsed[0].videoId !== 'dQw4w9WgXcQ' &&
+          parsed[0].videoId !== 'L13c2yTfZ8c'
+        ) {
           return parsed;
         }
       }
@@ -761,24 +819,38 @@
     const defaults = [
       {
         id: 'hv_1',
-        videoId: 'L13c2yTfZ8c',
-        title: 'Sparking Curiosity: STEM Robot & Science Kits',
+        videoId: 'AbUoC01edxY',
+        title: 'Punnagai Toys Welcome Video',
         description:
-          "Watch hands-on learning come alive with our best-selling educational robotics and science kits."
+          'Welcome to Punnagai Toys & Fancy Store, Mylapore, Chennai. Explore our massive curated toy collection!'
       },
       {
         id: 'hv_2',
-        videoId: 'rQ3tB_jT9tY',
-        title: 'Handcrafted Wooden Montessori & Stacking Toys',
+        videoId: 'F3I3MFQY8PU',
+        title: 'Elephant with Floating Air Ball Toy',
         description:
-          'Explore eco-friendly wooden toys designed for toddlers to build fine motor skills safely.'
+          'Interactive musical elephant blowing floating air balls. Pre-book or enquire via WhatsApp +91 75501 32101.'
       },
       {
         id: 'hv_3',
-        videoId: 'f_n8KqJ5eYs',
-        title: 'Family Board Games & Strategy Puzzles',
+        videoId: 'G2muNGkuW-4',
+        title: 'Swinging Bee Musical Toy',
         description:
-          'Unplug and bond together with award-winning family board games and memory challenges.'
+          'Fun animated swinging bee toy with delightful music, movement, and dancing lights for kids.'
+      },
+      {
+        id: 'hv_4',
+        videoId: '50W7p72rY1w',
+        title: 'Thomas Train with Real Smoke',
+        description:
+          'Exciting classic locomotive train playset featuring realistic steam smoke and authentic train sounds.'
+      },
+      {
+        id: 'hv_5',
+        videoId: '5Ivt3rftkaA',
+        title: 'Exciting Kids Toys & Demonstrations',
+        description:
+          'Live demonstration of popular interactive toys and learning games at Punnagai Toys, Mylapore.'
       }
     ];
     try {
@@ -788,13 +860,13 @@
   }
 
   function extractYouTubeID(input) {
-    if (!input) return 'L13c2yTfZ8c';
+    if (!input) return 'AbUoC01edxY';
     const trimmed = String(input).trim();
     if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
       return trimmed;
     }
     const match = trimmed.match(
-      /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+      /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?|shorts)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
     );
     return match && match[1] ? match[1] : trimmed.substring(0, 11);
   }
@@ -832,10 +904,10 @@
             <p style="margin: 0; font-size: 0.88rem; color: var(--text-secondary); max-width: 320px;">${escapeHtml(v.description || 'No description provided')}</p>
           </td>
           <td style="text-align: right; white-space: nowrap;">
-            <button class="btn btn-outline btn-sm" type="button" onclick="window.AdminUI.openAddHomeVideoModal('${escapeHtml(v.id)}')" style="margin-right: 6px;">
+            <button class="btn btn-admin-secondary btn-sm" type="button" onclick="window.AdminUI.openAddHomeVideoModal('${escapeHtml(v.id)}')" style="margin-right: 6px;">
               Edit
             </button>
-            <button class="btn btn-danger btn-sm" type="button" onclick="window.AdminUI.deleteHomeVideo('${escapeHtml(v.id)}')">
+            <button class="btn btn-admin-danger btn-sm" type="button" onclick="window.AdminUI.deleteHomeVideo('${escapeHtml(v.id)}')">
               Delete
             </button>
           </td>
@@ -954,6 +1026,7 @@
 
     // Lazy Loaders (called when switching tabs)
     loadOrders,
+    stopOrdersListener,
     loadCoupons,
     loadCategories,
     loadBanners,

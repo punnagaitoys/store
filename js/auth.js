@@ -288,11 +288,14 @@
     const normalizedPhone = validation.normalizeIndianPhone(phone) || String(phone).trim();
 
     try {
-      // Requirement 5.3: duplicate-email detection (users collection is the
-      // shared source of truth across both modes).
-      const existing = await callDataFn('getUserByEmail', [normalizedEmail]);
-      if (existing) {
-        return { success: false, error: 'Email already exists' };
+      // Requirement 5.3: duplicate-email detection
+      // In local mode, check mock store / local collection.
+      // In Firebase mode, createUserWithEmailAndPassword handles duplicate detection natively.
+      if (isLocalMode()) {
+        const existing = await callDataFn('getUserByEmail', [normalizedEmail]);
+        if (existing) {
+          return { success: false, error: 'Email already exists' };
+        }
       }
 
       let userId;
@@ -429,7 +432,7 @@
           return invalidResult;
         }
 
-        const userDoc = await callDataFn('getUserByEmail', [normalizedEmail]);
+        const userDoc = await callDataFn('getUserById', [credential.user.uid]);
         user = {
           userId: (userDoc && userDoc.id) || (credential.user && credential.user.uid),
           email: normalizedEmail,

@@ -496,34 +496,21 @@ const LOCAL_STORAGE_CATALOG_VERSION = 'punnagai_catalog_v2026';
 
 function getLocalProducts() {
   try {
-    const version = localStorage.getItem('punnagai_catalog_version');
     const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-    const prods = raw ? JSON.parse(raw) : [];
-    // If cache matches the upgraded version and has at least 25 products, use it
-    if (version === LOCAL_STORAGE_CATALOG_VERSION && Array.isArray(prods) && prods.length >= 25) {
-      return prods;
+    if (raw !== null) {
+      const prods = JSON.parse(raw);
+      if (Array.isArray(prods)) {
+        return prods;
+      }
     }
   } catch (e) {}
-
-  // Automatically seed from SEED_PRODUCTS if empty or needing version upgrade
-  if (Array.isArray(SEED_PRODUCTS) && SEED_PRODUCTS.length > 0) {
-    const seeded = SEED_PRODUCTS.map((p, i) => ({
-      ...p,
-      id: p.id || 'prod_seed_' + (i + 1),
-      createdAt: p.createdAt || (Date.now() - i * 60000)
-    }));
-    try {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(seeded));
-      localStorage.setItem('punnagai_catalog_version', LOCAL_STORAGE_CATALOG_VERSION);
-    } catch (e) {}
-    return seeded;
-  }
   return [];
 }
 
 function saveLocalProducts(products) {
   try {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(products));
+    localStorage.setItem('punnagai_catalog_version', LOCAL_STORAGE_CATALOG_VERSION);
   } catch (e) {}
 }
 
@@ -536,7 +523,11 @@ function generateId() {
 }
 
 function getServerTimestamp() {
-  return window.USE_LOCAL_MODE ? Date.now() : (firebase && firebase.firestore ? firebase.firestore.FieldValue.serverTimestamp() : Date.now());
+  return window.USE_LOCAL_MODE
+    ? Date.now()
+    : firebase && firebase.firestore
+      ? firebase.firestore.FieldValue.serverTimestamp()
+      : Date.now();
 }
 
 /**
@@ -1206,10 +1197,13 @@ async function createUser(userData, uid) {
 
   if (!window.USE_LOCAL_MODE && targetUid) {
     try {
-      await db.collection(COLLECTIONS.USERS).doc(targetUid).set({
-        ...record,
-        createdAt: getServerTimestamp()
-      });
+      await db
+        .collection(COLLECTIONS.USERS)
+        .doc(targetUid)
+        .set({
+          ...record,
+          createdAt: getServerTimestamp()
+        });
       return { success: true, id: targetUid };
     } catch (err) {
       console.error('Error creating user doc:', err);
@@ -1253,9 +1247,12 @@ async function createOrder(orderData) {
     }
   }
 
-  // Fallback for Local Storage Demo mode
+  // Fallback for Local Storage Demo mode / Direct Client write
+  const safeUserId =
+    orderData.userId && orderData.userId !== 'guest' ? String(orderData.userId) : null;
+
   return createDoc(COLLECTIONS.ORDERS, {
-    userId: orderData.userId || null,
+    userId: safeUserId,
     items: orderData.items || [],
     subtotal: Number(orderData.subtotal) || 0,
     shippingFee: Number(orderData.shippingFee) || 0,

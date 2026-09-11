@@ -509,7 +509,7 @@ localStorage.setItem('__punnagai_admin_env', JSON.stringify({ password: 'admin' 
 
       <!-- Mobile sidebar toggle -->
       <button
-        class="sidebar-toggle-btn"
+        class="admin-sidebar-toggle sidebar-toggle-btn"
         id="sidebar-toggle"
         onclick="toggleAdminSidebar()"
         type="button"
@@ -2044,15 +2044,28 @@ localStorage.setItem('__punnagai_admin_env', JSON.stringify({ password: 'admin' 
             <div>
               <h1 class="admin-page-title">Store &amp; Contact Settings</h1>
               <p class="admin-page-subtitle">
-                Update store phone numbers, WhatsApp contact, support email, and UPI ID across the website.
+                Update store phone numbers, WhatsApp contact, support email, and UPI ID across the
+                website.
               </p>
             </div>
           </div>
 
-          <div style="max-width: 720px; background: #fff; padding: 28px; border-radius: 8px; border: 1px solid var(--border);">
+          <div
+            style="
+              max-width: 720px;
+              background: #fff;
+              padding: 28px;
+              border-radius: 8px;
+              border: 1px solid var(--border);
+            "
+          >
             <form id="admin-settings-form" onsubmit="handleSaveStoreSettings(event)">
-              <div class="form-group" style="margin-bottom: 20px;">
-                <label for="settings-phone-primary" class="form-label" style="font-weight: 600; display: block; margin-bottom: 6px;">
+              <div class="form-group" style="margin-bottom: 20px">
+                <label
+                  for="settings-phone-primary"
+                  class="form-label"
+                  style="font-weight: 600; display: block; margin-bottom: 6px"
+                >
                   Primary Phone Number (Store / WhatsApp Orders)
                 </label>
                 <input
@@ -2062,13 +2075,17 @@ localStorage.setItem('__punnagai_admin_env', JSON.stringify({ password: 'admin' 
                   placeholder="+91 75501 32101"
                   required
                 />
-                <small style="color: var(--text-muted); display: block; margin-top: 4px;">
+                <small style="color: var(--text-muted); display: block; margin-top: 4px">
                   Displayed in footer, contact sections, and policy pages.
                 </small>
               </div>
 
-              <div class="form-group" style="margin-bottom: 20px;">
-                <label for="settings-phone-secondary" class="form-label" style="font-weight: 600; display: block; margin-bottom: 6px;">
+              <div class="form-group" style="margin-bottom: 20px">
+                <label
+                  for="settings-phone-secondary"
+                  class="form-label"
+                  style="font-weight: 600; display: block; margin-bottom: 6px"
+                >
                   Secondary Phone Number (Support / Inquiries)
                 </label>
                 <input
@@ -2078,13 +2095,17 @@ localStorage.setItem('__punnagai_admin_env', JSON.stringify({ password: 'admin' 
                   placeholder="+91 72994 61657"
                   required
                 />
-                <small style="color: var(--text-muted); display: block; margin-top: 4px;">
+                <small style="color: var(--text-muted); display: block; margin-top: 4px">
                   Secondary helpline number shown alongside primary phone.
                 </small>
               </div>
 
-              <div class="form-group" style="margin-bottom: 20px;">
-                <label for="settings-wa-number" class="form-label" style="font-weight: 600; display: block; margin-bottom: 6px;">
+              <div class="form-group" style="margin-bottom: 20px">
+                <label
+                  for="settings-wa-number"
+                  class="form-label"
+                  style="font-weight: 600; display: block; margin-bottom: 6px"
+                >
                   WhatsApp Chat Number (Digits only, including country code)
                 </label>
                 <input
@@ -2094,13 +2115,18 @@ localStorage.setItem('__punnagai_admin_env', JSON.stringify({ password: 'admin' 
                   placeholder="917550132101"
                   required
                 />
-                <small style="color: var(--text-muted); display: block; margin-top: 4px;">
-                  Used to generate floating WhatsApp chat and order enquiry links (e.g. 917550132101).
+                <small style="color: var(--text-muted); display: block; margin-top: 4px">
+                  Used to generate floating WhatsApp chat and order enquiry links (e.g.
+                  917550132101).
                 </small>
               </div>
 
-              <div class="form-group" style="margin-bottom: 20px;">
-                <label for="settings-email" class="form-label" style="font-weight: 600; display: block; margin-bottom: 6px;">
+              <div class="form-group" style="margin-bottom: 20px">
+                <label
+                  for="settings-email"
+                  class="form-label"
+                  style="font-weight: 600; display: block; margin-bottom: 6px"
+                >
                   Store Support Email
                 </label>
                 <input
@@ -2112,8 +2138,12 @@ localStorage.setItem('__punnagai_admin_env', JSON.stringify({ password: 'admin' 
                 />
               </div>
 
-              <div class="form-group" style="margin-bottom: 20px;">
-                <label for="settings-upi" class="form-label" style="font-weight: 600; display: block; margin-bottom: 6px;">
+              <div class="form-group" style="margin-bottom: 20px">
+                <label
+                  for="settings-upi"
+                  class="form-label"
+                  style="font-weight: 600; display: block; margin-bottom: 6px"
+                >
                   Store Merchant UPI ID (VPA)
                 </label>
                 <input
@@ -2123,13 +2153,74 @@ localStorage.setItem('__punnagai_admin_env', JSON.stringify({ password: 'admin' 
                   placeholder="punnagai@upi"
                   required
                 />
-                <small style="color: var(--text-muted); display: block; margin-top: 4px;">
+                <small style="color: var(--text-muted); display: block; margin-top: 4px">
                   UPI VPA presented to customers during manual checkout.
                 </small>
               </div>
 
-              <div class="form-group" style="margin-bottom: 24px;">
-                <label for="settings-address" class="form-label" style="font-weight: 600; display: block; margin-bottom: 6px;">
+              <div class="form-group" style="margin-bottom: 20px">
+                <label
+                  for="settings-youtube"
+                  class="form-label"
+                  style="font-weight: 600; display: block; margin-bottom: 6px"
+                >
+                  YouTube Channel Link
+                </label>
+                <input
+                  type="url"
+                  id="settings-youtube"
+                  class="form-control"
+                  placeholder="https://www.youtube.com/@PunnagaiRahim"
+                />
+                <small style="color: var(--text-muted); display: block; margin-top: 4px">
+                  Official YouTube channel link for storefront footer and video showcase.
+                </small>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 20px">
+                <label
+                  for="settings-instagram"
+                  class="form-label"
+                  style="font-weight: 600; display: block; margin-bottom: 6px"
+                >
+                  Instagram Page Link
+                </label>
+                <input
+                  type="url"
+                  id="settings-instagram"
+                  class="form-control"
+                  placeholder="https://www.instagram.com/punnagaitoys.fancy/"
+                />
+                <small style="color: var(--text-muted); display: block; margin-top: 4px">
+                  Instagram profile link for footer social icons and contact cards.
+                </small>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 20px">
+                <label
+                  for="settings-facebook"
+                  class="form-label"
+                  style="font-weight: 600; display: block; margin-bottom: 6px"
+                >
+                  Facebook Page Link
+                </label>
+                <input
+                  type="url"
+                  id="settings-facebook"
+                  class="form-control"
+                  placeholder="https://www.facebook.com/punnagaitoys/"
+                />
+                <small style="color: var(--text-muted); display: block; margin-top: 4px">
+                  Facebook business page link for footer social icons and contact cards.
+                </small>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 24px">
+                <label
+                  for="settings-address"
+                  class="form-label"
+                  style="font-weight: 600; display: block; margin-bottom: 6px"
+                >
                   Store Physical Address / Pickup Location
                 </label>
                 <textarea
@@ -2141,11 +2232,14 @@ localStorage.setItem('__punnagai_admin_env', JSON.stringify({ password: 'admin' 
                 ></textarea>
               </div>
 
-              <div style="display: flex; gap: 12px; align-items: center;">
+              <div style="display: flex; gap: 12px; align-items: center">
                 <button type="submit" class="btn btn-primary" id="save-settings-btn">
                   Save Store Settings
                 </button>
-                <span id="settings-save-status" style="font-size: 14px; color: var(--success); display: none;">
+                <span
+                  id="settings-save-status"
+                  style="font-size: 14px; color: var(--success); display: none"
+                >
                   ✓ Saved successfully
                 </span>
               </div>
@@ -2652,15 +2746,16 @@ localStorage.setItem('__punnagai_admin_env', JSON.stringify({ password: 'admin' 
     ></div>
 
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
     <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
     <!-- App Scripts -->
+    <script src="js/env-config.js"></script>
     <script src="js/firebase-config.js"></script>
     <script src="js/data.js"></script>
     <!-- Pure logic libs (product/variant builders, inventory, audit log) -->

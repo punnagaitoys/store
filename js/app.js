@@ -30,7 +30,10 @@ const DEFAULT_STORE_SETTINGS = {
   whatsappNumber: '917550132101',
   storeEmail: 'contact@punnagaitoysfancy.in',
   upiId: 'punnagai@upi',
-  storeAddress: '4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai – 600 004'
+  storeAddress: '4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai – 600 004',
+  youtubeChannel: 'https://www.youtube.com/@PunnagaiRahim',
+  instagramUrl: 'https://www.instagram.com/punnagaitoys.fancy/',
+  facebookUrl: 'https://www.facebook.com/punnagaitoys/'
 };
 
 function getStoreSettings() {
@@ -48,7 +51,11 @@ function saveStoreSettings(settings) {
     const merged = { ...DEFAULT_STORE_SETTINGS, ...settings };
     localStorage.setItem('punnagai_store_settings', JSON.stringify(merged));
     if (typeof window !== 'undefined' && !window.USE_LOCAL_MODE && window.db) {
-      window.db.collection('settings').doc('store_info').set(merged, { merge: true }).catch(console.error);
+      window.db
+        .collection('settings')
+        .doc('store_info')
+        .set(merged, { merge: true })
+        .catch(console.error);
     }
     return merged;
   } catch (e) {
@@ -73,9 +80,47 @@ function updateStoreContactLinks() {
   }
 }
 
+async function syncStoreSettingsFromFirestore() {
+  if (
+    typeof window !== 'undefined' &&
+    !window.USE_LOCAL_MODE &&
+    window.db &&
+    typeof window.db.collection === 'function'
+  ) {
+    try {
+      const doc = await window.db.collection('settings').doc('store_info').get();
+      if (doc && doc.exists && doc.data()) {
+        const remote = doc.data();
+        const merged = { ...DEFAULT_STORE_SETTINGS, ...remote };
+        localStorage.setItem('punnagai_store_settings', JSON.stringify(merged));
+        updateStoreContactLinks();
+      }
+    } catch (err) {
+      console.warn(
+        '[settings] Firestore settings fetch failed, using local settings:',
+        err.message
+      );
+    }
+  }
+}
+
+// Automatically sync settings on DOM ready
+if (typeof window !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      updateStoreContactLinks();
+      syncStoreSettingsFromFirestore();
+    });
+  } else {
+    updateStoreContactLinks();
+    syncStoreSettingsFromFirestore();
+  }
+}
+
 window.PunnagaiSettings = {
   get: getStoreSettings,
   save: saveStoreSettings,
+  sync: syncStoreSettingsFromFirestore,
   updateLinks: updateStoreContactLinks,
   defaults: DEFAULT_STORE_SETTINGS
 };
@@ -100,7 +145,8 @@ function showToast(message, type = 'success', options = {}) {
   if (options.image) {
     mediaHtml = `<img src="${options.image}" alt="" class="toast-media-img" onerror="this.src='logo.png'">`;
   } else {
-    const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : type === 'warning' ? '⚠️' : 'ℹ';
+    const icon =
+      type === 'success' ? '✓' : type === 'error' ? '✕' : type === 'warning' ? '⚠️' : 'ℹ';
     mediaHtml = `<span class="toast-icon">${icon}</span>`;
   }
 
@@ -154,11 +200,13 @@ function updateWishlistBadge() {
   });
 
   // Micro-interaction: Playful wishlist pop
-  document.querySelectorAll('.wishlist-btn, .bottom-nav-item[href="wishlist.html"]').forEach((btn) => {
-    btn.classList.remove('wishlist-burst');
-    void btn.offsetWidth;
-    btn.classList.add('wishlist-burst');
-  });
+  document
+    .querySelectorAll('.wishlist-btn, .bottom-nav-item[href="wishlist.html"]')
+    .forEach((btn) => {
+      btn.classList.remove('wishlist-burst');
+      void btn.offsetWidth;
+      btn.classList.add('wishlist-burst');
+    });
 }
 
 function renderMobileBottomNav(activePage = '') {
@@ -373,13 +421,18 @@ function renderNavbar(activePage = '') {
 // ============================================================
 
 function renderFooter() {
-  const settings = window.PunnagaiSettings ? window.PunnagaiSettings.get() : {
-    phonePrimary: '+91 75501 32101',
-    phoneSecondary: '+91 72994 61657',
-    whatsappNumber: '917550132101',
-    storeAddress: '4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai – 600 004'
-  };
+  const settings = window.PunnagaiSettings
+    ? window.PunnagaiSettings.get()
+    : {
+        phonePrimary: '+91 75501 32101',
+        phoneSecondary: '+91 72994 61657',
+        whatsappNumber: '917550132101',
+        storeAddress: '4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai – 600 004'
+      };
   const cleanWa = (settings.whatsappNumber || '917550132101').replace(/\D/g, '');
+  const ytUrl = settings.youtubeChannel || 'https://www.youtube.com/@PunnagaiRahim';
+  const instaUrl = settings.instagramUrl || 'https://www.instagram.com/punnagaitoys.fancy/';
+  const fbUrl = settings.facebookUrl || 'https://www.facebook.com/punnagaitoys/';
 
   const html = `
     <footer class="footer">
@@ -393,13 +446,16 @@ function renderFooter() {
             </div>
             <p class="footer-tagline">Bringing joy and wonder to children across Mylapore and beyond. Quality toys for every age, every imagination.</p>
             <div class="footer-socials">
-              <a href="#" class="social-btn" aria-label="Instagram">
+              <a href="${escapeHtml(ytUrl)}" class="social-btn social-youtube" aria-label="YouTube Channel" target="_blank" rel="noopener">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              </a>
+              <a href="${escapeHtml(instaUrl)}" class="social-btn social-instagram" aria-label="Instagram" target="_blank" rel="noopener">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
               </a>
-              <a href="#" class="social-btn" aria-label="Facebook">
+              <a href="${escapeHtml(fbUrl)}" class="social-btn social-facebook" aria-label="Facebook" target="_blank" rel="noopener">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
               </a>
-              <a href="https://wa.me/${cleanWa}" class="social-btn" aria-label="WhatsApp" target="_blank" rel="noopener">
+              <a href="https://wa.me/${cleanWa}" class="social-btn social-whatsapp" aria-label="WhatsApp" target="_blank" rel="noopener">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
               </a>
             </div>
@@ -718,7 +774,7 @@ function renderProductCard(product) {
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           Quick View
         </button>
-        <button class="product-wishlist-btn ${(typeof window !== 'undefined' && window.PunnagaiWishlist && window.PunnagaiWishlist.isInWishlist(product.id)) ? 'active' : ''}" data-id="${product.id}" onclick="event.stopPropagation(); window.handleWishlistToggle && window.handleWishlistToggle('${product.id}')" aria-label="Add ${product.name} to wishlist">
+        <button class="product-wishlist-btn ${typeof window !== 'undefined' && window.PunnagaiWishlist && window.PunnagaiWishlist.isInWishlist(product.id) ? 'active' : ''}" data-id="${product.id}" onclick="event.stopPropagation(); window.handleWishlistToggle && window.handleWishlistToggle('${product.id}')" aria-label="Add ${product.name} to wishlist">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         </button>
       </div>
@@ -797,7 +853,10 @@ async function handleAddToCart(productId) {
 
 function updateProductPageMeta(product) {
   if (!product) return;
-  const desc = (product.description || 'Quality educational toys, board games and return gifts at Punnagai Toy Store, Mylapore, Chennai.').slice(0, 160);
+  const desc = (
+    product.description ||
+    'Quality educational toys, board games and return gifts at Punnagai Toy Store, Mylapore, Chennai.'
+  ).slice(0, 160);
   const img = product.imageUrl || 'https://punnagaitoysfancy.in/images/store-hero.jpg';
   const prodUrl = `https://punnagaitoysfancy.in/product.html?id=${encodeURIComponent(product.id || '')}`;
 
@@ -854,8 +913,11 @@ function injectProductStructuredData(product, reviewCount, avgRating) {
     name: product.name,
     sku: String(product.id || ''),
     category: product.category || 'Toys',
-    description: product.description || 'Quality toy available at Punnagai Toy Store, Mylapore, Chennai.',
-    image: product.imageUrl ? [product.imageUrl] : ['https://punnagaitoysfancy.in/images/store-hero.jpg'],
+    description:
+      product.description || 'Quality toy available at Punnagai Toy Store, Mylapore, Chennai.',
+    image: product.imageUrl
+      ? [product.imageUrl]
+      : ['https://punnagaitoysfancy.in/images/store-hero.jpg'],
     url: prodUrl,
     brand: { '@type': 'Brand', name: 'Punnagai Toy Store' },
     offers: {
@@ -928,7 +990,12 @@ function injectLocalBusinessStructuredData() {
         closes: '20:00'
       }
     ],
-    priceRange: '₹₹'
+    priceRange: '₹₹',
+    sameAs: [
+      'https://www.youtube.com/@PunnagaiRahim',
+      'https://www.instagram.com/punnagaitoys.fancy/',
+      'https://www.facebook.com/punnagaitoys/'
+    ]
   };
   const el = document.createElement('script');
   el.id = 'ld-local-business';
@@ -1060,7 +1127,7 @@ async function initShopPage() {
   // ---- URL params seed the initial filter state ----
   const urlParams = new URLSearchParams(window.location.search);
   const urlCategory = urlParams.get('category');
-  const urlAgeGroup = urlParams.get('ageGroup');
+  const urlAgeGroup = urlParams.get('ageGroup') || urlParams.get('age');
   const urlSale = urlParams.get('sale') === 'true';
 
   if (urlCategory) {
@@ -1594,7 +1661,7 @@ function renderProductDetailsUI() {
         <div class="add-to-cart-box">
           <div class="qty-selector">
             <button class="qty-btn" onclick="let inp=document.getElementById('detail-qty'); if(inp.value>1)inp.value--">-</button>
-            <input type="number" id="detail-qty" class="qty-input" value="1" min="1" max="${displayInfo.stock.inStock ? Math.min(10, displayInfo.stock.stock) : 10}">
+            <input type="number" id="detail-qty" class="qty-input" value="1" min="1" max="${displayInfo.stock.inStock ? Math.min(10, displayInfo.stock.stock) : 10}" oninput="if(this.value!==''&&parseInt(this.value)<1)this.value=1" onblur="if(this.value===''||parseInt(this.value)<1)this.value=1">
             <button class="qty-btn" onclick="let inp=document.getElementById('detail-qty'); let max=parseInt(inp.getAttribute('max'))||10; if(inp.value<max)inp.value++">+</button>
           </div>
           ${
@@ -1698,6 +1765,7 @@ function renderProductDetailsUI() {
   `;
 
   document.getElementById('product-detail-content').innerHTML = html;
+  document.body.classList.add('has-sticky-bar');
 }
 
 window.handleVariantSelect = function (type, value) {
@@ -1720,22 +1788,26 @@ window.checkPincodeDelivery = function () {
   if (pin.startsWith('600')) {
     if (['600004', '600028', '600018', '600020', '600086', '600005'].includes(pin)) {
       result.className = 'pincode-result success';
-      result.innerHTML = '🚀 <strong>Superfast Mylapore / Central Chennai:</strong> Same-day delivery available if ordered before 4 PM! Free delivery on orders over ₹499. Cash on Delivery supported.';
+      result.innerHTML =
+        '🚀 <strong>Superfast Mylapore &amp; Central Chennai:</strong> Free Local Delivery &amp; Store Pickup! Same-day delivery if ordered before 4 PM. Cash on Delivery supported.';
     } else {
       result.className = 'pincode-result success';
-      result.innerHTML = '⚡ <strong>Greater Chennai Delivery:</strong> Delivered within 24 hours (Next-Day Delivery). Free delivery over ₹499. Cash on Delivery supported.';
+      result.innerHTML =
+        '⚡ <strong>Greater Chennai Delivery:</strong> Free Local Delivery across Chennai! Next-Day Delivery available. Cash on Delivery supported.';
     }
   } else if (pin.startsWith('6')) {
     result.className = 'pincode-result success';
-    result.innerHTML = '📦 <strong>Tamil Nadu &amp; South India Delivery:</strong> Standard courier delivery within 2-3 business days. Cash on Delivery supported.';
+    result.innerHTML =
+      '📦 <strong>Tamil Nadu &amp; South India Delivery:</strong> Standard courier delivery within 2-3 business days. Free delivery over ₹999 (flat ₹50 below ₹999). Cash on Delivery supported.';
   } else {
     result.className = 'pincode-result success';
-    result.innerHTML = '✈️ <strong>All India Express Delivery:</strong> 3-5 business days via BlueDart/Delhivery air express.';
+    result.innerHTML =
+      '✈️ <strong>All India Express Delivery:</strong> 3-5 business days via BlueDart/Delhivery air express. Free delivery over ₹999.';
   }
 };
 
 window.handleDetailAddToCart = function () {
-  const qty = parseInt(document.getElementById('detail-qty').value) || 1;
+  const qty = Math.max(1, parseInt(document.getElementById('detail-qty')?.value) || 1);
   const product = currentProduct;
   if (!product) return;
 
@@ -1754,8 +1826,9 @@ window.handleDetailWhatsApp = function () {
   const product = currentProduct;
   if (!product) return;
 
-  const qty = parseInt(document.getElementById('detail-qty')?.value) || 1;
-  const WHATSAPP_NUMBER = '917550132101';
+  const qty = Math.max(1, parseInt(document.getElementById('detail-qty')?.value) || 1);
+  const settings = window.PunnagaiSettings ? window.PunnagaiSettings.get() : null;
+  const WHATSAPP_NUMBER = ((settings && settings.whatsappNumber) || '917550132101').replace(/\D/g, '');
 
   let variantLine = '';
   if (window.PunnagaiProductDetail && window.PunnagaiProductDetail.hasVariants(product)) {
@@ -2038,7 +2111,7 @@ window.openQuickView = function (productId) {
       <button class="quick-view-close" onclick="closeQuickView()" aria-label="Close modal">&times;</button>
       <div class="quick-view-grid">
         <div class="quick-view-img-wrap">
-          ${product.imageUrl ? `<img src="${product.imageUrl}" alt="${product.name}" class="quick-view-main-img" />` : `<div class="product-img-placeholder" style="height:320px"><span class="cat-emoji">🎁</span></div>`}
+          ${product.imageUrl ? `<img src="${product.imageUrl}" alt="${product.name}" class="quick-view-main-img" onerror="this.onerror=null; this.src='logo.png';" />` : `<div class="product-img-placeholder" style="height:320px"><span class="cat-emoji">🎁</span></div>`}
           <span class="quick-view-badge">${product.category}</span>
         </div>
         <div class="quick-view-content">

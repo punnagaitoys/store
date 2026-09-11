@@ -50,6 +50,26 @@ function renderStars(rating, size = '16') {
 // PURCHASE VERIFICATION
 // ============================================================
 
+function getCurrentReviewUser() {
+  if (
+    typeof window !== 'undefined' &&
+    window.PunnagaiAuth &&
+    typeof window.PunnagaiAuth.getCurrentUser === 'function'
+  ) {
+    const u = window.PunnagaiAuth.getCurrentUser();
+    if (u) return u;
+  }
+  if (typeof window !== 'undefined' && window.auth && window.auth.currentUser) {
+    return window.auth.currentUser;
+  }
+  if (typeof firebase !== 'undefined' && firebase.auth && typeof firebase.auth === 'function') {
+    try {
+      return firebase.auth().currentUser;
+    } catch (_) {}
+  }
+  return null;
+}
+
 /**
  * Check whether the current user has a confirmed/shipped/delivered order
  * that contains the given productId.
@@ -58,14 +78,17 @@ function renderStars(rating, size = '16') {
  */
 async function hasUserPurchasedProduct(productId) {
   try {
-    const user = firebase.auth().currentUser;
+    const user = getCurrentReviewUser();
     if (!user) return false;
+
+    const targetUid = user.userId || user.uid;
+    if (!targetUid) return false;
 
     let orders = [];
     if (typeof getOrdersByUser === 'function') {
-      orders = await getOrdersByUser(user.uid);
-    } else if (typeof db !== 'undefined') {
-      const snap = await db.collection('orders').where('userId', '==', user.uid).get();
+      orders = await getOrdersByUser(targetUid);
+    } else if (typeof db !== 'undefined' && db.collection) {
+      const snap = await db.collection('orders').where('userId', '==', targetUid).get();
       orders = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
     }
 
@@ -87,15 +110,32 @@ async function hasUserPurchasedProduct(productId) {
 
 async function fetchReviews(productId) {
   try {
-    if (typeof db === 'undefined') return [];
-    const snap = await db
-      .collection('reviews')
-      .where('productId', '==', productId)
-      .orderBy('createdAt', 'desc')
-      .get();
-    return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    if (typeof db === 'undefined' || !db.collection) return [];
+    try {
+      const snap = await db
+        .collection('reviews')
+        .where('productId', '==', productId)
+        .orderBy('createdAt', 'desc')
+        .get();
+      return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    } catch (indexErr) {
+      console.warn(
+        '[reviews] Composite index unavailable, using client-side sort:',
+        indexErr.message
+      );
+      const snap = await db.collection('reviews').where('productId', '==', productId).get();
+      const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      list.sort((a, b) => {
+        const timeA =
+          a.createdAt && a.createdAt.seconds ? a.createdAt.seconds * 1000 : a.createdAt || 0;
+        const timeB =
+          b.createdAt && b.createdAt.seconds ? b.createdAt.seconds * 1000 : b.createdAt || 0;
+        return timeB - timeA;
+      });
+      return list;
+    }
   } catch (err) {
-    console.warn('[reviews] fetchReviews:', err.message);
+    console.warn('[reviews] fetchReviews error:', err.message);
     return [];
   }
 }
@@ -115,19 +155,20 @@ var escapeHtml = window.escapeHtml;
 
 function renderReviewCard(review) {
   const rawName = review.displayName || 'Anonymous';
-  const initials = rawName
-    .split(' ')
-    .filter(Boolean)
-    .map((w) => w[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase() || 'A';
+  const initials =
+    rawName
+      .split(' ')
+      .filter(Boolean)
+      .map((w) => w[0])
+      .slice(0, 2)
+      .join('')
+      .toUpperCase() || 'A';
 
   let date = '';
   if (review.createdAt) {
     const createdMs = review.createdAt.seconds
       ? review.createdAt.seconds * 1000
-      : (review.createdAt || Date.now());
+      : review.createdAt || Date.now();
     const d = new Date(createdMs);
     date = !isNaN(d.getTime())
       ? d.toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })
@@ -215,7 +256,7 @@ window.submitReview = async function (productId) {
     return;
   }
 
-  const user = firebase.auth().currentUser;
+  const user = getCurrentReviewUser();
   if (!user) {
     if (errorEl) errorEl.textContent = 'Please log in to submit a review.';
     return;
@@ -237,14 +278,27 @@ window.submitReview = async function (productId) {
       return;
     }
 
-    await db.collection('reviews').add({
+    const targetUid = user.userId || user.uid;
+    const createdAtVal =
+      typeof firebase !== 'undefined' &&
+      firebase.firestore &&
+      firebase.firestore.FieldValue &&
+      typeof firebase.firestore.FieldValue.serverTimestamp === 'function'
+        ? firebase.firestore.FieldValue.serverTimestamp()
+        : { seconds: Math.floor(Date.now() / 1000) };
+
+    const reviewDoc = {
       productId,
-      userId: user.uid,
-      displayName: user.displayName || (user.email ? user.email.split('@')[0] : 'Customer'),
+      userId: targetUid,
+      displayName: user.displayName || user.name || (user.email ? user.email.split('@')[0] : 'Customer'),
       rating,
       comment,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
+      createdAt: createdAtVal
+    };
+
+    if (typeof db !== 'undefined' && db.collection) {
+      await db.collection('reviews').add(reviewDoc);
+    }
 
     await initReviewsSection(productId);
     if (typeof showToast === 'function') showToast('Review submitted! Thank you 🙏', 'success');
@@ -270,18 +324,24 @@ window.initReviewsSection = async function initReviewsSection(productId) {
 
   const reviews = await fetchReviews(productId);
 
-  const user = await new Promise((resolve) => {
-    const unsub = firebase.auth().onAuthStateChanged((u) => {
-      unsub();
-      resolve(u);
-    });
-  });
+  let user = getCurrentReviewUser();
+  if (!user && typeof firebase !== 'undefined' && firebase.auth && typeof firebase.auth === 'function') {
+    try {
+      user = await new Promise((resolve) => {
+        const unsub = firebase.auth().onAuthStateChanged((u) => {
+          unsub();
+          resolve(u);
+        });
+      });
+    } catch (_) {}
+  }
 
+  const targetUid = user ? (user.userId || user.uid) : null;
   let canReview = false;
   let hasPurchased = false;
-  if (user) {
+  if (user && targetUid) {
     hasPurchased = await hasUserPurchasedProduct(productId);
-    const alreadyReviewed = reviews.some((r) => r.userId === user.uid);
+    const alreadyReviewed = reviews.some((r) => r.userId === targetUid);
     canReview = hasPurchased && !alreadyReviewed;
   }
 

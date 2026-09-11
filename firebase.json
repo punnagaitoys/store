@@ -3,7 +3,9 @@
     "authorizedDomains": [
       "localhost",
       "punnagai-toy-store.firebaseapp.com",
-      "punnagai-toy-store.web.app"
+      "punnagai-toy-store.web.app",
+      "punnagaitoysfancy.in",
+      "www.punnagaitoysfancy.in"
     ],
     "providers": {
       "emailPassword": true,
@@ -14,7 +16,8 @@
     }
   },
   "firestore": {
-    "rules": "firestore.rules"
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
   },
   "storage": {
     "rules": "storage.rules"

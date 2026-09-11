@@ -6,22 +6,38 @@
 const DEFAULT_HOME_VIDEOS = [
   {
     id: 'hv_1',
-    videoId: 'L13c2yTfZ8c',
-    title: 'Sparking Curiosity: STEM Robot & Science Kits',
+    videoId: 'AbUoC01edxY',
+    title: 'Punnagai Toys Welcome Video',
     description:
-      "Watch hands-on learning come alive with our best-selling educational robotics and science kits."
+      'Welcome to Punnagai Toys & Fancy Store, Mylapore, Chennai. Explore our massive curated toy collection!'
   },
   {
     id: 'hv_2',
-    videoId: 'rQ3tB_jT9tY',
-    title: 'Handcrafted Wooden Montessori & Stacking Toys',
-    description: 'Explore eco-friendly wooden toys designed for toddlers to build fine motor skills safely.'
+    videoId: 'F3I3MFQY8PU',
+    title: 'Elephant with Floating Air Ball Toy',
+    description:
+      'Interactive musical elephant blowing floating air balls. Pre-book or enquire via WhatsApp +91 75501 32101.'
   },
   {
     id: 'hv_3',
-    videoId: 'f_n8KqJ5eYs',
-    title: 'Family Board Games & Strategy Puzzles',
-    description: 'Unplug and bond together with award-winning family board games and memory challenges.'
+    videoId: 'G2muNGkuW-4',
+    title: 'Swinging Bee Musical Toy',
+    description:
+      'Fun animated swinging bee toy with delightful music, movement, and dancing lights for kids.'
+  },
+  {
+    id: 'hv_4',
+    videoId: '50W7p72rY1w',
+    title: 'Thomas Train with Real Smoke',
+    description:
+      'Exciting classic locomotive train playset featuring realistic steam smoke and authentic train sounds.'
+  },
+  {
+    id: 'hv_5',
+    videoId: '5Ivt3rftkaA',
+    title: 'Exciting Kids Toys & Demonstrations',
+    description:
+      'Live demonstration of popular interactive toys and learning games at Punnagai Toys, Mylapore.'
   }
 ];
 
@@ -36,7 +52,12 @@ class PunnagaiYouTube {
       const stored = localStorage.getItem('Punnagai_HomeVideos');
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].videoId !== 'dQw4w9WgXcQ') {
+        if (
+          Array.isArray(parsed) &&
+          parsed.length > 0 &&
+          parsed[0].videoId !== 'dQw4w9WgXcQ' &&
+          parsed[0].videoId !== 'L13c2yTfZ8c'
+        ) {
           return parsed;
         }
       }
@@ -122,6 +143,7 @@ class PunnagaiYouTube {
         html += `
           <div class="youtube-playlist-card ${isActive ? 'active-video-card' : ''}" 
                onclick="window.PunnagaiYouTubeInstance && window.PunnagaiYouTubeInstance.selectVideo(${idx})"
+               onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.PunnagaiYouTubeInstance&&window.PunnagaiYouTubeInstance.selectVideo(${idx});}"
                role="button"
                tabindex="0"
                aria-label="Play ${v.title}">
@@ -146,7 +168,23 @@ class PunnagaiYouTube {
       `;
     }
 
+    // YouTube Channel Subscribe Bar
     html += `
+        <div class="youtube-channel-bar">
+          <div class="youtube-channel-branding">
+            <span class="youtube-channel-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </span>
+            <div>
+              <h4 class="youtube-channel-title">Official Channel: Punnagai Rahim</h4>
+              <p class="youtube-channel-subtitle">Watch interactive toy unboxings, live demos &amp; new arrivals</p>
+            </div>
+          </div>
+          <a href="https://www.youtube.com/@PunnagaiRahim" target="_blank" rel="noopener" class="youtube-subscribe-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            Subscribe @PunnagaiRahim
+          </a>
+        </div>
       </div>
     `;
 

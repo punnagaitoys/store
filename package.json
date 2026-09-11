@@ -3,15 +3,16 @@
   "version": "1.0.0",
   "description": "Punnagai Toy Store static website",
   "scripts": {
-    "dev": "node server.js",
-    "build": "echo 'Build complete - static site ready'",
-    "start": "node server.js",
+    "dev": "node scripts/generate-env.js && node server.js",
+    "build": "node scripts/generate-env.js && echo 'Build complete - static site ready'",
+    "start": "node scripts/generate-env.js && node server.js",
     "format": "prettier --write \"**/*.{js,json,css,html,md}\"",
     "format:check": "prettier --check \"**/*.{js,json,css,html,md}\"",
     "test": "jest tests/unit tests/property",
     "test:unit": "jest tests/unit",
     "test:property": "jest tests/property",
-    "test:integration": "firebase emulators:exec --project demo-punnagai --only firestore,auth,storage \"jest tests/integration\""
+    "test:integration": "firebase emulators:exec --project demo-punnagai --only firestore,auth,storage \"jest tests/integration\"",
+    "seed:firestore": "node scripts/seed-firestore.js"
   },
   "devDependencies": {
     "fast-check": "^3.23.1",

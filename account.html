@@ -205,10 +205,11 @@
 
     <div id="footer"></div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 
+    <script src="js/env-config.js"></script>
     <script src="js/firebase-config.js"></script>
     <script src="js/lib/validation.js"></script>
     <script src="js/lib/wishlist.js"></script>
@@ -239,6 +240,21 @@
         document.getElementById('err-phone').textContent = '';
         document.getElementById('err-email').textContent = '';
         document.getElementById('err-password').textContent = '';
+      }
+
+      function checkRedirect() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirect = urlParams.get('redirect');
+        if (
+          redirect &&
+          /^[a-zA-Z0-9_\-\.\/]+\.html(\?.*)?$/.test(redirect) &&
+          !redirect.includes('//') &&
+          !redirect.startsWith('http')
+        ) {
+          window.location.href = redirect;
+          return true;
+        }
+        return false;
       }
 
       async function handleAuthSubmit(e) {
@@ -278,6 +294,7 @@
             await window.PunnagaiAuth.login(email, password);
             showToast('Logged in successfully!', 'success');
           }
+          if (checkRedirect()) return;
           initAccountPage();
         } catch (err) {
           showToast(err.message, 'error');
@@ -289,6 +306,7 @@
           const res = await window.PunnagaiAuth.signInWithGoogle();
           if (res && res.success) {
             showToast('Signed in with Google successfully!', 'success');
+            if (checkRedirect()) return;
             initAccountPage();
           } else {
             showToast(res.error || 'Google sign-in failed', 'error');
@@ -310,6 +328,7 @@
 
         const user = window.PunnagaiAuth.getCurrentUser();
         if (user) {
+          if (checkRedirect()) return;
           document.getElementById('auth-section').style.display = 'none';
           document.getElementById('account-details-section').style.display = 'block';
 

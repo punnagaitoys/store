@@ -11,7 +11,7 @@
 
 'use strict';
 
-const CACHE_NAME = 'punnagai-v3';
+const CACHE_NAME = 'punnagai-v4';
 const OFFLINE_PAGE = '/index.html';
 
 // Static assets to precache on install
@@ -28,6 +28,7 @@ const PRECACHE_URLS = [
   '/404.html',
   '/logo.png',
   '/images/hero-banner.jpg',
+  '/images/store-hero.jpg',
   '/css/style.css',
   '/js/firebase-config.js',
   '/js/data.js',

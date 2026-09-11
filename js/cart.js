@@ -171,7 +171,26 @@ function addToCart(product, quantity = 1, variant = null) {
     snapshot.stock = Number(product.stock);
   }
 
-  const next = cartAddItem(getCart(), snapshot);
+  const currentCart = getCart();
+  const key = cartItemKey(snapshot);
+  const existing = currentCart.find((i) => cartItemKey(i) === key);
+  const maxStock = snapshot.stock != null ? Number(snapshot.stock) : null;
+
+  if (existing && maxStock !== null && Number(existing.quantity) >= maxStock) {
+    if (typeof showToast === 'function') {
+      showToast(`Maximum available stock reached for "${product.name}" (${maxStock} in stock)`, 'info');
+    }
+    return currentCart;
+  }
+
+  const next = cartAddItem(currentCart, snapshot);
+  if (maxStock !== null) {
+    const updated = next.find((i) => cartItemKey(i) === key);
+    if (updated && updated.quantity > maxStock) {
+      updated.quantity = maxStock;
+    }
+  }
+
   saveCart(next);
   if (typeof showToast === 'function') {
     showToast(`"${product.name}" added to cart!`, 'success', {
@@ -272,8 +291,13 @@ function openWhatsAppCheckout() {
     return;
   }
 
+  const settings =
+    typeof window !== 'undefined' && window.PunnagaiSettings
+      ? window.PunnagaiSettings.get()
+      : null;
+  const waPhone = ((settings && settings.whatsappNumber) || WHATSAPP_NUMBER).replace(/\D/g, '');
   const message = buildWhatsAppMessage();
-  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
+  const url = `https://wa.me/${waPhone}?text=${message}`;
   window.open(url, '_blank');
 }
 

@@ -79,6 +79,17 @@ async function initCheckoutPage() {
         const pin = e.target.value.trim();
         if (pin.length === 6 && /^\d{6}$/.test(pin)) {
           await loadShippingMethods(pin);
+        } else {
+          const container = document.getElementById('shipping-methods');
+          if (container) {
+            container.innerHTML =
+              '<p style="color:var(--text-secondary); font-size:14px; padding:12px; border:1px dashed var(--border); border-radius:var(--radius); text-align:center;">📍 Enter a valid 6-digit PIN code above to view shipping and pickup options.</p>';
+          }
+          const btn = document.getElementById('place-order-btn');
+          if (btn) btn.disabled = true;
+          selectedShippingMethod = null;
+          currentShippingCost = 0;
+          updateSummaryTotals();
         }
       }, 500)
     );
@@ -86,8 +97,12 @@ async function initCheckoutPage() {
 
   // Default delivery address fields (pickup)
   updateAddressFieldsForShipping('local_delivery');
-  if (pinInput && pinInput.value && pinInput.value.trim().length === 6 && /^\d{6}$/.test(pinInput.value.trim())) {
-    await loadShippingMethods(pinInput.value.trim());
+  const initialPin = (pinInput && pinInput.value ? pinInput.value.trim() : '') || '600004';
+  if (pinInput && !pinInput.value) {
+    pinInput.value = initialPin;
+  }
+  if (/^\d{6}$/.test(initialPin)) {
+    await loadShippingMethods(initialPin);
   }
 
   // Wire Place Order
@@ -415,6 +430,27 @@ async function handlePlaceOrder() {
     return;
   }
 
+  // 4. Validate Indian phone number (10+ digits)
+  const cleanPhone = phone.replace(/\D/g, '');
+  if (cleanPhone.length < 10) {
+    if (typeof showToast === 'function') {
+      showToast('Please enter a valid 10-digit mobile number.', 'error');
+    }
+    document.getElementById('phone')?.focus();
+    return;
+  }
+  if (
+    typeof PunnagaiValidation !== 'undefined' &&
+    typeof PunnagaiValidation.isValidIndianPhone === 'function' &&
+    !PunnagaiValidation.isValidIndianPhone(phone)
+  ) {
+    if (typeof showToast === 'function') {
+      showToast('Please enter a valid Indian mobile number.', 'error');
+    }
+    document.getElementById('phone')?.focus();
+    return;
+  }
+
   const shippingAddress = {
     name: fullName,
     phone: phone,
@@ -455,7 +491,7 @@ async function handlePlaceOrder() {
 
     // 4. Build the order document
     const orderData = {
-      userId: user ? user.userId : 'guest',
+      userId: user && user.userId ? user.userId : null,
       items: cart.map((item) => ({
         productId: item.productId || item.id,
         variantId: item.variantId || '',

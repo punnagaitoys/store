@@ -12,6 +12,7 @@ ui-debug.log*
 .env
 .env.local
 .env.*.local
+js/env-config.js
 
 # IDE & OS Files
 .vscode/

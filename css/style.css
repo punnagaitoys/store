@@ -119,6 +119,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
 img,
@@ -403,7 +404,9 @@ p {
 /* ============================================================
    6. NAVBAR — Sticky Clean Navigation Header
    ============================================================ */
+#navbar,
 .navbar {
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
   left: 0;
@@ -416,6 +419,12 @@ p {
   transition: box-shadow 0.2s ease;
 }
 
+#navbar > .navbar {
+  border-bottom: none;
+  box-shadow: none;
+}
+
+#navbar.scrolled,
 .navbar.scrolled {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
 }
@@ -4107,11 +4116,15 @@ button:disabled {
 
 /* Tablets */
 @media (max-width: 900px) {
+  #navbar,
   .navbar {
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    z-index: 1000 !important;
     border-radius: 0;
   }
 
@@ -4155,12 +4168,16 @@ button:disabled {
 
 @media (max-width: 768px) {
   /* Flush edge-to-edge mobile header with zero top gap or horizontal clipping */
+  #navbar,
   .navbar {
+    position: -webkit-sticky !important;
+    position: sticky !important;
     top: 0 !important;
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
-    height: 60px !important;
+    height: auto !important;
+    min-height: 60px !important;
     border-radius: 0 !important;
     border-top: none !important;
     border-left: none !important;
@@ -4172,12 +4189,13 @@ button:disabled {
     box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05) !important;
     margin: 0 !important;
     padding: 0 !important;
+    z-index: 1000 !important;
   }
 
   .navbar > .container {
     padding: 0 16px !important;
     max-width: 100% !important;
-    height: 100% !important;
+    height: auto !important;
   }
 
   .navbar-inner {
@@ -4223,14 +4241,14 @@ button:disabled {
     border-radius: 50% !important;
   }
 
-  /* Page container spacing below fixed header */
+  /* Page container spacing below sticky header */
   .hero {
     padding-top: 84px !important;
     padding-bottom: 32px !important;
   }
 
   .page-wrapper {
-    padding-top: 80px !important;
+    padding-top: 28px !important;
     padding-bottom: 84px !important;
   }
 
@@ -5254,6 +5272,7 @@ html,
 body {
   max-width: 100%;
   overflow-x: hidden;
+  overflow-x: clip;
   width: 100%;
 }
 
@@ -5650,7 +5669,47 @@ table {
   color: #ffffff;
   border-color: var(--primary, #dc2626);
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+}
+
+.rev-nav-btn.autoplay {
+  position: relative;
+}
+
+.rev-nav-btn.autoplay.playing {
+  border-color: #22c55e;
+  color: #16a34a;
+}
+
+.rev-nav-btn.autoplay.playing:hover {
+  background: var(--primary, #dc2626);
+  color: #ffffff;
+  border-color: var(--primary, #dc2626);
+}
+
+.rev-nav-btn.autoplay.playing::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 7px;
+  height: 7px;
+  background: #22c55e;
+  border-radius: 50%;
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 0 5px rgba(34, 197, 94, 0.8);
+  animation: pulseAutoplay 1.8s infinite ease-in-out;
+}
+
+@keyframes pulseAutoplay {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.55;
+  }
 }
 
 .rev-nav-btn:disabled {

@@ -159,27 +159,185 @@
 
     const prevBtn = document.getElementById('reviews-prev-btn');
     const nextBtn = document.getElementById('reviews-next-btn');
+    const autoplayBtn = document.getElementById('reviews-autoplay-btn');
+
+    const AUTO_SCROLL_DELAY = 3500; // 3.5s per review slide
+    const USER_ACTION_GRACE_PERIOD = 5000; // 5s wait after manual navigation before resuming
+
+    let autoScrollTimer = null;
+    let graceTimeout = null;
+    let isUserPaused = false;
+    let isHovered = false;
+    let isTouching = false;
+    let isDragging = false;
+    let isVisible = false;
+
+    // Calculate dynamic step (card width + 24px container gap)
+    function getScrollStep() {
+      const card = container.querySelector('.google-review-card');
+      if (card) {
+        return card.offsetWidth + 24;
+      }
+      return container.clientWidth > 600 ? 364 : 310;
+    }
+
+    function scrollNext(isAuto = false) {
+      if (!container) return;
+      const step = getScrollStep();
+      const maxScrollLeft = container.scrollWidth - container.clientWidth;
+
+      if (container.scrollLeft >= maxScrollLeft - 15) {
+        // Reached end -> smoothly loop back to start
+        container.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        container.scrollBy({ left: step, behavior: 'smooth' });
+      }
+      updateBtnStates();
+    }
+
+    function scrollPrev() {
+      if (!container) return;
+      const step = getScrollStep();
+      const maxScrollLeft = container.scrollWidth - container.clientWidth;
+
+      if (container.scrollLeft <= 15) {
+        // At start -> smoothly wrap to end
+        container.scrollTo({ left: maxScrollLeft, behavior: 'smooth' });
+      } else {
+        container.scrollBy({ left: -step, behavior: 'smooth' });
+      }
+      updateBtnStates();
+    }
 
     const updateBtnStates = () => {
       if (!container) return;
       const maxScrollLeft = container.scrollWidth - container.clientWidth;
-      if (prevBtn) prevBtn.disabled = container.scrollLeft <= 5;
-      if (nextBtn) nextBtn.disabled = container.scrollLeft >= maxScrollLeft - 5;
+      if (prevBtn) {
+        prevBtn.title = container.scrollLeft <= 15 ? 'Wrap to last review' : 'Previous review';
+      }
+      if (nextBtn) {
+        nextBtn.title = container.scrollLeft >= maxScrollLeft - 15 ? 'Wrap to first review' : 'Next review';
+      }
     };
+
+    function canAutoScroll() {
+      return (
+        !isUserPaused &&
+        !isHovered &&
+        !isTouching &&
+        !isDragging &&
+        isVisible &&
+        !document.hidden
+      );
+    }
+
+    function startAutoScroll() {
+      stopAutoScroll();
+      if (!canAutoScroll()) return;
+
+      autoScrollTimer = setInterval(() => {
+        if (canAutoScroll()) {
+          scrollNext(true);
+        }
+      }, AUTO_SCROLL_DELAY);
+    }
+
+    function stopAutoScroll() {
+      if (autoScrollTimer) {
+        clearInterval(autoScrollTimer);
+        autoScrollTimer = null;
+      }
+    }
+
+    function restartAutoScrollWithDelay(delay = USER_ACTION_GRACE_PERIOD) {
+      stopAutoScroll();
+      clearTimeout(graceTimeout);
+      if (isUserPaused) return;
+
+      graceTimeout = setTimeout(() => {
+        if (canAutoScroll()) {
+          startAutoScroll();
+        }
+      }, delay);
+    }
+
+    function updateAutoplayUI() {
+      if (!autoplayBtn) return;
+      const iconPause = autoplayBtn.querySelector('.icon-pause');
+      const iconPlay = autoplayBtn.querySelector('.icon-play');
+      if (isUserPaused) {
+        autoplayBtn.classList.remove('playing');
+        autoplayBtn.setAttribute('aria-label', 'Resume automatic scrolling');
+        autoplayBtn.setAttribute('title', 'Auto-scroll is paused (Click to resume)');
+        if (iconPause) iconPause.style.display = 'none';
+        if (iconPlay) iconPlay.style.display = 'inline-block';
+      } else {
+        autoplayBtn.classList.add('playing');
+        autoplayBtn.setAttribute('aria-label', 'Pause automatic scrolling');
+        autoplayBtn.setAttribute('title', 'Auto-scroll is playing (Click to pause)');
+        if (iconPause) iconPause.style.display = 'inline-block';
+        if (iconPlay) iconPlay.style.display = 'none';
+      }
+    }
+
+    if (autoplayBtn) {
+      autoplayBtn.addEventListener('click', () => {
+        isUserPaused = !isUserPaused;
+        updateAutoplayUI();
+        if (isUserPaused) {
+          stopAutoScroll();
+        } else {
+          startAutoScroll();
+        }
+      });
+      updateAutoplayUI();
+    }
 
     if (prevBtn) {
       prevBtn.addEventListener('click', () => {
-        const scrollAmount = container.clientWidth > 600 ? 360 : 300;
-        container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        scrollPrev();
+        restartAutoScrollWithDelay();
       });
     }
 
     if (nextBtn) {
       nextBtn.addEventListener('click', () => {
-        const scrollAmount = container.clientWidth > 600 ? 360 : 300;
-        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        scrollNext();
+        restartAutoScrollWithDelay();
       });
     }
+
+    // Pause on hover while user reads review cards
+    container.addEventListener('mouseenter', () => {
+      isHovered = true;
+      stopAutoScroll();
+    });
+
+    container.addEventListener('mouseleave', () => {
+      isHovered = false;
+      if (!isUserPaused) {
+        startAutoScroll();
+      }
+    });
+
+    // Touch interactions on mobile
+    container.addEventListener(
+      'touchstart',
+      () => {
+        isTouching = true;
+        stopAutoScroll();
+      },
+      { passive: true }
+    );
+
+    container.addEventListener(
+      'touchend',
+      () => {
+        isTouching = false;
+        restartAutoScrollWithDelay(2500);
+      },
+      { passive: true }
+    );
 
     container.addEventListener('scroll', updateBtnStates);
     window.addEventListener('resize', updateBtnStates);
@@ -192,19 +350,29 @@
 
     container.addEventListener('mousedown', (e) => {
       isDown = true;
+      isDragging = true;
+      stopAutoScroll();
       container.classList.add('grabbing');
       startX = e.pageX - container.offsetLeft;
       scrollLeft = container.scrollLeft;
     });
 
     container.addEventListener('mouseleave', () => {
-      isDown = false;
-      container.classList.remove('grabbing');
+      if (isDown) {
+        isDown = false;
+        isDragging = false;
+        container.classList.remove('grabbing');
+        restartAutoScrollWithDelay(2000);
+      }
     });
 
-    container.addEventListener('mouseup', () => {
-      isDown = false;
-      container.classList.remove('grabbing');
+    window.addEventListener('mouseup', () => {
+      if (isDown) {
+        isDown = false;
+        isDragging = false;
+        container.classList.remove('grabbing');
+        restartAutoScrollWithDelay(2000);
+      }
     });
 
     container.addEventListener('mousemove', (e) => {
@@ -214,10 +382,62 @@
       const walk = (x - startX) * 1.8;
       container.scrollLeft = scrollLeft - walk;
     });
+
+    // Keyboard navigation
+    container.setAttribute('tabindex', '0');
+    container.setAttribute(
+      'aria-label',
+      'Google Customer Reviews Carousel. Use left and right arrow keys to navigate.'
+    );
+    container.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        scrollNext();
+        restartAutoScrollWithDelay();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        scrollPrev();
+        restartAutoScrollWithDelay();
+      }
+    });
+
+    // Pause when tab is inactive to preserve CPU & battery
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        stopAutoScroll();
+      } else if (canAutoScroll()) {
+        startAutoScroll();
+      }
+    });
+
+    // Start auto-scroll when section enters viewport
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            isVisible = entry.isIntersecting;
+            if (isVisible) {
+              if (canAutoScroll()) startAutoScroll();
+            } else {
+              stopAutoScroll();
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
+      observer.observe(container);
+    } else {
+      isVisible = true;
+      startAutoScroll();
+    }
   }
 
   // Expose global dataset & init
   window.GOOGLE_MAPS_REVIEWS_DATA = GOOGLE_MAPS_REVIEWS;
 
-  document.addEventListener('DOMContentLoaded', initGoogleReviewsCarousel);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGoogleReviewsCarousel);
+  } else {
+    initGoogleReviewsCarousel();
+  }
 })();

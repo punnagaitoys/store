@@ -827,6 +827,186 @@
     }
   }
 
+  // ----------------------------------------------------------------------
+  // Store Pickup & UPI Payment Proof verification actions
+  // ----------------------------------------------------------------------
+
+  /**
+   * Verify an uploaded payment proof and transition order from pending_verification to confirmed.
+   * @param {string} orderId
+   * @param {Object} [deps]
+   * @returns {Promise<{success:boolean, error?:string}>}
+   */
+  async function verifyAndConfirmOrder(orderId, deps) {
+    deps = deps || {};
+    const getOrderByIdFn =
+      deps.getOrderById || (typeof window !== 'undefined' ? window.getOrderById : null);
+    const updateOrderFn =
+      deps.updateOrder || (typeof window !== 'undefined' ? window.updateOrder : null);
+    const audit = getAudit(deps.audit);
+    const adminUserId = deps.adminUserId || null;
+
+    if (typeof getOrderByIdFn !== 'function' || typeof updateOrderFn !== 'function') {
+      return { success: false, error: 'Data layer unavailable' };
+    }
+
+    const order = await getOrderByIdFn(orderId);
+    if (!order) {
+      return { success: false, error: 'Order not found: ' + String(orderId) };
+    }
+
+    const now = typeof deps.now === 'number' ? deps.now : Date.now();
+    const updateResult = await updateOrderFn(orderId, {
+      orderStatus: 'confirmed',
+      paymentStatus: 'verified',
+      verifiedAt: now
+    });
+    if (updateResult && updateResult.success === false) {
+      return { success: false, error: updateResult.error || 'Failed to update order' };
+    }
+
+    await writeAudit(audit, {
+      adminUserId: adminUserId,
+      operationType: 'verify_payment',
+      entity: { type: 'order', id: orderId },
+      details: { verifiedAt: now, previousStatus: order.orderStatus }
+    });
+
+    return { success: true };
+  }
+
+  /**
+   * Transition order to ready_for_pickup for customer store collection.
+   * @param {string} orderId
+   * @param {Object} [deps]
+   * @returns {Promise<{success:boolean, error?:string}>}
+   */
+  async function markReadyForPickup(orderId, deps) {
+    deps = deps || {};
+    const getOrderByIdFn =
+      deps.getOrderById || (typeof window !== 'undefined' ? window.getOrderById : null);
+    const updateOrderFn =
+      deps.updateOrder || (typeof window !== 'undefined' ? window.updateOrder : null);
+    const audit = getAudit(deps.audit);
+    const adminUserId = deps.adminUserId || null;
+
+    if (typeof getOrderByIdFn !== 'function' || typeof updateOrderFn !== 'function') {
+      return { success: false, error: 'Data layer unavailable' };
+    }
+
+    const order = await getOrderByIdFn(orderId);
+    if (!order) {
+      return { success: false, error: 'Order not found: ' + String(orderId) };
+    }
+
+    const now = typeof deps.now === 'number' ? deps.now : Date.now();
+    const updateResult = await updateOrderFn(orderId, {
+      orderStatus: 'ready_for_pickup',
+      readyAt: now
+    });
+    if (updateResult && updateResult.success === false) {
+      return { success: false, error: updateResult.error || 'Failed to update order' };
+    }
+
+    await writeAudit(audit, {
+      adminUserId: adminUserId,
+      operationType: 'ready_for_pickup',
+      entity: { type: 'order', id: orderId },
+      details: { readyAt: now }
+    });
+
+    return { success: true };
+  }
+
+  /**
+   * Transition order to completed once customer has collected the package.
+   * @param {string} orderId
+   * @param {Object} [deps]
+   * @returns {Promise<{success:boolean, error?:string}>}
+   */
+  async function markOrderCompleted(orderId, deps) {
+    deps = deps || {};
+    const getOrderByIdFn =
+      deps.getOrderById || (typeof window !== 'undefined' ? window.getOrderById : null);
+    const updateOrderFn =
+      deps.updateOrder || (typeof window !== 'undefined' ? window.updateOrder : null);
+    const audit = getAudit(deps.audit);
+    const adminUserId = deps.adminUserId || null;
+
+    if (typeof getOrderByIdFn !== 'function' || typeof updateOrderFn !== 'function') {
+      return { success: false, error: 'Data layer unavailable' };
+    }
+
+    const order = await getOrderByIdFn(orderId);
+    if (!order) {
+      return { success: false, error: 'Order not found: ' + String(orderId) };
+    }
+
+    const now = typeof deps.now === 'number' ? deps.now : Date.now();
+    const updateResult = await updateOrderFn(orderId, {
+      orderStatus: 'completed',
+      completedAt: now
+    });
+    if (updateResult && updateResult.success === false) {
+      return { success: false, error: updateResult.error || 'Failed to update order' };
+    }
+
+    await writeAudit(audit, {
+      adminUserId: adminUserId,
+      operationType: 'complete_order',
+      entity: { type: 'order', id: orderId },
+      details: { completedAt: now }
+    });
+
+    return { success: true };
+  }
+
+  /**
+   * Reject invalid or unverified payment proof and cancel order.
+   * @param {string} orderId
+   * @param {string} [reason]
+   * @param {Object} [deps]
+   * @returns {Promise<{success:boolean, error?:string}>}
+   */
+  async function rejectPaymentProof(orderId, reason, deps) {
+    deps = deps || {};
+    const getOrderByIdFn =
+      deps.getOrderById || (typeof window !== 'undefined' ? window.getOrderById : null);
+    const updateOrderFn =
+      deps.updateOrder || (typeof window !== 'undefined' ? window.updateOrder : null);
+    const audit = getAudit(deps.audit);
+    const adminUserId = deps.adminUserId || null;
+
+    if (typeof getOrderByIdFn !== 'function' || typeof updateOrderFn !== 'function') {
+      return { success: false, error: 'Data layer unavailable' };
+    }
+
+    const order = await getOrderByIdFn(orderId);
+    if (!order) {
+      return { success: false, error: 'Order not found: ' + String(orderId) };
+    }
+
+    const now = typeof deps.now === 'number' ? deps.now : Date.now();
+    const updateResult = await updateOrderFn(orderId, {
+      orderStatus: 'cancelled',
+      paymentStatus: 'rejected',
+      rejectionReason: reason || 'Payment screenshot could not be verified',
+      cancelledAt: now
+    });
+    if (updateResult && updateResult.success === false) {
+      return { success: false, error: updateResult.error || 'Failed to update order' };
+    }
+
+    await writeAudit(audit, {
+      adminUserId: adminUserId,
+      operationType: 'reject_payment_proof',
+      entity: { type: 'order', id: orderId },
+      details: { reason: reason, cancelledAt: now }
+    });
+
+    return { success: true };
+  }
+
   return {
     // Pure logic (unit/property testable)
     filterOrdersByStatus: filterOrdersByStatus,
@@ -841,6 +1021,11 @@
     loadOrders: loadOrders,
     markOrderShipped: markOrderShipped,
     processRefund: processRefund,
+    // Store pickup & payment verification
+    verifyAndConfirmOrder: verifyAndConfirmOrder,
+    markReadyForPickup: markReadyForPickup,
+    markOrderCompleted: markOrderCompleted,
+    rejectPaymentProof: rejectPaymentProof,
     // Default (mockable) collaborators, exposed for reuse/testing
     defaultGenerateTrackingNumber: defaultGenerateTrackingNumber,
     defaultSendTrackingEmail: defaultSendTrackingEmail,

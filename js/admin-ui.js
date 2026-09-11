@@ -199,23 +199,35 @@
     if (!tbody) return;
 
     if (!orders || orders.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7" class="text-center">No orders found.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" class="text-center">No orders found.</td></tr>';
       return;
     }
 
     let html = '';
     orders.forEach((o) => {
-      const customer = window.PunnagaiAdminOrders.orderCustomerName(o);
+      const customer =
+        o.customerName ||
+        o.customer?.name ||
+        o.shipping?.fullName ||
+        o.shippingAddress?.name ||
+        (window.PunnagaiAdminOrders ? window.PunnagaiAdminOrders.orderCustomerName(o) : '') ||
+        'Customer';
       const total = Number(o.total || 0).toLocaleString('en-IN');
-      const status = (o.status || 'pending').toLowerCase();
-      const statusClass = `badge-${status.replace(' ', '-')}`;
+      const rawStatus = (o.status || o.orderStatus || 'pending').toLowerCase();
+      const statusClass = `badge-${rawStatus.replace(/_/g, '-')}`;
 
-      let actions = `<button class="btn btn-outline btn-sm" onclick="window.AdminUI.openOrderModal('${o.id}')">View</button>`;
+      let actions = `<button class="btn btn-outline btn-sm" onclick="window.AdminUI.openOrderModal('${o.id}')">View & Verify</button>`;
 
       const checkboxStr =
-        status === 'pending' || status === 'confirmed'
+        rawStatus === 'pending' || rawStatus === 'pending_verification' || rawStatus === 'confirmed'
           ? `<input type="checkbox" class="order-checkbox" value="${escapeHtml(o.id)}" onchange="if(window.AdminUI) window.AdminUI.updateBulkShipButton()">`
           : '';
+
+      const proofThumbnail = o.paymentProofUrl
+        ? `<a href="${escapeHtml(o.paymentProofUrl)}" target="_blank" rel="noopener" title="Click to view full payment screenshot" style="display:inline-block;"><img src="${escapeHtml(o.paymentProofUrl)}" alt="Proof" style="width: 38px; height: 38px; object-fit: cover; border-radius: 6px; border: 1px solid #d1d5db; display: block; margin: auto; transition: transform 0.15s;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'"></a>`
+        : `<span class="text-secondary" style="font-size: 0.8rem;">None</span>`;
+
+      const statusLabel = rawStatus.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 
       html += `<tr>
         <td>${checkboxStr}</td>
@@ -223,7 +235,8 @@
         <td>${formatDate(o.createdAt)}</td>
         <td>${escapeHtml(customer)}</td>
         <td>₹${total}</td>
-        <td><span class="badge ${statusClass}">${escapeHtml(o.status || 'Pending')}</span></td>
+        <td style="text-align: center;">${proofThumbnail}</td>
+        <td><span class="badge ${statusClass}">${escapeHtml(statusLabel)}</span></td>
         <td>${actions}</td>
       </tr>`;
     });
@@ -343,6 +356,74 @@
     }
   }
 
+  async function actionVerifyOrder(orderId) {
+    if (!confirm('Verify payment proof and confirm this order?')) return;
+    try {
+      const res = await window.PunnagaiAdminOrders.verifyAndConfirmOrder(orderId);
+      if (res && res.success) {
+        showToast('Payment verified! Order confirmed for store pickup.', 'success');
+        closeOrderModal();
+        loadOrders();
+      } else {
+        showToast('Failed: ' + (res?.error || 'Could not verify order'), 'error');
+      }
+    } catch (err) {
+      showToast('Error verifying order', 'error');
+    }
+  }
+
+  async function actionMarkReadyForPickup(orderId) {
+    if (!confirm('Mark this order as Ready for Store Pickup?')) return;
+    try {
+      const res = await window.PunnagaiAdminOrders.markReadyForPickup(orderId);
+      if (res && res.success) {
+        showToast('Order marked as Ready for Pickup!', 'success');
+        closeOrderModal();
+        loadOrders();
+      } else {
+        showToast('Failed: ' + (res?.error || 'Could not update order'), 'error');
+      }
+    } catch (err) {
+      showToast('Error updating order', 'error');
+    }
+  }
+
+  async function actionMarkCompleted(orderId) {
+    if (!confirm('Mark order as Completed (customer collected the toys)?')) return;
+    try {
+      const res = await window.PunnagaiAdminOrders.markOrderCompleted(orderId);
+      if (res && res.success) {
+        showToast('Order marked as Completed!', 'success');
+        closeOrderModal();
+        loadOrders();
+      } else {
+        showToast('Failed: ' + (res?.error || 'Could not complete order'), 'error');
+      }
+    } catch (err) {
+      showToast('Error completing order', 'error');
+    }
+  }
+
+  async function actionRejectOrder(orderId) {
+    const reason = prompt(
+      'Enter reason for rejecting payment proof:',
+      'Payment screenshot unverified or amount mismatch'
+    );
+    if (reason === null) return;
+    try {
+      const res = await window.PunnagaiAdminOrders.rejectPaymentProof(orderId, reason);
+      if (res && res.success) {
+        showToast('Payment proof rejected and order cancelled.', 'info');
+        closeOrderModal();
+        loadOrders();
+      } else {
+        showToast('Failed: ' + (res?.error || 'Could not reject proof'), 'error');
+      }
+    } catch (err) {
+      showToast('Error rejecting payment proof', 'error');
+    }
+  }
+
   function openOrderModal(orderId) {
     const order = allOrders.find((o) => o.id === orderId);
     if (!order) return;
@@ -353,41 +434,134 @@
 
     let itemsHtml = '<ul style="list-style:none; padding:0; margin:10px 0;">';
     (order.items || []).forEach((it) => {
-      itemsHtml += `<li style="padding:8px 0; border-bottom:1px solid var(--border)">
-        <strong>${escapeHtml(it.name || 'Product')}</strong> x${it.quantity}
-        <br><small class="text-secondary">SKU: ${escapeHtml(it.skuId || 'N/A')}</small>
+      const lineTotal = (Number(it.price) || 0) * (Number(it.quantity) || 1);
+      itemsHtml += `<li style="padding:8px 0; border-bottom:1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <strong>${escapeHtml(it.name || 'Product')}</strong> x${it.quantity}
+          <br><small class="text-secondary">SKU: ${escapeHtml(it.skuId || it.variantId || 'N/A')}</small>
+        </div>
+        <div style="font-weight: 600;">₹${Number(lineTotal).toLocaleString('en-IN')}</div>
       </li>`;
     });
     itemsHtml += '</ul>';
 
-    let actionButtons = '';
-    const status = (order.status || '').toLowerCase();
+    const rawStatus = (order.orderStatus || order.status || '').toLowerCase();
+    const statusClass = `badge-${rawStatus.replace(/_/g, '-')}`;
+    const statusLabel = rawStatus.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 
-    if (status === 'confirmed' || status === 'pending') {
-      actionButtons += `<button class="btn btn-primary" onclick="window.AdminUI.actionMarkShipped('${order.id}')">Mark Shipped</button>`;
-      actionButtons += `<button class="btn btn-outline" style="margin-left:10px" onclick="window.AdminUI.actionRefund('${order.id}')">Refund Order</button>`;
-    } else if (status === 'cancelled') {
-      actionButtons += `<button class="btn btn-outline" onclick="window.AdminUI.actionRefund('${order.id}')">Process Refund</button>`;
+    const customerName =
+      order.customerName ||
+      order.customer?.name ||
+      order.shipping?.fullName ||
+      order.shippingAddress?.name ||
+      'Customer';
+    const customerPhone =
+      order.customerPhone || order.customer?.phone || order.shipping?.phone || '';
+    const cleanPhone = customerPhone.replace(/\D/g, '');
+    const customerEmail =
+      order.customerEmail ||
+      order.customer?.email ||
+      order.shipping?.email ||
+      order.shippingAddress?.email ||
+      '';
+    const pickupNotes = order.pickupNotes || order.notes || '';
+
+    let proofSection = '';
+    if (order.paymentProofUrl) {
+      proofSection = `
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <strong style="color: #1e293b;">📸 Payment Screenshot Proof</strong>
+            <a href="${escapeHtml(order.paymentProofUrl)}" target="_blank" rel="noopener" style="font-size: 0.85rem; color: var(--admin-primary); font-weight: 600; text-decoration: underline;">Open Full Size ↗</a>
+          </div>
+          <div style="text-align: center; background: #fff; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0;">
+            <a href="${escapeHtml(order.paymentProofUrl)}" target="_blank" rel="noopener">
+              <img src="${escapeHtml(order.paymentProofUrl)}" alt="Payment Proof Screenshot" style="max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            </a>
+          </div>
+          ${order.transactionRef ? `<p style="margin: 8px 0 0 0; font-size: 0.85rem; color: #475569;"><strong>Customer Transaction UTR / Ref:</strong> <code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-weight: bold;">${escapeHtml(order.transactionRef)}</code></p>` : ''}
+          <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: #475569;"><strong>Shop UPI Paid To:</strong> <code>${escapeHtml(order.shopUpiId || 'thenaadikappan@ok-axis')}</code></p>
+        </div>
+      `;
+    } else {
+      proofSection = `
+        <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 12px; margin-bottom: 16px; color: #991b1b; font-size: 0.9rem;">
+          ⚠️ No payment screenshot attached to this order.
+        </div>
+      `;
+    }
+
+    let actionButtons = '';
+    if (rawStatus === 'pending_verification') {
+      actionButtons = `
+        <button class="btn btn-primary" onclick="window.AdminUI.actionVerifyOrder('${order.id}')" style="background: #059669; border-color: #059669;">✓ Verify Payment & Confirm Order</button>
+        <button class="btn btn-outline" style="margin-left:8px; color: #dc2626; border-color: #dc2626;" onclick="window.AdminUI.actionRejectOrder('${order.id}')">✕ Reject Proof</button>
+      `;
+    } else if (rawStatus === 'confirmed') {
+      actionButtons = `
+        <button class="btn btn-primary" onclick="window.AdminUI.actionMarkReadyForPickup('${order.id}')" style="background: #6366f1; border-color: #6366f1;">🛍️ Mark Ready for Pickup</button>
+        <button class="btn btn-outline" style="margin-left:8px;" onclick="window.AdminUI.actionRefund('${order.id}')">Cancel / Refund</button>
+      `;
+    } else if (rawStatus === 'ready_for_pickup') {
+      actionButtons = `
+        <button class="btn btn-primary" onclick="window.AdminUI.actionMarkCompleted('${order.id}')" style="background: #10b981; border-color: #10b981;">✅ Mark Handed Over / Completed</button>
+        <button class="btn btn-outline" style="margin-left:8px;" onclick="window.AdminUI.actionRefund('${order.id}')">Cancel / Refund</button>
+      `;
+    } else if (rawStatus === 'completed') {
+      actionButtons = `
+        <span class="badge badge-completed" style="font-size: 0.95rem; padding: 8px 14px;">✅ Order Fulfilled & Handed Over</span>
+        <button class="btn btn-outline btn-sm" style="margin-left:12px;" onclick="window.AdminUI.actionRefund('${order.id}')">Refund</button>
+      `;
+    } else if (rawStatus === 'cancelled') {
+      actionButtons = `
+        <span class="badge badge-cancelled" style="font-size: 0.95rem; padding: 8px 14px;">Cancelled</span>
+        <button class="btn btn-outline btn-sm" style="margin-left:12px;" onclick="window.AdminUI.actionRefund('${order.id}')">Process Refund</button>
+      `;
+    } else {
+      actionButtons = `
+        <button class="btn btn-primary" onclick="window.AdminUI.actionMarkReadyForPickup('${order.id}')">Mark Ready for Pickup</button>
+        <button class="btn btn-outline" style="margin-left:8px;" onclick="window.AdminUI.actionRefund('${order.id}')">Cancel / Refund</button>
+      `;
     }
 
     content.innerHTML = `
-      <div style="margin-bottom:16px">
-        <strong>Order ID:</strong> ${escapeHtml(order.id)}<br>
-        <strong>Status:</strong> <span class="badge badge-${status.replace(' ', '-')}">${escapeHtml(order.status)}</span><br>
-        <strong>Total:</strong> ₹${Number(order.total || 0).toLocaleString('en-IN')}<br>
-        <strong>Date:</strong> ${formatDate(order.createdAt)}
+      <div style="margin-bottom:16px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px;">
+        <div>
+          <strong style="font-size: 1.1rem;">Order #${escapeHtml(order.id.substring(0, 10))}</strong><br>
+          <small class="text-secondary">${formatDate(order.createdAt)}</small>
+        </div>
+        <div>
+          <span class="badge ${statusClass}" style="font-size: 0.85rem; padding: 6px 12px;">${escapeHtml(statusLabel)}</span>
+        </div>
       </div>
-      <div style="margin-bottom:16px">
-        <strong>Customer / Pickup Details:</strong><br>
-        ${escapeHtml(order.shipping?.fullName || order.shippingAddress?.name || 'N/A')}<br>
-        ${escapeHtml(order.shipping?.address || order.shippingAddress?.address || '')}<br>
-        ${escapeHtml(order.shipping?.city || order.shippingAddress?.city || '')}, ${escapeHtml(order.shipping?.pinCode || order.shippingAddress?.postalCode || '')}
+
+      <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px 14px; margin-bottom: 16px;">
+        <div style="font-size: 0.85rem; color: #1e40af; font-weight: 700; margin-bottom: 4px;">🏪 FULFILLMENT: STORE PICKUP</div>
+        <div style="font-size: 0.9rem; color: #1e3a8a;">4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai – 600 004</div>
       </div>
-      <div>
-        <strong>Items:</strong>
+
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; margin-bottom: 16px;">
+        <strong style="color: #334155;">Customer Contact:</strong>
+        <div style="margin-top: 4px; font-size: 0.95rem;">
+          <strong>${escapeHtml(customerName)}</strong>
+          ${customerPhone ? `<br>📞 Phone: <a href="tel:${escapeHtml(customerPhone)}" style="color: var(--admin-primary); font-weight: 600;">${escapeHtml(customerPhone)}</a> ${cleanPhone ? `• <a href="https://wa.me/${cleanPhone.startsWith('91') ? cleanPhone : '91' + cleanPhone}?text=Hi%20${encodeURIComponent(customerName)},%20regarding%20your%20Punnagai%20Toy%20Store%20order%20%23${order.id.substring(0, 8)}..." target="_blank" rel="noopener" style="color: #16a34a; font-weight: 600;">Chat on WhatsApp ↗</a>` : ''}` : ''}
+          ${customerEmail ? `<br>✉️ Email: <a href="mailto:${escapeHtml(customerEmail)}" style="color: var(--admin-primary);">${escapeHtml(customerEmail)}</a>` : ''}
+          ${pickupNotes ? `<br><span style="color: #64748b;">📝 Pickup Note: ${escapeHtml(pickupNotes)}</span>` : ''}
+        </div>
+      </div>
+
+      ${proofSection}
+
+      <div style="margin-bottom: 16px;">
+        <strong style="color: #334155;">Ordered Items:</strong>
         ${itemsHtml}
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 1.1rem;">
+          <strong>Total Amount:</strong>
+          <strong style="color: var(--admin-primary);">₹${Number(order.total || 0).toLocaleString('en-IN')}</strong>
+        </div>
       </div>
-      <div style="margin-top:20px;">
+
+      <div style="margin-top:24px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
         ${actionButtons}
       </div>
     `;
@@ -1051,6 +1225,10 @@
     resetHomeVideosToDefault,
 
     // Actions
+    actionVerifyOrder,
+    actionMarkReadyForPickup,
+    actionMarkCompleted,
+    actionRejectOrder,
     actionMarkShipped,
     actionRefund,
     deactivateCoupon,

@@ -318,7 +318,7 @@ function loadAdminStoreSettings() {
         phoneSecondary: '+91 72994 61657',
         whatsappNumber: '917550132101',
         storeEmail: 'contact@punnagaitoysfancy.in',
-        upiId: 'punnagai@upi',
+        upiId: 'thenaadikappan@ok-axis',
         storeAddress: '4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai – 600 004'
       };
 
@@ -336,7 +336,7 @@ function loadAdminStoreSettings() {
   if (p2) p2.value = settings.phoneSecondary || '';
   if (wa) wa.value = settings.whatsappNumber || '';
   if (em) em.value = settings.storeEmail || '';
-  if (upi) upi.value = settings.upiId || '';
+  if (upi) upi.value = settings.upiId || 'thenaadikappan@ok-axis';
   if (yt) yt.value = settings.youtubeChannel || 'https://www.youtube.com/@PunnagaiRahim';
   if (insta) insta.value = settings.instagramUrl || 'https://www.instagram.com/punnagaitoys.fancy/';
   if (fb) fb.value = settings.facebookUrl || 'https://www.facebook.com/punnagaitoys/';
@@ -361,7 +361,7 @@ function handleSaveStoreSettings(e) {
     phoneSecondary: p2 || '+91 72994 61657',
     whatsappNumber: wa || '917550132101',
     storeEmail: em || 'contact@punnagaitoysfancy.in',
-    upiId: upi || 'punnagai@upi',
+    upiId: upi || 'thenaadikappan@ok-axis',
     youtubeChannel: yt || 'https://www.youtube.com/@PunnagaiRahim',
     instagramUrl: insta || 'https://www.instagram.com/punnagaitoys.fancy/',
     facebookUrl: fb || 'https://www.facebook.com/punnagaitoys/',

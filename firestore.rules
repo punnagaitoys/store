@@ -84,10 +84,10 @@ service cloud.firestore {
       allow get:    if isAdmin() || isOwner(resource) || resource.data.userId == null;
       allow list:   if isAdmin() || isOwner(resource);
       allow update: if isAdmin() ||
-                       (isOwner(resource) && resource.data.orderStatus == 'pending' &&
-                        request.resource.data.orderStatus == 'confirmed') ||
-                       (resource.data.userId == null && resource.data.orderStatus == 'pending' &&
-                        request.resource.data.orderStatus == 'confirmed');
+                       (isOwner(resource) && resource.data.orderStatus in ['pending', 'pending_verification'] &&
+                        request.resource.data.orderStatus in ['confirmed', 'pending_verification']) ||
+                       (resource.data.userId == null && resource.data.orderStatus in ['pending', 'pending_verification'] &&
+                        request.resource.data.orderStatus in ['confirmed', 'pending_verification']);
       allow delete: if false;               // Orders are never deleted
     }
 

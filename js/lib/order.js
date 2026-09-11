@@ -136,30 +136,37 @@
    * enum (pending | confirmed | shipped | delivered | cancelled) plus the
    * `refunded` terminal outcome produced by the refund flow (Req 10.5).
    */
-  const ORDER_STATES = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled', 'refunded'];
+  const ORDER_STATES = [
+    'pending',
+    'pending_verification',
+    'confirmed',
+    'ready_for_pickup',
+    'completed',
+    'shipped',
+    'delivered',
+    'cancelled',
+    'refunded'
+  ];
 
   /**
    * Allowed `orderStatus` transitions (documented map).
    *
-   *   pending   → confirmed        (after successful UPI payment, Req 6.8)
-   *   pending   → cancelled        (abandoned / failed before confirmation)
-   *   confirmed → shipped          (admin marks shipped, Req 10.4)
-   *   confirmed → cancelled        (cancel a paid-but-unshipped order)
-   *   confirmed → refunded         (refund a paid order, Req 10.5)
-   *   shipped   → delivered        (delivery completes)
-   *   shipped   → refunded         (refund after dispatch)
-   *   delivered → refunded         (post-delivery refund / return, Req 10.5/10.6)
-   *   cancelled → (terminal)
-   *   refunded  → (terminal)
-   *
-   * The fulfilment happy-path is therefore strictly pending → confirmed →
-   * shipped → delivered; any jump that skips a step (e.g. confirmed → delivered,
-   * pending → shipped) or moves backwards (e.g. shipped → confirmed) is illegal
-   * and rejected (Property 16).
+   *   pending              → confirmed, cancelled
+   *   pending_verification → confirmed, ready_for_pickup, cancelled
+   *   confirmed            → ready_for_pickup, completed, shipped, cancelled, refunded
+   *   ready_for_pickup     → completed, cancelled, refunded
+   *   completed            → refunded
+   *   shipped              → delivered, refunded
+   *   delivered            → refunded
+   *   cancelled            → (terminal)
+   *   refunded             → (terminal)
    */
   const ORDER_TRANSITIONS = {
     pending: ['confirmed', 'cancelled'],
-    confirmed: ['shipped', 'cancelled', 'refunded'],
+    pending_verification: ['confirmed', 'ready_for_pickup', 'cancelled'],
+    confirmed: ['shipped', 'ready_for_pickup', 'completed', 'cancelled', 'refunded'],
+    ready_for_pickup: ['completed', 'cancelled', 'refunded'],
+    completed: ['refunded'],
     shipped: ['delivered', 'refunded'],
     delivered: ['refunded'],
     cancelled: [],
@@ -221,6 +228,12 @@
     }
     if (to === 'delivered' && next.deliveredAt === undefined) {
       next.deliveredAt = now;
+    }
+    if (to === 'confirmed' && next.verifiedAt === undefined) {
+      next.verifiedAt = now;
+    }
+    if (to === 'completed' && next.completedAt === undefined) {
+      next.completedAt = now;
     }
     return next;
   }

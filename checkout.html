@@ -106,31 +106,48 @@
                   stroke-width="2"
                   aria-hidden="true"
                 >
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                  <circle cx="12" cy="10" r="3" />
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
                 </svg>
-                Buyer Details &amp; PIN Code
+                Customer &amp; In-Store Pickup Details
               </h2>
 
               <div
                 class="pickup-notice"
                 style="
-                  background: rgba(37, 99, 235, 0.08);
-                  border: 1px dashed var(--primary);
-                  border-radius: var(--radius);
-                  padding: 14px 16px;
-                  margin-bottom: 20px;
+                  background: var(--primary-50, #fef2f2);
+                  border: 1.5px dashed var(--primary, #dc2626);
+                  border-radius: var(--radius-md, 14px);
+                  padding: 16px 18px;
+                  margin-bottom: 24px;
                   font-size: 14px;
-                  color: var(--text-primary);
-                  line-height: 1.5;
+                  color: var(--text-primary, #111827);
+                  line-height: 1.6;
                 "
               >
-                <strong style="color: var(--primary)">🏪 Direct Shop Pickup:</strong> You can
-                directly come to our shop in Mylapore, Chennai to inspect &amp; collect your
-                pre-ordered items. Only your PIN Code is required!
+                <div
+                  style="
+                    font-weight: 700;
+                    color: var(--primary, #dc2626);
+                    margin-bottom: 4px;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                  "
+                >
+                  🏪 Direct Store Pickup Only (Mylapore, Chennai)
+                </div>
+                <div>
+                  We do not ship items by courier. All purchases are pre-booked for direct
+                  collection at our physical shop:
+                  <strong style="color: var(--text-primary)"
+                    >4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai – 600 004</strong
+                  >. Inspect your toys and collect anytime during working hours (10:00 AM – 9:30
+                  PM)!
+                </div>
               </div>
 
-              <form id="shipping-form" class="checkout-form">
+              <form id="customer-pickup-form" class="checkout-form" onsubmit="return false;">
                 <div class="form-row">
                   <div class="form-group">
                     <label for="fullName" class="form-label">Full Name *</label>
@@ -155,25 +172,14 @@
                       maxlength="15"
                       required
                     />
+                    <div class="form-hint">
+                      Used for order confirmation &amp; WhatsApp notification
+                    </div>
                   </div>
                 </div>
                 <div class="form-row">
                   <div class="form-group">
-                    <label for="postalCode" class="form-label">PIN Code *</label>
-                    <input
-                      type="text"
-                      id="postalCode"
-                      name="postalCode"
-                      class="form-input"
-                      placeholder="600004"
-                      value="600004"
-                      pattern="[1-9][0-9]{5}"
-                      required
-                    />
-                    <div class="form-hint">Enter valid 6-digit PIN code</div>
-                  </div>
-                  <div class="form-group">
-                    <label for="email" class="form-label">Email</label>
+                    <label for="email" class="form-label">Email (Optional)</label>
                     <input
                       type="email"
                       id="email"
@@ -181,83 +187,23 @@
                       class="form-input"
                       placeholder="your@email.com"
                     />
-                    <div class="form-hint">For order updates</div>
+                    <div class="form-hint">For digital receipt copy</div>
                   </div>
-                </div>
-                <!-- Courier Address Fields (shown for non-local delivery) -->
-                <div id="courier-address-fields" style="display: none; margin-top: 16px">
-                  <div class="form-group" style="margin-bottom: 12px">
-                    <label for="address" class="form-label"
-                      >Street Address / Flat / Building <span class="required">*</span></label
-                    >
+                  <div class="form-group">
+                    <label for="pickupNotes" class="form-label">Pickup Notes (Optional)</label>
                     <input
                       type="text"
-                      id="address"
-                      name="address"
+                      id="pickupNotes"
+                      name="pickupNotes"
                       class="form-input"
-                      placeholder="Door No, Street name, Locality"
+                      placeholder="e.g. Will collect on Sunday evening / Gift wrapping"
                     />
-                  </div>
-                  <div class="form-row" style="display: flex; gap: 12px">
-                    <div class="form-group" style="flex: 1">
-                      <label for="city" class="form-label"
-                        >City <span class="required">*</span></label
-                      >
-                      <input
-                        type="text"
-                        id="city"
-                        name="city"
-                        class="form-input"
-                        placeholder="City"
-                        value="Chennai"
-                      />
-                    </div>
-                    <div class="form-group" style="flex: 1">
-                      <label for="state" class="form-label"
-                        >State <span class="required">*</span></label
-                      >
-                      <input
-                        type="text"
-                        id="state"
-                        name="state"
-                        class="form-input"
-                        placeholder="State"
-                        value="Tamil Nadu"
-                      />
-                    </div>
                   </div>
                 </div>
               </form>
             </section>
 
-            <!-- Shipping Method Section -->
-            <section class="checkout-section">
-              <h2 class="section-title">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  aria-hidden="true"
-                >
-                  <rect x="1" y="3" width="15" height="13" />
-                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
-                  <circle cx="5.5" cy="18.5" r="2.5" />
-                  <circle cx="18.5" cy="18.5" r="2.5" />
-                </svg>
-                Shipping Method
-              </h2>
-              <div id="shipping-methods" class="shipping-methods">
-                <div class="loading-spinner-center">
-                  <div class="loading-spinner"></div>
-                  <p>Calculating delivery and pickup options for your PIN code...</p>
-                </div>
-              </div>
-            </section>
-
-            <!-- Payment Method Section -->
+            <!-- Shop UPI Payment & Dynamic QR Code Section -->
             <section class="checkout-section">
               <h2 class="section-title">
                 <svg
@@ -272,31 +218,350 @@
                   <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
                   <line x1="1" y1="10" x2="23" y2="10" />
                 </svg>
-                Payment Method
+                Direct Shop UPI Payment
               </h2>
-              <div class="payment-methods">
-                <div class="payment-option selected">
-                  <input type="radio" id="upi-payment" name="paymentMethod" value="upi" checked />
-                  <label for="upi-payment" class="payment-label">
-                    <div class="payment-icon">💳</div>
-                    <div class="payment-info">
-                      <h4>UPI Payment</h4>
-                      <p>Pay using any UPI app (PhonePe, Google Pay, Paytm, etc.)</p>
-                    </div>
-                    <div class="payment-badge">Secure</div>
-                  </label>
+
+              <p
+                style="
+                  font-size: 0.92rem;
+                  color: var(--text-secondary);
+                  margin-bottom: 20px;
+                  line-height: 1.5;
+                "
+              >
+                Scan our shop's official UPI QR code or pay directly using any UPI App (Google Pay,
+                PhonePe, Paytm, BHIM, Cred, etc.).
+              </p>
+
+              <!-- Interactive Shop UPI Card -->
+              <div
+                class="shop-upi-card"
+                style="
+                  background: #ffffff;
+                  border: 1.5px solid var(--border, #e5e7eb);
+                  border-radius: var(--radius-lg, 18px);
+                  padding: 24px;
+                  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  text-align: center;
+                  gap: 18px;
+                  margin-bottom: 24px;
+                "
+              >
+                <!-- Shop UPI ID Pill with Copy Button -->
+                <div style="width: 100%; max-width: 440px">
+                  <div
+                    style="
+                      font-size: 0.78rem;
+                      font-weight: 800;
+                      text-transform: uppercase;
+                      letter-spacing: 0.06em;
+                      color: var(--text-muted);
+                      margin-bottom: 6px;
+                    "
+                  >
+                    Store Merchant UPI ID (VPA)
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      background: var(--bg-alt, #fafafa);
+                      border: 1.5px solid var(--border, #e5e7eb);
+                      border-radius: var(--radius-full, 999px);
+                      padding: 8px 10px 8px 18px;
+                      gap: 10px;
+                    "
+                  >
+                    <span
+                      id="shop-upi-id-text"
+                      style="
+                        font-family: 'Courier New', monospace;
+                        font-weight: 700;
+                        font-size: 1rem;
+                        color: var(--text-primary);
+                        word-break: break-all;
+                      "
+                    >
+                      thenaadikappan@ok-axis
+                    </span>
+                    <button
+                      type="button"
+                      id="copy-upi-btn"
+                      class="btn btn-sm btn-outline"
+                      style="
+                        border-radius: var(--radius-full);
+                        padding: 5px 14px;
+                        font-size: 0.8rem;
+                        flex-shrink: 0;
+                      "
+                    >
+                      📋 Copy UPI ID
+                    </button>
+                  </div>
                 </div>
+
+                <!-- Total Payable Amount Badge -->
+                <div
+                  style="
+                    background: var(--primary-50, #fef2f2);
+                    border: 1px solid var(--primary-border, #fecaca);
+                    border-radius: var(--radius-md, 12px);
+                    padding: 10px 24px;
+                  "
+                >
+                  <span style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600"
+                    >Exact Amount to Pay:
+                  </span>
+                  <strong
+                    id="upi-payable-amount"
+                    style="
+                      font-family: var(--font-heading);
+                      font-size: 1.4rem;
+                      color: var(--primary, #dc2626);
+                      margin-left: 6px;
+                    "
+                  >
+                    ₹0
+                  </strong>
+                </div>
+
+                <!-- Dynamic QR Code Container -->
+                <div
+                  id="upi-qr-wrapper"
+                  style="
+                    background: #ffffff;
+                    padding: 14px;
+                    border: 1.5px solid var(--border, #e5e7eb);
+                    border-radius: var(--radius-md, 14px);
+                    display: inline-flex;
+                    flex-direction: column;
+                    align-items: center;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+                  "
+                >
+                  <img
+                    id="shop-upi-qr-image"
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&amp;margin=8&amp;data=upi%3A%2F%2Fpay%3Fpa%3Dthenaadikappan%40ok-axis%26pn%3DPunnagai%2520Toy%2520Store"
+                    alt="Punnagai Toy Store UPI QR Code"
+                    width="220"
+                    height="220"
+                    style="
+                      display: block;
+                      border-radius: 8px;
+                      width: 220px;
+                      height: 220px;
+                      object-fit: contain;
+                    "
+                  />
+                  <div
+                    style="
+                      margin-top: 8px;
+                      font-size: 0.78rem;
+                      font-weight: 700;
+                      color: var(--text-muted);
+                    "
+                  >
+                    Scan with GPay / PhonePe / Paytm / BHIM
+                  </div>
+                </div>
+
+                <!-- Mobile Direct UPI Intent Button -->
+                <a
+                  id="mobile-upi-intent-btn"
+                  href="upi://pay?pa=thenaadikappan@ok-axis&pn=Punnagai%20Toy%20Store&cu=INR"
+                  class="btn btn-outline"
+                  style="
+                    border-radius: var(--radius-full);
+                    font-size: 0.9rem;
+                    padding: 10px 22px;
+                    width: 100%;
+                    max-width: 320px;
+                    justify-content: center;
+                    gap: 8px;
+                  "
+                >
+                  📱 Pay via UPI App (Mobile Only)
+                </a>
               </div>
-              <div class="form-group" id="upi-id-group" style="margin-top: 16px">
-                <label for="upiId" class="form-label">UPI ID (Optional)</label>
-                <input
-                  type="text"
-                  id="upiId"
-                  name="upiId"
-                  class="form-input"
-                  placeholder="yourname@upi"
-                />
-                <div class="form-hint">Leave empty to select during payment</div>
+
+              <!-- Payment Verification: Screenshot Upload -->
+              <div
+                class="payment-proof-section"
+                style="
+                  background: #ffffff;
+                  border: 1.5px solid var(--border, #e5e7eb);
+                  border-radius: var(--radius-lg, 18px);
+                  padding: 24px;
+                  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+                "
+              >
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px">
+                  <span style="font-size: 1.25rem">📸</span>
+                  <h3
+                    style="
+                      font-family: var(--font-heading);
+                      font-size: 1.15rem;
+                      font-weight: 700;
+                      color: var(--text-primary);
+                      margin: 0;
+                    "
+                  >
+                    Upload Payment Screenshot (Proof of Payment)
+                    <span style="color: var(--primary, #dc2626)">*</span>
+                  </h3>
+                </div>
+                <p
+                  style="
+                    font-size: 0.88rem;
+                    color: var(--text-secondary);
+                    margin-bottom: 16px;
+                    line-height: 1.5;
+                  "
+                >
+                  After completing the payment in your UPI app, please take a screenshot and upload
+                  it below so our store manager can verify and confirm your order.
+                </p>
+
+                <!-- Screenshot Upload Dropzone -->
+                <div
+                  id="proof-dropzone"
+                  style="
+                    border: 2px dashed var(--border-dark, #cbd5e1);
+                    border-radius: var(--radius-md, 14px);
+                    background: var(--bg-alt, #fafafa);
+                    padding: 24px 16px;
+                    text-align: center;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    position: relative;
+                  "
+                >
+                  <input
+                    type="file"
+                    id="payment-proof-file"
+                    accept="image/png,image/jpeg,image/webp,image/jpg"
+                    style="
+                      position: absolute;
+                      inset: 0;
+                      width: 100%;
+                      height: 100%;
+                      opacity: 0;
+                      cursor: pointer;
+                    "
+                    aria-label="Upload Payment Screenshot"
+                  />
+                  <div id="dropzone-idle-content">
+                    <svg
+                      width="38"
+                      height="38"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="var(--primary, #dc2626)"
+                      stroke-width="2"
+                      style="margin-bottom: 8px"
+                    >
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="17 8 12 3 7 8" />
+                      <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                    <div
+                      style="
+                        font-weight: 700;
+                        font-size: 0.95rem;
+                        color: var(--text-primary);
+                        margin-bottom: 4px;
+                      "
+                    >
+                      Click or Tap to Upload Payment Screenshot
+                    </div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted)">
+                      Supports JPG, PNG, WEBP (Max 5MB)
+                    </div>
+                  </div>
+
+                  <!-- Dropzone Selected Preview State -->
+                  <div
+                    id="dropzone-preview-content"
+                    style="
+                      display: none;
+                      align-items: center;
+                      justify-content: center;
+                      gap: 16px;
+                      flex-wrap: wrap;
+                    "
+                  >
+                    <img
+                      id="proof-preview-thumbnail"
+                      src=""
+                      alt="Payment Screenshot Preview"
+                      style="
+                        width: 80px;
+                        height: 80px;
+                        object-fit: cover;
+                        border-radius: 8px;
+                        border: 1.5px solid var(--border);
+                        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                      "
+                    />
+                    <div style="text-align: left">
+                      <div
+                        id="proof-filename"
+                        style="
+                          font-weight: 700;
+                          font-size: 0.9rem;
+                          color: var(--text-primary);
+                          max-width: 200px;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                          white-space: nowrap;
+                        "
+                      ></div>
+                      <div
+                        id="proof-filesize"
+                        style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px"
+                      ></div>
+                      <button
+                        type="button"
+                        id="remove-proof-btn"
+                        class="btn btn-sm btn-outline"
+                        style="
+                          color: var(--primary, #dc2626);
+                          border-color: var(--primary-border, #fecaca);
+                          padding: 3px 12px;
+                          font-size: 0.78rem;
+                        "
+                      >
+                        ✕ Remove / Change Image
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Optional UTR / Reference Number -->
+                <div class="form-group" style="margin-top: 18px">
+                  <label
+                    for="transactionRef"
+                    class="form-label"
+                    style="font-size: 0.88rem; font-weight: 600"
+                  >
+                    UPI Reference No. / 12-digit UTR (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    id="transactionRef"
+                    name="transactionRef"
+                    class="form-input"
+                    placeholder="e.g. 423456789012"
+                    maxlength="20"
+                  />
+                  <div class="form-hint">
+                    Found on your GPay, PhonePe, or Paytm receipt. Helps speed up verification.
+                  </div>
+                </div>
               </div>
             </section>
           </div>
@@ -335,7 +600,6 @@
             type="button"
             id="place-order-btn"
             class="btn btn-primary btn-lg checkout-place-order"
-            disabled
           >
             <svg
               width="18"
@@ -346,27 +610,19 @@
               stroke-width="2"
               aria-hidden="true"
             >
-              <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-              <line x1="8" y1="21" x2="16" y2="21" />
-              <line x1="12" y1="17" x2="12" y2="21" />
+              <polyline points="20 6 9 17 4 12" />
             </svg>
-            Place Order
+            Confirm &amp; Submit Order
           </button>
         </div>
 
-        <!-- Payment Processing Overlay -->
+        <!-- Submitting Order Loading Overlay -->
         <div id="payment-overlay" class="payment-overlay" style="display: none">
           <div class="payment-modal">
             <div class="payment-modal-content">
-              <h3>Processing Payment</h3>
+              <h3 id="submission-modal-title">Submitting Order</h3>
               <div class="loading-spinner"></div>
-              <p id="payment-status">Redirecting to UPI payment...</p>
-              <div class="payment-actions" style="display: none">
-                <button type="button" id="retry-payment" class="btn btn-outline">Try Again</button>
-                <button type="button" id="change-upi" class="btn btn-primary">
-                  Use Different UPI ID
-                </button>
-              </div>
+              <p id="payment-status">Uploading payment screenshot &amp; saving order...</p>
             </div>
           </div>
         </div>

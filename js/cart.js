@@ -178,7 +178,10 @@ function addToCart(product, quantity = 1, variant = null) {
 
   if (existing && maxStock !== null && Number(existing.quantity) >= maxStock) {
     if (typeof showToast === 'function') {
-      showToast(`Maximum available stock reached for "${product.name}" (${maxStock} in stock)`, 'info');
+      showToast(
+        `Maximum available stock reached for "${product.name}" (${maxStock} in stock)`,
+        'info'
+      );
     }
     return currentCart;
   }
@@ -262,7 +265,7 @@ function buildWhatsAppMessage() {
   }
   const total = Math.max(0, subtotal - discountAmount);
 
-  let message = `Hello! 👋 I'd like to *pre-book* the following toys from *Punnagai Toy Store, Mylapore* 🎉\n\n`;
+  let message = `Hello! 👋 I'd like to *pre-book* the following toys for *Store Pickup* from *Punnagai Toy Store, Mylapore* 🎉\n\n`;
   message += `*My Order:*\n`;
 
   cart.forEach((item, index) => {
@@ -279,7 +282,8 @@ function buildWhatsAppMessage() {
     message += `\n*Total: ${formatPrice(total)}*`;
   }
 
-  message += `\n\nPlease confirm availability and let me know the next steps. Thank you! 🙏`;
+  message += `\n*Fulfillment: Direct Store Pickup (Mylapore, Chennai)*`;
+  message += `\n\nPlease confirm availability and let me know when I can pick up. Thank you! 🙏`;
 
   return encodeURIComponent(message);
 }
@@ -292,9 +296,7 @@ function openWhatsAppCheckout() {
   }
 
   const settings =
-    typeof window !== 'undefined' && window.PunnagaiSettings
-      ? window.PunnagaiSettings.get()
-      : null;
+    typeof window !== 'undefined' && window.PunnagaiSettings ? window.PunnagaiSettings.get() : null;
   const waPhone = ((settings && settings.whatsappNumber) || WHATSAPP_NUMBER).replace(/\D/g, '');
   const message = buildWhatsAppMessage();
   const url = `https://wa.me/${waPhone}?text=${message}`;
@@ -388,33 +390,25 @@ function renderCartSummaryHtml(cart) {
     ? `<div class="coupon-feedback coupon-feedback-${couponFeedback.type}">${escapeHtml(couponFeedback.message)}</div>`
     : '';
 
-  const freeShippingThreshold = 999;
-  const progressPercent = Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100));
-  const diff = freeShippingThreshold - subtotal;
-  const freeShippingNotice =
-    subtotal >= freeShippingThreshold
-      ? `<div class="free-shipping-bar unlocked">
-           <div class="fs-header">
-             <span class="fs-icon">🎉</span>
-             <span class="fs-msg"><strong>Congratulations!</strong> You get <strong>FREE Local Delivery!</strong></span>
-           </div>
-           <div class="fs-progress-track"><div class="fs-progress-fill" style="width: 100%"></div></div>
-         </div>`
-      : `<div class="free-shipping-bar">
-           <div class="fs-header">
-             <span class="fs-icon">🚚</span>
-             <span class="fs-msg">Add <strong>${formatPrice(diff)}</strong> more for <strong>FREE Delivery!</strong></span>
-           </div>
-           <div class="fs-progress-track"><div class="fs-progress-fill" style="width: ${progressPercent}%"></div></div>
-         </div>`;
+  const pickupNotice = `
+    <div class="free-shipping-bar unlocked" style="background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 8px; padding: 10px 14px; margin-bottom: 16px;">
+      <div class="fs-header" style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+        <span class="fs-icon" style="font-size: 1.1rem;">🏪</span>
+        <span class="fs-msg" style="color: #3730a3;"><strong>Store Pickup:</strong> 4/7 Luz Bazar Complex, Mylapore • <strong>₹0 Delivery Fee</strong></span>
+      </div>
+    </div>`;
 
   return `
     <div class="cart-summary">
       <h3 class="summary-title">Order Summary</h3>
-      ${freeShippingNotice}
+      ${pickupNotice}
       <div class="summary-row">
         <span>Subtotal (${count} item${count === 1 ? '' : 's'})</span>
         <span>${formatPrice(subtotal)}</span>
+      </div>
+      <div class="summary-row" style="color: #059669; font-size: 0.9rem;">
+        <span>Pickup at Mylapore Store</span>
+        <span>FREE</span>
       </div>
       ${discountRow}
       <hr class="summary-divider">

@@ -1567,12 +1567,15 @@ localStorage.setItem('__punnagai_admin_env', JSON.stringify({ password: 'admin' 
             <div class="admin-table-filters">
               <select id="admin-orders-status-filter" class="admin-select">
                 <option value="">All Statuses</option>
-                <option value="pending">Pending</option>
+                <option value="pending_verification">Pending Verification</option>
                 <option value="confirmed">Confirmed</option>
-                <option value="shipped">Shipped</option>
-                <option value="delivered">Delivered</option>
+                <option value="ready_for_pickup">Ready for Pickup</option>
+                <option value="completed">Completed</option>
                 <option value="cancelled">Cancelled</option>
                 <option value="refunded">Refunded</option>
+                <option value="pending">Pending (Legacy)</option>
+                <option value="shipped">Shipped (Legacy)</option>
+                <option value="delivered">Delivered (Legacy)</option>
               </select>
             </div>
           </div>
@@ -1591,13 +1594,14 @@ localStorage.setItem('__punnagai_admin_env', JSON.stringify({ password: 'admin' 
                   <th scope="col">Date</th>
                   <th scope="col">Customer</th>
                   <th scope="col">Total</th>
+                  <th scope="col" style="text-align: center">Payment Proof</th>
                   <th scope="col">Status</th>
                   <th scope="col">Actions</th>
                 </tr>
               </thead>
               <tbody id="admin-orders-table-body">
                 <tr>
-                  <td colspan="7" class="table-loading-cell">
+                  <td colspan="8" class="table-loading-cell">
                     <div class="loading-spinner" style="margin: auto"></div>
                   </td>
                 </tr>
@@ -2150,7 +2154,7 @@ localStorage.setItem('__punnagai_admin_env', JSON.stringify({ password: 'admin' 
                   type="text"
                   id="settings-upi"
                   class="form-control"
-                  placeholder="punnagai@upi"
+                  placeholder="thenaadikappan@ok-axis"
                   required
                 />
                 <small style="color: var(--text-muted); display: block; margin-top: 4px">

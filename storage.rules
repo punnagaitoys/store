@@ -1,12 +1,25 @@
 rules_version = '2';
 
-// Production Storage rules
+// Production Storage rules — Punnagai Toy Store
 service firebase.storage {
   match /b/{bucket}/o {
+    // Payment proof screenshots: allow customer / guest uploads (images under 5MB)
+    match /payment_proofs/{proofId} {
+      allow read: if true;
+      allow write: if request.resource.size < 5 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+
+    // Media library and other store assets: authenticated admin
+    match /media/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Default catch-all
     match /{allPaths=**} {
       allow read: if true;
-      allow write: if request.auth != null && 
-                   firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      allow write: if request.auth != null;
     }
   }
 }

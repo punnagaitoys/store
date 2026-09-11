@@ -167,10 +167,10 @@
               },
               {
                 "@type": "Question",
-                "name": "Do you deliver toys across Chennai and Tamil Nadu?",
+                "name": "How are orders fulfilled from your store?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Yes! We offer same-day delivery across Chennai and fast courier delivery throughout Tamil Nadu. Free shipping is available on all orders above ₹999."
+                  "text": "All orders placed online are fulfilled via direct in-store pickup at our Mylapore shop (4/7 Luz Bazar Complex, Mylapore, Chennai). You can also pre-book via WhatsApp for convenient store collection!"
                 }
               },
               {
@@ -772,6 +772,36 @@
             <div class="reviews-nav-btns">
               <button
                 type="button"
+                class="rev-nav-btn autoplay playing"
+                id="reviews-autoplay-btn"
+                aria-label="Pause automatic scrolling"
+                title="Auto-scroll is playing (Click to pause)"
+              >
+                <svg
+                  class="icon-pause"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <rect x="6" y="4" width="4" height="16" rx="1" />
+                  <rect x="14" y="4" width="4" height="16" rx="1" />
+                </svg>
+                <svg
+                  class="icon-play"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                  style="display: none; margin-left: 2px"
+                >
+                  <polygon points="5,3 19,12 5,21" />
+                </svg>
+              </button>
+              <button
+                type="button"
                 class="rev-nav-btn prev"
                 id="reviews-prev-btn"
                 aria-label="Scroll left"
@@ -1123,7 +1153,7 @@
               src="https://maps.google.com/maps?q=Punnagai+Toys,+Mylapore,+Chennai&t=&z=16&ie=UTF8&iwloc=&output=embed"
               width="100%"
               height="100%"
-              style="border: 0;"
+              style="border: 0"
               allowfullscreen=""
               loading="lazy"
               referrerpolicy="no-referrer-when-downgrade"
@@ -1144,7 +1174,7 @@
                   fill="none"
                   stroke="currentColor"
                   stroke-width="2"
-                  style="flex-shrink: 0;"
+                  style="flex-shrink: 0"
                 >
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                   <circle cx="12" cy="10" r="3" />

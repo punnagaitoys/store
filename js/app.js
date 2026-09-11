@@ -29,7 +29,7 @@ const DEFAULT_STORE_SETTINGS = {
   phoneSecondary: '+91 72994 61657',
   whatsappNumber: '917550132101',
   storeEmail: 'contact@punnagaitoysfancy.in',
-  upiId: 'punnagai@upi',
+  upiId: 'thenaadikappan@ok-axis',
   storeAddress: '4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai – 600 004',
   youtubeChannel: 'https://www.youtube.com/@PunnagaiRahim',
   instagramUrl: 'https://www.instagram.com/punnagaitoys.fancy/',
@@ -382,9 +382,9 @@ function renderNavbar(activePage = '') {
 
   const navContainer = document.getElementById('navbar');
   if (navContainer) {
-    navContainer.innerHTML = html;
+    navContainer.outerHTML = html.replace('id="main-navbar"', 'id="navbar"');
   } else {
-    document.body.insertAdjacentHTML('afterbegin', html);
+    document.body.insertAdjacentHTML('afterbegin', html.replace('id="main-navbar"', 'id="navbar"'));
   }
 
   // Hamburger toggle with backdrop and close button
@@ -424,12 +424,18 @@ function renderNavbar(activePage = '') {
   }
 
   // Navbar scroll effect
-  window.addEventListener('scroll', () => {
-    const navbar = document.getElementById('main-navbar');
-    if (navbar) {
-      navbar.classList.toggle('scrolled', window.scrollY > 20);
-    }
-  });
+  if (!window._navbarScrollListenerAttached) {
+    window.addEventListener('scroll', () => {
+      const navbar =
+        document.getElementById('navbar') ||
+        document.getElementById('main-navbar') ||
+        document.querySelector('.navbar');
+      if (navbar) {
+        navbar.classList.toggle('scrolled', window.scrollY > 20);
+      }
+    });
+    window._navbarScrollListenerAttached = true;
+  }
 
   // Inject Mobile Bottom App Navigation
   renderMobileBottomNav(activePage);
@@ -1718,25 +1724,28 @@ function renderProductDetailsUI() {
             </div>
           </div>
           <div class="trust-badge-item">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2.2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
             <div>
-              <strong>Fast Chennai Delivery</strong>
-              <small>Same day in Mylapore, 1-2 days across TN</small>
+              <strong>In-Store Pickup Only</strong>
+              <small>Reserve online &amp; collect at shop</small>
             </div>
           </div>
         </div>
         
-        <!-- Pincode Delivery Estimator -->
-        <div class="pincode-checker-box">
-          <div class="pincode-header">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span>Delivery &amp; COD Availability Checker</span>
+        <!-- Store Pickup Location Card -->
+        <div class="pincode-checker-box" style="background:#f8fafc; border:1.5px dashed var(--primary, #dc2626); border-radius:var(--radius-md, 14px); padding:16px;">
+          <div class="pincode-header" style="color:var(--primary, #dc2626); font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:8px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>🏪 Direct Store Collection (Mylapore, Chennai)</span>
           </div>
-          <div class="pincode-input-group">
-            <input type="text" id="pincode-input" maxlength="6" placeholder="Enter PIN code (e.g. 600004)" aria-label="Enter PIN code" onkeydown="if(event.key==='Enter')checkPincodeDelivery()">
-            <button type="button" class="btn btn-primary btn-sm" onclick="checkPincodeDelivery()">Check</button>
+          <p style="font-size:0.88rem; color:var(--text-secondary); margin:0 0 10px 0; line-height:1.5;">
+            We do not ship by courier. Reserve your toys online with zero delivery fees and pick them up directly from our store counter!
+          </p>
+          <div style="font-size:0.84rem; color:var(--text-primary); line-height:1.6; background:#ffffff; padding:10px 14px; border-radius:8px; border:1px solid var(--border);">
+            📍 <strong>Address:</strong> 4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai – 600 004<br>
+            🕒 <strong>Hours:</strong> Mon – Sat: 10:00 AM – 10:00 PM | Sun: 11:00 AM – 6:00 PM<br>
+            📞 <strong>WhatsApp / Call:</strong> +91 75501 32101 / +91 72994 61657
           </div>
-          <div id="pincode-result" class="pincode-result" style="display:none"></div>
         </div>
 
         <!-- Parent FAQ Accordion -->
@@ -1794,34 +1803,11 @@ window.handleVariantSelect = function (type, value) {
 window.checkPincodeDelivery = function () {
   const input = document.getElementById('pincode-input');
   const result = document.getElementById('pincode-result');
-  if (!input || !result) return;
-  const pin = input.value.trim();
-  if (!/^\d{6}$/.test(pin)) {
-    result.style.display = 'block';
-    result.className = 'pincode-result error';
-    result.innerHTML = '⚠️ Please enter a valid 6-digit Indian PIN code.';
-    return;
-  }
+  if (!result) return;
   result.style.display = 'block';
-  if (pin.startsWith('600')) {
-    if (['600004', '600028', '600018', '600020', '600086', '600005'].includes(pin)) {
-      result.className = 'pincode-result success';
-      result.innerHTML =
-        '🚀 <strong>Superfast Mylapore &amp; Central Chennai:</strong> Free Local Delivery &amp; Store Pickup! Same-day delivery if ordered before 4 PM. Cash on Delivery supported.';
-    } else {
-      result.className = 'pincode-result success';
-      result.innerHTML =
-        '⚡ <strong>Greater Chennai Delivery:</strong> Free Local Delivery across Chennai! Next-Day Delivery available. Cash on Delivery supported.';
-    }
-  } else if (pin.startsWith('6')) {
-    result.className = 'pincode-result success';
-    result.innerHTML =
-      '📦 <strong>Tamil Nadu &amp; South India Delivery:</strong> Standard courier delivery within 2-3 business days. Free delivery over ₹999 (flat ₹50 below ₹999). Cash on Delivery supported.';
-  } else {
-    result.className = 'pincode-result success';
-    result.innerHTML =
-      '✈️ <strong>All India Express Delivery:</strong> 3-5 business days via BlueDart/Delhivery air express. Free delivery over ₹999.';
-  }
+  result.className = 'pincode-result success';
+  result.innerHTML =
+    '🏪 <strong>In-Store Pickup Only:</strong> We do not ship or courier products. All orders are collected in-person from our shop at 4/7 Luz Bazar Complex, Mylapore, Chennai (₹0 Delivery Fee).';
 };
 
 window.handleDetailAddToCart = function () {
@@ -1846,7 +1832,10 @@ window.handleDetailWhatsApp = function () {
 
   const qty = Math.max(1, parseInt(document.getElementById('detail-qty')?.value) || 1);
   const settings = window.PunnagaiSettings ? window.PunnagaiSettings.get() : null;
-  const WHATSAPP_NUMBER = ((settings && settings.whatsappNumber) || '917550132101').replace(/\D/g, '');
+  const WHATSAPP_NUMBER = ((settings && settings.whatsappNumber) || '917550132101').replace(
+    /\D/g,
+    ''
+  );
 
   let variantLine = '';
   if (window.PunnagaiProductDetail && window.PunnagaiProductDetail.hasVariants(product)) {

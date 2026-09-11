@@ -310,6 +310,12 @@ function renderNavbar(activePage = '') {
             </div>
           </a>
 
+          <div class="navbar-search" onclick="if(typeof openGlobalSearch==='function')openGlobalSearch();" role="button" tabindex="0" aria-label="Search 500+ toys" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();if(typeof openGlobalSearch==='function')openGlobalSearch();}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <span class="navbar-search-text">Search 500+ toys, games, puzzles...</span>
+            <span class="navbar-search-kbd">Ctrl+K</span>
+          </div>
+
           <ul class="navbar-links" id="nav-links">
             ${navLinks}
           </ul>
@@ -336,6 +342,19 @@ function renderNavbar(activePage = '') {
                 <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
               </svg>
             </button>
+          </div>
+        </div>
+
+        <div class="navbar-subnav" aria-label="Popular Categories">
+          <div class="navbar-categories">
+            <a href="shop.html" class="subnav-chip">All Toys</a>
+            <a href="shop.html?category=Educational+%26+Learning" class="subnav-chip">🧠 Educational</a>
+            <a href="shop.html?category=Building+Blocks" class="subnav-chip">🧱 Building Blocks</a>
+            <a href="shop.html?category=Board+Games+%26+Puzzles" class="subnav-chip">♟️ Board Games</a>
+            <a href="shop.html?category=Outdoor+%26+Sports" class="subnav-chip">⚽ Outdoor</a>
+            <a href="shop.html?category=Arts+%26+Crafts" class="subnav-chip">🎨 Arts &amp; Crafts</a>
+            <a href="shop.html?category=Remote+Control" class="subnav-chip">🚗 Remote Control</a>
+            <a href="shop.html?sale=true" class="subnav-chip subnav-chip-sale">🔥 Deals &amp; Offers</a>
           </div>
         </div>
 
@@ -1050,7 +1069,6 @@ async function initHomePage() {
   // Source from the cached data layer (Req 1.9) and hide out-of-stock items.
   const allProducts = filterAvailableProducts(await getAllProductsCached());
   window.HOMEPAGE_ALL_PRODUCTS = allProducts;
-  if (typeof initLiveStoreActivity === 'function') initLiveStoreActivity();
 
   if (featuredContainer) {
     const featured = (
@@ -2198,96 +2216,12 @@ window.filterFeaturedToys = function (category, btnEl) {
 };
 
 // ============================================================
-// DYNAMIC INTERACTIVE FEATURE 3: Live Store Activity Social Proof
+// Live Store Activity / Simulated Orders: Permanently Disabled
+// Authentic customer interactions only. No simulated toasts or orders.
 // ============================================================
 window.initLiveStoreActivity = function () {
-  // Disable if dismissed in this session or on checkout page
-  if (typeof window !== 'undefined') {
-    if (window.location.pathname.includes('checkout')) return;
-    try {
-      if (sessionStorage.getItem('punnagai_dismissed_live_activity') === 'true') return;
-    } catch (e) {}
+  const container = document.getElementById('live-activity-container');
+  if (container) {
+    container.remove();
   }
-
-  const activities = [
-    {
-      name: 'Sowmya from Alwarpet',
-      action: 'pre-ordered',
-      item: 'LEGO Classic Creative Bricks',
-      time: '2 mins ago'
-    },
-    {
-      name: 'Karthik from T. Nagar',
-      action: 'bought',
-      item: 'Remote Control Racing Car 4WD',
-      time: '5 mins ago'
-    },
-    {
-      name: 'Priya from Mandaveli',
-      action: 'added to wishlist',
-      item: 'Wooden Rainbow Stacker',
-      time: 'Just now'
-    },
-    {
-      name: 'Anand from Adyar',
-      action: 'pre-ordered',
-      item: 'STEM Robot Building Kit',
-      time: '12 mins ago'
-    },
-    {
-      name: 'Divya from Mylapore',
-      action: 'bought',
-      item: 'Montessori Wooden Shape Sorter',
-      time: '7 mins ago'
-    }
-  ];
-
-  let index = 0;
-
-  function showToast() {
-    if (document.hidden) return;
-    try {
-      if (sessionStorage.getItem('punnagai_dismissed_live_activity') === 'true') return;
-    } catch (e) {}
-
-    const activity = activities[index % activities.length];
-    index++;
-
-    let container = document.getElementById('live-activity-container');
-    if (!container) {
-      container = document.createElement('div');
-      container.id = 'live-activity-container';
-      container.className = 'live-activity-container';
-      document.body.appendChild(container);
-    }
-
-    // Remove any existing toast first so they never stack
-    container.innerHTML = '';
-
-    const toast = document.createElement('div');
-    toast.className = 'live-activity-toast';
-    toast.innerHTML = `
-      <div class="live-activity-icon">🛍️</div>
-      <div class="live-activity-body">
-        <p class="live-activity-title"><strong>${activity.name}</strong> ${activity.action}</p>
-        <p class="live-activity-item">${activity.item}</p>
-        <span class="live-activity-time">${activity.time} • Verified in Chennai</span>
-      </div>
-      <button class="live-activity-close" onclick="try{sessionStorage.setItem('punnagai_dismissed_live_activity','true');}catch(e){} this.parentElement.remove()" aria-label="Close notification">&times;</button>
-    `;
-
-    container.appendChild(toast);
-    setTimeout(() => {
-      if (toast.parentElement) {
-        toast.classList.add('fade-out');
-        setTimeout(() => toast.remove(), 400);
-      }
-    }, 5500);
-  }
-
-  // Graceful initial delay: wait 14 seconds before first activity toast
-  setTimeout(() => {
-    showToast();
-    setInterval(showToast, 38000);
-  }, 14000);
 };

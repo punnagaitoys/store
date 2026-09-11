@@ -34,7 +34,7 @@ class FloatingReviews {
         {
           author: 'Sowmya Ranganathan',
           rating: 5,
-          text: 'Punnagai Toy Store is a gem in Mylapore! Located right in Luz Bazar Complex, they have an incredible collection of educational & fun toys.',
+          text: 'Punnagai Toy Store is a wonderful gem in Mylapore! Located right in Luz Bazar Complex, they have an incredible collection of educational and fun toys.',
           date: '3 days ago'
         },
         {
@@ -46,13 +46,13 @@ class FloatingReviews {
         {
           author: 'Kavitha Sundaram',
           rating: 5,
-          text: 'Loved the store experience! The pre-order and direct shop pickup option saved me so much time.',
+          text: 'Loved visiting the store! The collection of wooden learning toys, puzzles, and art sets for children is fantastic. Very neatly organized.',
           date: '2 weeks ago'
         },
         {
           author: 'Deepak Kumar',
           rating: 5,
-          text: 'Wonderful collection of non-toxic, safe toys for toddlers. Very polite store owners and quick WhatsApp response.',
+          text: 'Wonderful collection of non-toxic, safe toys for toddlers. Very polite and patient store owners who demonstrate how each toy works.',
           date: '3 weeks ago'
         }
       ];

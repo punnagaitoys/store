@@ -14,7 +14,7 @@
       tag: 'Local Guide • 14 reviews',
       rating: 5,
       date: '3 days ago',
-      text: 'Punnagai Toy Store is a gem in Mylapore! Located right in Luz Bazar Complex, they have an incredible collection of educational & fun toys. Pre-booked via WhatsApp and picked up within minutes. Highly recommended!',
+      text: 'Punnagai Toy Store is a wonderful gem in Mylapore! Located right in Luz Bazar Complex, they have an incredible collection of educational and fun toys. Very friendly staff and great shopping experience. Highly recommended!',
       likes: 8
     },
     {
@@ -36,7 +36,7 @@
       tag: 'Verified Reviewer',
       rating: 5,
       date: '2 weeks ago',
-      text: 'Loved the store experience! The pre-order and direct shop pickup option saved me so much time. Great variety of baby toys and kids puzzles.',
+      text: 'Loved visiting the store! The collection of wooden learning toys, puzzles, and art sets for children is fantastic. Very neatly organized and polite staff.',
       likes: 4
     },
     {
@@ -47,7 +47,7 @@
       tag: 'Local Guide • 8 reviews',
       rating: 5,
       date: '3 weeks ago',
-      text: "Wonderful collection of non-toxic, safe toys for toddlers. Very polite store owners and quick WhatsApp response. Mylapore's favorite toy store!",
+      text: "Wonderful collection of non-toxic, safe toys for toddlers. Very polite and patient store owners who demonstrate how each toy works. Mylapore's favorite toy store!",
       likes: 7
     },
     {
@@ -58,7 +58,7 @@
       tag: 'Verified Reviewer',
       rating: 5,
       date: '1 month ago',
-      text: 'Great experience buying birthday gifts here. They wrapped everything beautifully at the store. Convenient location in Luz Bazar Complex!',
+      text: 'Great experience buying birthday gifts here. They wrapped everything beautifully at the counter. Convenient location in Luz Bazar Complex!',
       likes: 5
     },
     {
@@ -69,7 +69,7 @@
       tag: 'Local Guide • 45 reviews',
       rating: 5,
       date: '1 month ago',
-      text: 'High quality toys at affordable prices. The WhatsApp pre-booking is super smooth — reserved the toy in the morning and picked it up in the evening!',
+      text: 'High quality toys at very affordable prices. Excellent variety of battery-operated cars, educational blocks, and creative play sets. Very courteous service!',
       likes: 9
     },
     {
@@ -134,10 +134,17 @@
         </div>
 
         <div class="rev-card-footer">
-          <span class="rev-verified">
+          <a
+            href="https://maps.google.com/?q=Punnagai+Toys+Mylapore+Chennai"
+            target="_blank"
+            rel="noopener"
+            class="rev-verified"
+            style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 4px;"
+            title="Verify on Google Maps"
+          >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            Google Maps Review
-          </span>
+            Verified on Google Maps ↗
+          </a>
           <span>👍 ${rev.likes} helpful</span>
         </div>
       </div>

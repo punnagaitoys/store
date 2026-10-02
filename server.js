@@ -3,7 +3,8 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const PORT = 3000;
+const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 3000;
+let currentPort = DEFAULT_PORT;
 const ROOT = __dirname;
 
 const MIME_TYPES = {
@@ -74,6 +75,20 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(PORT, () => {
-  console.log(`Punnagai Dev Server running at http://localhost:${PORT}`);
+function startServer(port) {
+  server.listen(port, () => {
+    console.log(`Punnagai Dev Server running at http://localhost:${port}`);
+  });
+}
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.warn(`Port ${currentPort} in use, trying port ${currentPort + 1}...`);
+    currentPort++;
+    startServer(currentPort);
+  } else {
+    console.error('Server error:', err);
+  }
 });
+
+startServer(currentPort);

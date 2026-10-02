@@ -6,103 +6,391 @@
   const CUSTOM_MEDIA_KEY = 'punnagai_media_library_custom';
 
   const DEFAULT_MEDIA_ITEMS = [
-    {
-      id: 'med_1',
-      title: 'Remote Control Rally Car',
-      category: 'toys',
-      url: 'https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=600&auto=format&fit=crop&q=80',
-      date: '2026-07-01',
-      dimensions: '600x600'
-    },
-    {
-      id: 'med_2',
-      title: 'LEGO Classic Building Bricks',
-      category: 'toys',
-      url: 'https://images.unsplash.com/photo-1585366119957-e9730b6d0f60?w=600&auto=format&fit=crop&q=80',
-      date: '2026-07-02',
-      dimensions: '600x600'
-    },
-    {
-      id: 'med_3',
-      title: 'Wooden Alphabet Puzzle Board',
-      category: 'toys',
-      url: 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=600&auto=format&fit=crop&q=80',
-      date: '2026-07-03',
-      dimensions: '600x600'
-    },
-    {
-      id: 'med_4',
-      title: 'Plush Teddy Bear Soft Toy',
-      category: 'toys',
-      url: 'https://images.unsplash.com/photo-1559715745-e1b33a271c8f?w=600&auto=format&fit=crop&q=80',
-      date: '2026-07-04',
-      dimensions: '600x600'
-    },
-    {
-      id: 'med_5',
-      title: 'Princess Fashion Doll',
-      category: 'toys',
-      url: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&auto=format&fit=crop&q=80',
-      date: '2026-07-05',
-      dimensions: '600x600'
-    },
-    {
-      id: 'med_6',
-      title: 'Stunt Drone Quadcopter',
-      category: 'toys',
-      url: 'https://images.unsplash.com/photo-1527977966376-1c8408f9f108?w=600&auto=format&fit=crop&q=80',
-      date: '2026-07-06',
-      dimensions: '600x600'
-    },
-    {
-      id: 'med_7',
-      title: 'Electronic Musical Keyboard',
-      category: 'toys',
-      url: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=600&auto=format&fit=crop&q=80',
-      date: '2026-07-07',
-      dimensions: '600x600'
-    },
-    {
-      id: 'med_8',
-      title: 'Action Superhero Figure',
-      category: 'toys',
-      url: 'https://images.unsplash.com/photo-1608889175123-8ee362201f81?w=600&auto=format&fit=crop&q=80',
-      date: '2026-07-08',
-      dimensions: '600x600'
-    },
-    {
-      id: 'med_9',
-      title: 'Kids Outdoor Soccer Ball',
-      category: 'toys',
-      url: 'https://images.unsplash.com/photo-1614632537423-1e6c2e7e0aab?w=600&auto=format&fit=crop&q=80',
-      date: '2026-07-09',
-      dimensions: '600x600'
-    },
-    {
-      id: 'med_10',
-      title: 'Deluxe Arts & Crafts Kit',
-      category: 'toys',
-      url: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&auto=format&fit=crop&q=80',
-      date: '2026-07-10',
-      dimensions: '600x600'
-    },
-    {
-      id: 'med_11',
-      title: 'Storefront Hero Banner 1',
-      category: 'banners',
-      url: 'https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=1200&auto=format&fit=crop&q=80',
-      date: '2026-07-11',
-      dimensions: '1200x400'
-    },
-    {
-      id: 'med_12',
-      title: 'Storefront Hero Banner 2',
-      category: 'banners',
-      url: 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=1200&auto=format&fit=crop&q=80',
-      date: '2026-07-12',
-      dimensions: '1200x400'
-    }
-  ];
+  {
+    "id": "med_banner_1",
+    "title": "Primary Storefront Hero Banner",
+    "category": "banners",
+    "url": "images/hero-banner.png",
+    "date": "2026-07-01",
+    "dimensions": "1870x841"
+  },
+  {
+    "id": "med_banner_2",
+    "title": "Storefront Summer Sale Banner",
+    "category": "banners",
+    "url": "images/banners/banner-summer-sale.jpg",
+    "date": "2026-07-02",
+    "dimensions": "1497x643"
+  },
+  {
+    "id": "med_banner_3",
+    "title": "Secondary Action & RC Hero Banner",
+    "category": "banners",
+    "url": "images/banners/hero-banner-2.png",
+    "date": "2026-07-03",
+    "dimensions": "1672x941"
+  },
+  {
+    "id": "med_banner_4",
+    "title": "Storefront Promotional Showcase Banner",
+    "category": "banners",
+    "url": "images/banners/storefront-promo-banner.png",
+    "date": "2026-07-04",
+    "dimensions": "1535x1024"
+  },
+  {
+    "id": "med_banner_5",
+    "title": "Mylapore Store Interior Photography",
+    "category": "banners",
+    "url": "images/store-interior.png",
+    "date": "2026-07-05",
+    "dimensions": "1536x1024"
+  },
+  {
+    "id": "med_banner_6",
+    "title": "Social Share & OpenGraph Card",
+    "category": "banners",
+    "url": "images/social-share.jpg",
+    "date": "2026-07-06",
+    "dimensions": "1200x630"
+  },
+  {
+    "id": "med_logo",
+    "title": "Official Punnagai Toys Brand Logo",
+    "category": "branding",
+    "url": "logo.png",
+    "date": "2026-07-07",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_1",
+    "title": "3D Wooden Ludo Family Board Game",
+    "category": "toys",
+    "url": "images/products/wooden-3d-ludo-family-board-game-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_2",
+    "title": "Automatic Bubble Gun Gatling Blaster",
+    "category": "toys",
+    "url": "images/products/automatic-bubble-gun-blaster-toy-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_3",
+    "title": "Catan: Trade, Build, Settle Board Game",
+    "category": "toys",
+    "url": "images/products/catan-trade-build-settle-board-game-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_4",
+    "title": "Crossword Word Building Board Game",
+    "category": "toys",
+    "url": "images/products/crossword-educational-word-game-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_5",
+    "title": "Cute Reversible Strawberry Bunny Plush",
+    "category": "toys",
+    "url": "images/products/cute-strawberry-bunny-soft-plush-toy-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_6",
+    "title": "Musical Dancing Angel Princess Doll",
+    "category": "toys",
+    "url": "images/products/dancing-angel-doll-lights-music-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_7",
+    "title": "Dancing Bunny Musical Toy with LED Lights",
+    "category": "toys",
+    "url": "images/products/dancing-bunny-musical-light-toy-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_8",
+    "title": "Dancing Elephant with Floating Air Ball",
+    "category": "toys",
+    "url": "images/products/dancing-elephant-musical-toy-adventure-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_9",
+    "title": "Electric Swan with 3D Lights & Motion",
+    "category": "toys",
+    "url": "images/products/electric-swan-lights-music-motion-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_10",
+    "title": "Heavy Duty JCB Excavator Construction Truck",
+    "category": "toys",
+    "url": "images/products/construction-jcb-excavator-truck-toy-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_11",
+    "title": "Formula 1 High-Speed Racing Car",
+    "category": "toys",
+    "url": "images/products/formula-one-racing-car-toy-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_12",
+    "title": "Hanging Windmill Sensory Activity Toy",
+    "category": "toys",
+    "url": "images/products/hanging-windmill-infant-crib-toy-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_13",
+    "title": "Air Power Hover Soccer Ball with LED",
+    "category": "toys",
+    "url": "images/products/hover-soccer-ball-indoor-sports-toy-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_14",
+    "title": "Sweet Treats Ice Cream Vandi Pretend Cart",
+    "category": "toys",
+    "url": "images/products/ice-cream-cart-vandi-pretend-play-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_15",
+    "title": "Electric Crawling Musical Caterpillar Worm",
+    "category": "toys",
+    "url": "images/products/electric-crawling-worm-musical-toy-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_16",
+    "title": "Little Doctor Medical Suitcase Play Set",
+    "category": "toys",
+    "url": "images/products/little-doctor-medical-kit-pretend-play-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_17",
+    "title": "Monopoly India Edition Board Game",
+    "category": "toys",
+    "url": "images/products/monopoly-india-edition-board-game-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_18",
+    "title": "Neon RC 360° Rotating Stunt Car",
+    "category": "toys",
+    "url": "images/products/neon-rc-stunt-car-adventure-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_19",
+    "title": "Pictureka! Fast-Paced Picture Hunt Game",
+    "category": "toys",
+    "url": "images/products/pictureka-fast-paced-picture-hunt-game-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_20",
+    "title": "Premium Handcrafted Wooden Chess Set",
+    "category": "toys",
+    "url": "images/products/premium-wooden-chess-set-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_21",
+    "title": "Rainbow Soft Teddy Bear (40 cm)",
+    "category": "toys",
+    "url": "images/products/rainbow-teddy-bear-soft-plush-toy-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_22",
+    "title": "Remote Control Supersonic Fighter Jet",
+    "category": "toys",
+    "url": "images/products/rc-fighter-jet-airplane-toy-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_23",
+    "title": "RC Flying Helicopter with Altitude Hold",
+    "category": "toys",
+    "url": "images/products/rc-helicopter-smooth-flight-toy-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_24",
+    "title": "Speed Demon RC Sports Racing Car",
+    "category": "toys",
+    "url": "images/products/rc-sports-racing-car-toy-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_25",
+    "title": "Interactive Smart Dancing Robot with Lights",
+    "category": "toys",
+    "url": "images/products/smart-robot-lights-sounds-fun-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_26",
+    "title": "Classic Cuddle Soft Teddy Bear",
+    "category": "toys",
+    "url": "images/products/soft-classic-teddy-bear-plush-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_27",
+    "title": "Space Gun G-Strike Cosmic Dart Blaster",
+    "category": "toys",
+    "url": "images/products/space-gun-g-strike-toy-blaster-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_28",
+    "title": "Splendor Strategy Gem Trading Game",
+    "category": "toys",
+    "url": "images/products/splendor-strategy-board-game-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_29",
+    "title": "Thomas & Friends Track Master Train Set",
+    "category": "toys",
+    "url": "images/products/thomas-train-track-set-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_30",
+    "title": "Thunder Foam Soft Dart Blaster",
+    "category": "toys",
+    "url": "images/products/thunder-foam-dart-blaster-gun-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_31",
+    "title": "Thunder Strike Rapid Fire Blaster",
+    "category": "toys",
+    "url": "images/products/thunder-strike-toy-blaster-gun-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_32",
+    "title": "1-Click Transforming RC Robot Car",
+    "category": "toys",
+    "url": "images/products/transforming-robot-car-action-toy-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_33",
+    "title": "Ultimate All-Terrain RC Stunt Crawler",
+    "category": "toys",
+    "url": "images/products/ultimate-rc-stunt-car-adventure-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_34",
+    "title": "Magical Glowing Horn Unicorn Plush",
+    "category": "toys",
+    "url": "images/products/unicorn-soft-plush-toy-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_35",
+    "title": "Long Range Kids Two-Way Walkie Talkie Set",
+    "category": "toys",
+    "url": "images/products/walkie-talkie-kids-adventure-set-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_36",
+    "title": "Natural Pine Wooden Tumbling Tower (Jenga)",
+    "category": "toys",
+    "url": "images/products/wooden-jenga-tumbling-tower-game-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_37",
+    "title": "Classic Wooden Ludo & Snakes Board Game",
+    "category": "toys",
+    "url": "images/products/wooden-ludo-classic-family-game-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_38",
+    "title": "Montessori Wooden Memory Match Chess Game",
+    "category": "toys",
+    "url": "images/products/wooden-memory-chess-educational-game-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_39",
+    "title": "Wooden Numbers & Shapes Counting Puzzle",
+    "category": "toys",
+    "url": "images/products/wooden-number-puzzle-math-toy-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_40",
+    "title": "Montessori Wooden Geometric Shape Sorter",
+    "category": "toys",
+    "url": "images/products/wooden-shape-sorter-educational-toy-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  },
+  {
+    "id": "med_toy_41",
+    "title": "Handcrafted Wooden Tic Tac Toe Noughts & Crosses",
+    "category": "toys",
+    "url": "images/products/wooden-tic-tac-toe-puzzle-game-punnagai.jpg",
+    "date": "2026-07-10",
+    "dimensions": "1254x1254"
+  }
+];
 
   class MediaLibraryManager {
     constructor() {

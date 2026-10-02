@@ -60,7 +60,23 @@
     "category": "branding",
     "url": "logo.png",
     "date": "2026-07-07",
-    "dimensions": "1254x1254"
+    "dimensions": "512x512"
+  },
+  {
+    "id": "med_store_entrance",
+    "title": "Mylapore Boutique Physical Storefront Entrance",
+    "category": "branding",
+    "url": "images/store/store-entrance.jpg",
+    "date": "2026-07-08",
+    "dimensions": "1200x800"
+  },
+  {
+    "id": "med_upi_qr",
+    "title": "Official Shop UPI Payment QR Code",
+    "category": "branding",
+    "url": "images/punnagai-upi-qr.png",
+    "date": "2026-07-09",
+    "dimensions": "500x500"
   },
   {
     "id": "med_toy_1",

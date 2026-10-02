@@ -11,7 +11,7 @@
 
 'use strict';
 
-const CACHE_NAME = 'punnagai-v5';
+const CACHE_NAME = 'punnagai-v6';
 const OFFLINE_PAGE = '/index.html';
 
 // Static assets to precache on install
@@ -28,6 +28,7 @@ const PRECACHE_URLS = [
   '/404.html',
   '/logo.png',
   '/favicon.png',
+  '/favicon-32x32.png',
   '/favicon.ico',
   '/apple-touch-icon.png',
   '/icons/icon-192.png',
@@ -37,8 +38,13 @@ const PRECACHE_URLS = [
   '/images/hero-banner-2.png',
   '/images/store-hero.jpg',
   '/images/store-interior.png',
+  '/images/store-interior.jpg',
+  '/images/store/store-entrance.jpg',
+  '/images/store/store-interior.jpg',
+  '/images/punnagai-upi-qr.png',
   '/images/social-share.jpg',
   '/images/banners/banner-summer-sale.jpg',
+  '/images/banners/hero-banner-1.png',
   '/images/banners/hero-banner-2.png',
   '/images/banners/storefront-promo-banner.png',
   '/css/style.css',

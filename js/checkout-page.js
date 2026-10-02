@@ -165,11 +165,19 @@ function setupShopUPI() {
   const orderRef = 'Order_' + Date.now().toString().slice(-6);
   const upiUri = `upi://pay?pa=${encodeURIComponent(shopUpiId)}&pn=${encodeURIComponent('Punnagai Toy Store')}&am=${currentPayableTotal.toFixed(2)}&cu=INR&tn=${encodeURIComponent(orderRef)}`;
 
-  // Update dynamic QR image
+  // Update dynamic QR image with local fallback
   const qrImg = document.getElementById('shop-upi-qr-image');
   if (qrImg) {
-    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=${encodeURIComponent(upiUri)}`;
-    qrImg.src = qrApiUrl;
+    qrImg.onerror = function () {
+      this.onerror = null;
+      this.src = 'images/punnagai-upi-qr.png';
+    };
+    if (currentPayableTotal > 0) {
+      const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=${encodeURIComponent(upiUri)}`;
+      qrImg.src = qrApiUrl;
+    } else {
+      qrImg.src = 'images/punnagai-upi-qr.png';
+    }
   }
 
   // Update mobile intent link

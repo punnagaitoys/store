@@ -260,15 +260,24 @@
 
           <div class="hero-image-col">
             <div class="hero-horizontal-banner">
-              <img
-                src="images/hero-banner.png"
-                alt="Punnagai Toy Store Flagship Boutique in Mylapore Chennai — Handcrafted Wooden Toys, STEM Kits & Games"
-                class="hero-main-img"
-                loading="eager"
-                fetchpriority="high"
-                width="1200"
-                height="675"
-              />
+              <picture>
+                <source
+                  type="image/webp"
+                  srcset="images/hero-banner-600.webp 600w, images/hero-banner-900.webp 900w, images/hero-banner-1200.webp 1200w, images/hero-banner.webp 1200w"
+                  sizes="(max-width: 768px) 100vw, 1200px"
+                />
+                <img
+                  src="images/hero-banner.webp"
+                  srcset="images/hero-banner.jpg 1200w"
+                  alt="Punnagai Toy Store Flagship Boutique in Mylapore Chennai — Handcrafted Wooden Toys, STEM Kits & Games"
+                  class="hero-main-img"
+                  loading="eager"
+                  fetchpriority="high"
+                  decoding="async"
+                  width="1200"
+                  height="675"
+                />
+              </picture>
               <div class="hero-banner-overlay"></div>
               <!-- Floating toy badges -->
               <div class="floating-badge badge-1">🎯 500+ Educational &amp; Fun Toys</div>
@@ -277,7 +286,10 @@
               <!-- Store tag -->
               <div class="hero-store-tag">
                 <div class="store-tag-icon-wrap">
-                  <img src="logo.png" alt="Punnagai Toys Logo" class="store-tag-logo" />
+                  <picture>
+                    <source type="image/webp" srcset="logo.webp" />
+                    <img src="logo.png" alt="Punnagai Toys Logo" class="store-tag-logo" width="40" height="40" loading="lazy" decoding="async" />
+                  </picture>
                   <div class="store-tag-dot" title="Store Open Now"></div>
                 </div>
                 <div class="store-tag-text">
@@ -1152,14 +1164,18 @@
           <!-- Google Maps Embed & Physical Boutique Showcase -->
           <div class="map-container">
             <div class="storefront-showcase-bar" style="position: relative; border-radius: 12px 12px 0 0; overflow: hidden; max-height: 180px;">
-              <img
-                src="images/store/store-entrance.jpg"
-                alt="Punnagai Toy Store Physical Boutique in Mylapore Chennai"
-                style="width: 100%; height: 180px; object-fit: cover; display: block;"
-                loading="lazy"
-                width="1200"
-                height="800"
-              />
+              <picture>
+                <source type="image/webp" srcset="images/store/store-entrance.webp" />
+                <img
+                  src="images/store/store-entrance.jpg"
+                  alt="Punnagai Toy Store Physical Boutique in Mylapore Chennai"
+                  style="width: 100%; height: 180px; object-fit: cover; display: block;"
+                  loading="lazy"
+                  decoding="async"
+                  width="1200"
+                  height="800"
+                />
+              </picture>
               <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.75)); padding: 8px 14px; color: #fff; font-size: 0.85rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center;">
                 <span>🏪 Physical Toy Boutique — Mylapore, Chennai</span>
                 <span style="font-size: 0.72rem; background: #dc2626; color: #fff; padding: 2px 8px; border-radius: 999px;">Open Daily</span>

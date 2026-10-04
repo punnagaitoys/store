@@ -1,0 +1,466 @@
+{
+  "images/banners/banner-summer-sale.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/banners/banner-summer-sale.webp",
+    "originalBytes": 105629,
+    "webpBytes": 88402,
+    "cached": true
+  },
+  "images/banners/hero-banner-1.png": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/banners/hero-banner-1.webp",
+    "originalBytes": 2750319,
+    "webpBytes": 239162,
+    "cached": true
+  },
+  "images/banners/hero-banner-2.png": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/banners/hero-banner-2.webp",
+    "originalBytes": 2102147,
+    "webpBytes": 273436,
+    "cached": true
+  },
+  "images/banners/storefront-promo-banner.png": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/banners/storefront-promo-banner.webp",
+    "originalBytes": 1298234,
+    "webpBytes": 167124,
+    "cached": true
+  },
+  "images/hero-banner-2.png": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/hero-banner-2.webp",
+    "originalBytes": 2102147,
+    "webpBytes": 273436,
+    "cached": true
+  },
+  "images/hero-banner.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/hero-banner.webp",
+    "originalBytes": 288972,
+    "webpBytes": 239162,
+    "cached": true
+  },
+  "images/hero-banner.png": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/hero-banner.webp",
+    "originalBytes": 2750319,
+    "webpBytes": 239162,
+    "cached": true
+  },
+  "images/logo.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/logo.webp",
+    "originalBytes": 220556,
+    "webpBytes": 85216,
+    "cached": true
+  },
+  "images/logo.png": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/logo.webp",
+    "originalBytes": 509605,
+    "webpBytes": 85216,
+    "cached": true
+  },
+  "images/products/automatic-bubble-gun-blaster-toy-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/automatic-bubble-gun-blaster-toy-punnagai.webp",
+    "originalBytes": 183800,
+    "webpBytes": 127496,
+    "cached": true
+  },
+  "images/products/catan-trade-build-settle-board-game-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/catan-trade-build-settle-board-game-punnagai.webp",
+    "originalBytes": 225977,
+    "webpBytes": 172234,
+    "cached": true
+  },
+  "images/products/construction-jcb-excavator-truck-toy-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/construction-jcb-excavator-truck-toy-punnagai.webp",
+    "originalBytes": 197981,
+    "webpBytes": 141456,
+    "cached": true
+  },
+  "images/products/crossword-educational-word-game-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/crossword-educational-word-game-punnagai.webp",
+    "originalBytes": 201551,
+    "webpBytes": 142938,
+    "cached": true
+  },
+  "images/products/cute-strawberry-bunny-soft-plush-toy-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/cute-strawberry-bunny-soft-plush-toy-punnagai.webp",
+    "originalBytes": 145451,
+    "webpBytes": 95260,
+    "cached": true
+  },
+  "images/products/dancing-angel-doll-lights-music-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/dancing-angel-doll-lights-music-punnagai.webp",
+    "originalBytes": 170734,
+    "webpBytes": 114342,
+    "cached": true
+  },
+  "images/products/dancing-bunny-musical-light-toy-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/dancing-bunny-musical-light-toy-punnagai.webp",
+    "originalBytes": 183617,
+    "webpBytes": 128696,
+    "cached": true
+  },
+  "images/products/dancing-elephant-musical-toy-adventure-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/dancing-elephant-musical-toy-adventure-punnagai.webp",
+    "originalBytes": 192913,
+    "webpBytes": 135316,
+    "cached": true
+  },
+  "images/products/electric-crawling-worm-musical-toy-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/electric-crawling-worm-musical-toy-punnagai.webp",
+    "originalBytes": 123881,
+    "webpBytes": 77694,
+    "cached": true
+  },
+  "images/products/electric-swan-lights-music-motion-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/electric-swan-lights-music-motion-punnagai.webp",
+    "originalBytes": 172688,
+    "webpBytes": 116642,
+    "cached": true
+  },
+  "images/products/formula-one-racing-car-toy-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/formula-one-racing-car-toy-punnagai.webp",
+    "originalBytes": 179980,
+    "webpBytes": 130934,
+    "cached": true
+  },
+  "images/products/hanging-windmill-infant-crib-toy-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/hanging-windmill-infant-crib-toy-punnagai.webp",
+    "originalBytes": 168244,
+    "webpBytes": 111854,
+    "cached": true
+  },
+  "images/products/hover-soccer-ball-indoor-sports-toy-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/hover-soccer-ball-indoor-sports-toy-punnagai.webp",
+    "originalBytes": 176001,
+    "webpBytes": 122304,
+    "cached": true
+  },
+  "images/products/ice-cream-cart-vandi-pretend-play-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/ice-cream-cart-vandi-pretend-play-punnagai.webp",
+    "originalBytes": 162736,
+    "webpBytes": 108040,
+    "cached": true
+  },
+  "images/products/little-doctor-medical-kit-pretend-play-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/little-doctor-medical-kit-pretend-play-punnagai.webp",
+    "originalBytes": 184242,
+    "webpBytes": 127640,
+    "cached": true
+  },
+  "images/products/monopoly-india-edition-board-game-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/monopoly-india-edition-board-game-punnagai.webp",
+    "originalBytes": 228322,
+    "webpBytes": 166024,
+    "cached": true
+  },
+  "images/products/neon-rc-stunt-car-adventure-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/neon-rc-stunt-car-adventure-punnagai.webp",
+    "originalBytes": 203322,
+    "webpBytes": 150508,
+    "cached": true
+  },
+  "images/products/pictureka-fast-paced-picture-hunt-game-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/pictureka-fast-paced-picture-hunt-game-punnagai.webp",
+    "originalBytes": 238719,
+    "webpBytes": 179504,
+    "cached": true
+  },
+  "images/products/premium-wooden-chess-set-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/premium-wooden-chess-set-punnagai.webp",
+    "originalBytes": 184869,
+    "webpBytes": 129690,
+    "cached": true
+  },
+  "images/products/rainbow-teddy-bear-soft-plush-toy-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/rainbow-teddy-bear-soft-plush-toy-punnagai.webp",
+    "originalBytes": 160484,
+    "webpBytes": 108946,
+    "cached": true
+  },
+  "images/products/rc-fighter-jet-airplane-toy-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/rc-fighter-jet-airplane-toy-punnagai.webp",
+    "originalBytes": 209144,
+    "webpBytes": 154470,
+    "cached": true
+  },
+  "images/products/rc-helicopter-smooth-flight-toy-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/rc-helicopter-smooth-flight-toy-punnagai.webp",
+    "originalBytes": 182420,
+    "webpBytes": 124990,
+    "cached": true
+  },
+  "images/products/rc-sports-racing-car-toy-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/rc-sports-racing-car-toy-punnagai.webp",
+    "originalBytes": 185941,
+    "webpBytes": 133612,
+    "cached": true
+  },
+  "images/products/smart-robot-lights-sounds-fun-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/smart-robot-lights-sounds-fun-punnagai.webp",
+    "originalBytes": 127703,
+    "webpBytes": 77602,
+    "cached": true
+  },
+  "images/products/soft-classic-teddy-bear-plush-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/soft-classic-teddy-bear-plush-punnagai.webp",
+    "originalBytes": 169226,
+    "webpBytes": 118388,
+    "cached": true
+  },
+  "images/products/space-gun-g-strike-toy-blaster-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/space-gun-g-strike-toy-blaster-punnagai.webp",
+    "originalBytes": 194192,
+    "webpBytes": 138250,
+    "cached": true
+  },
+  "images/products/splendor-strategy-board-game-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/splendor-strategy-board-game-punnagai.webp",
+    "originalBytes": 207063,
+    "webpBytes": 154500,
+    "cached": true
+  },
+  "images/products/thomas-train-track-set-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/thomas-train-track-set-punnagai.webp",
+    "originalBytes": 200653,
+    "webpBytes": 144808,
+    "cached": true
+  },
+  "images/products/thunder-foam-dart-blaster-gun-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/thunder-foam-dart-blaster-gun-punnagai.webp",
+    "originalBytes": 194117,
+    "webpBytes": 139212,
+    "cached": true
+  },
+  "images/products/thunder-strike-toy-blaster-gun-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/thunder-strike-toy-blaster-gun-punnagai.webp",
+    "originalBytes": 200950,
+    "webpBytes": 151418,
+    "cached": true
+  },
+  "images/products/transforming-robot-car-action-toy-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/transforming-robot-car-action-toy-punnagai.webp",
+    "originalBytes": 210912,
+    "webpBytes": 156760,
+    "cached": true
+  },
+  "images/products/ultimate-rc-stunt-car-adventure-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/ultimate-rc-stunt-car-adventure-punnagai.webp",
+    "originalBytes": 199276,
+    "webpBytes": 147268,
+    "cached": true
+  },
+  "images/products/unicorn-soft-plush-toy-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/unicorn-soft-plush-toy-punnagai.webp",
+    "originalBytes": 138078,
+    "webpBytes": 88598,
+    "cached": true
+  },
+  "images/products/walkie-talkie-kids-adventure-set-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/walkie-talkie-kids-adventure-set-punnagai.webp",
+    "originalBytes": 165329,
+    "webpBytes": 108822,
+    "cached": true
+  },
+  "images/products/wooden-3d-ludo-family-board-game-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/wooden-3d-ludo-family-board-game-punnagai.webp",
+    "originalBytes": 193404,
+    "webpBytes": 139796,
+    "cached": true
+  },
+  "images/products/wooden-jenga-tumbling-tower-game-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/wooden-jenga-tumbling-tower-game-punnagai.webp",
+    "originalBytes": 167349,
+    "webpBytes": 107904,
+    "cached": true
+  },
+  "images/products/wooden-ludo-classic-family-game-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/wooden-ludo-classic-family-game-punnagai.webp",
+    "originalBytes": 168057,
+    "webpBytes": 111042,
+    "cached": true
+  },
+  "images/products/wooden-memory-chess-educational-game-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/wooden-memory-chess-educational-game-punnagai.webp",
+    "originalBytes": 184918,
+    "webpBytes": 132424,
+    "cached": true
+  },
+  "images/products/wooden-number-puzzle-math-toy-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/wooden-number-puzzle-math-toy-punnagai.webp",
+    "originalBytes": 192045,
+    "webpBytes": 132256,
+    "cached": true
+  },
+  "images/products/wooden-shape-sorter-educational-toy-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/wooden-shape-sorter-educational-toy-punnagai.webp",
+    "originalBytes": 177011,
+    "webpBytes": 117588,
+    "cached": true
+  },
+  "images/products/wooden-tic-tac-toe-puzzle-game-punnagai.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/products/wooden-tic-tac-toe-puzzle-game-punnagai.webp",
+    "originalBytes": 181840,
+    "webpBytes": 126352,
+    "cached": true
+  },
+  "images/punnagai-upi-qr.png": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/punnagai-upi-qr.webp",
+    "originalBytes": 846,
+    "webpBytes": 7092,
+    "cached": true
+  },
+  "images/social-share.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/social-share.webp",
+    "originalBytes": 298018,
+    "webpBytes": 149856,
+    "cached": true
+  },
+  "images/store/store-entrance.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/store/store-entrance.webp",
+    "originalBytes": 431485,
+    "webpBytes": 310078,
+    "cached": true
+  },
+  "images/store/store-interior.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/store/store-interior.webp",
+    "originalBytes": 431485,
+    "webpBytes": 310078,
+    "cached": true
+  },
+  "images/store-hero.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/store-hero.webp",
+    "originalBytes": 298018,
+    "webpBytes": 149856,
+    "cached": true
+  },
+  "images/store-interior.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/store-interior.webp",
+    "originalBytes": 431485,
+    "webpBytes": 569286,
+    "cached": true
+  },
+  "images/store-interior.png": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/store-interior.webp",
+    "originalBytes": 3442967,
+    "webpBytes": 569286,
+    "cached": true
+  },
+  "logo.png": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "logo.webp",
+    "originalBytes": 509605,
+    "webpBytes": 85216,
+    "cached": true
+  }
+}

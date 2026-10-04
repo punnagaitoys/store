@@ -96,6 +96,9 @@ services:
       - path: /logo.png
         name: Cache-Control
         value: "public, max-age=2592000"
+      - path: /logo.webp
+        name: Cache-Control
+        value: "public, max-age=2592000"
       - path: /images/*
         name: Cache-Control
         value: "public, max-age=2592000"

@@ -719,6 +719,51 @@ function getProductStockLevel(product) {
   return product.inStock ? null : 0; // null = in stock but count unknown
 }
 
+/**
+ * Helper to generate WebP-first picture markup with explicit dimensions and responsive srcset
+ */
+function buildOptimizedPictureHtml(imageUrl, altText, options = {}) {
+  const width = options.width || 300;
+  const height = options.height || 300;
+  const loading = options.loading || 'lazy';
+  const className = options.className || '';
+  const imgClass = options.imgClass || '';
+  const idAttr = options.id ? `id="${options.id}"` : '';
+  const isCard = options.isCard !== false;
+  const fallback = options.fallback || 'logo.png';
+  const safeAlt = escapeHtml(altText || 'Toy');
+
+  if (!imageUrl) {
+    return `<img src="${fallback}" alt="${safeAlt}" width="${width}" height="${height}" loading="${loading}" decoding="async" class="${imgClass}" ${idAttr} />`;
+  }
+
+  // Check if image is external, data URL, or non-raster
+  const isExternal = /^(https?:\/\/|data:|blob:)/i.test(imageUrl);
+  const isRaster = /\.(jpe?g|png)$/i.test(imageUrl);
+
+  if (isExternal || !isRaster) {
+    return `<img src="${imageUrl}" alt="${safeAlt}" width="${width}" height="${height}" loading="${loading}" decoding="async" class="${imgClass}" ${idAttr} onerror="this.onerror=null; this.src='${fallback}';" />`;
+  }
+
+  const webpUrl = imageUrl.replace(/\.(jpe?g|png)$/i, '.webp');
+  const thumbUrl = imageUrl.replace(/\.(jpe?g|png)$/i, '-thumb.webp');
+
+  const srcset = isCard
+    ? `${thumbUrl} 300w, ${webpUrl} 600w`
+    : `${webpUrl}`;
+  const sizes = isCard ? `(max-width: 768px) 50vw, 300px` : `${width}px`;
+
+  // If WebP is not yet generated, automatically fallback to the original PNG/JPEG seamlessly
+  const retryFallbackScript = `if(!this.dataset.retried){this.dataset.retried='1';const p=this.parentElement;if(p&&p.tagName==='PICTURE'){p.querySelectorAll('source').forEach(s=>s.remove());this.src='${imageUrl}';return;}}this.onerror=null;if(this.parentElement){this.parentElement.style.display='none';if(this.parentElement.nextElementSibling)this.parentElement.nextElementSibling.style.display='flex';}`;
+
+  return `
+    <picture class="${className}">
+      <source type="image/webp" srcset="${srcset}" ${sizes ? `sizes="${sizes}"` : ''} />
+      <img src="${imageUrl}" alt="${safeAlt}" width="${width}" height="${height}" loading="${loading}" decoding="async" class="${imgClass}" ${idAttr} onerror="${retryFallbackScript}" />
+    </picture>
+  `.trim();
+}
+
 function renderProductCard(product) {
   const isOnSale = product.originalPrice && product.originalPrice > product.price;
   const discount = isOnSale ? Math.round((1 - product.price / product.originalPrice) * 100) : 0;
@@ -749,9 +794,9 @@ function renderProductCard(product) {
   };
   const emoji = catEmoji[product.category] || '🎁';
 
-  // Image or placeholder
+  // Image or placeholder with WebP & explicit dimensions
   const imgHtml = product.imageUrl
-    ? `<img src="${product.imageUrl}" alt="${product.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+    ? `${buildOptimizedPictureHtml(product.imageUrl, product.name, { width: 300, height: 300, loading: 'lazy', isCard: true, className: 'product-card-picture' })}
        <div class="product-img-placeholder" style="display:none">
          <span class="cat-emoji">${emoji}</span>
          <span class="cat-label">${product.category}</span>
@@ -1657,7 +1702,7 @@ function renderProductDetailsUI() {
     <div class="product-detail-layout">
       <div class="product-gallery">
         <div class="main-image-container">
-          <img src="${product.imageUrl || 'logo.png'}" alt="${escapeHtml(product.name)}" id="main-product-image" onerror="this.onerror=null; this.src='logo.png';">
+          ${buildOptimizedPictureHtml(product.imageUrl, product.name, { width: 600, height: 600, loading: 'eager', isCard: false, id: 'main-product-image', className: 'main-picture-wrap', imgClass: 'main-product-img' })}
         </div>
         ${videoEmbedHtml}
       </div>
@@ -1904,7 +1949,7 @@ function renderWishlistCard(product) {
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
       <div class="product-card-image" onclick="window.location='product.html?id=${product.id}'">
-        <img src="${product.imageUrl || 'logo.png'}" alt="${escapeHtml(product.name)}" loading="lazy" onerror="this.src='logo.png'"/>
+        ${buildOptimizedPictureHtml(product.imageUrl, product.name, { width: 300, height: 300, loading: 'lazy', isCard: true, className: 'wishlist-picture' })}
         ${badgeHtml}
       </div>
       <div class="product-card-body" onclick="window.location='product.html?id=${product.id}'">
@@ -2118,7 +2163,7 @@ window.openQuickView = function (productId) {
       <button class="quick-view-close" onclick="closeQuickView()" aria-label="Close modal">&times;</button>
       <div class="quick-view-grid">
         <div class="quick-view-img-wrap">
-          ${product.imageUrl ? `<img src="${product.imageUrl}" alt="${product.name}" class="quick-view-main-img" onerror="this.onerror=null; this.src='logo.png';" />` : `<div class="product-img-placeholder" style="height:320px"><span class="cat-emoji">🎁</span></div>`}
+          ${product.imageUrl ? buildOptimizedPictureHtml(product.imageUrl, product.name, { width: 400, height: 400, loading: 'eager', isCard: false, imgClass: 'quick-view-main-img' }) : `<div class="product-img-placeholder" style="height:320px"><span class="cat-emoji">🎁</span></div>`}
           <span class="quick-view-badge">${product.category}</span>
         </div>
         <div class="quick-view-content">

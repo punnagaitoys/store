@@ -169,7 +169,6 @@ $mapping = @{
     "farmula racing-#punnagaitoys.jpg" = "formula-one-racing-car-toy-punnagai.jpg"
     "lectric Worm-#punnagaitoys.jpg" = "electric-crawling-worm-musical-toy-punnagai.jpg"
     "rc sports car -punnagaitoys.jpg" = "rc-sports-racing-car-toy-punnagai.jpg"
-    "logo.jpg" = "punnagai-toys-brand-badge.jpg"
 }
 
 $prodSrcDir = "images/punnagai_toys_products_800x800"

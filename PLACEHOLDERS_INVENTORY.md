@@ -7,7 +7,7 @@
 
 ## 1. Firebase Project Configuration
 
-- **File:** [`js/firebase-config.js`](file:///e:/Github/Kamaal%20Shop%20Website/js/firebase-config.js#L51-L58)
+- **File:** [`js/firebase-config.js`](./js/firebase-config.js)
 - **Status:** Placeholder values active.
 - **Fields to Fill:**
   ```javascript
@@ -30,7 +30,7 @@
 
 ## 2. WhatsApp Business Cloud API (Cloud Functions)
 
-- **File:** [`functions/index.js`](file:///e:/Github/Kamaal%20Shop%20Website/functions/index.js#L38-L44)
+- **File:** [`functions/index.js`](./functions/index.js)
 - **Status:** Uses environment variables.
 - **Variables to Configure:**
   - `WHATSAPP_API_TOKEN`: Permanent Meta System User access token with `whatsapp_business_messaging` permissions.
@@ -51,7 +51,7 @@
 
 ## 3. YouTube Showcase & Demonstration Videos
 
-- **File:** [`js/youtube.js`](file:///e:/Github/Kamaal%20Shop%20Website/js/youtube.js#L6-L40) & [`admin.html`](file:///e:/Github/Kamaal%20Shop%20Website/admin.html#L1883)
+- **File:** [`js/youtube.js`](./js/youtube.js) & [`admin.html`](./admin.html)
 - **Status:** **CONFIGURED** with Client's Official Channel & Videos.
 - **Channel Link:** `https://www.youtube.com/@PunnagaiRahim` (Punnagai Rahim)
 - **Configured Video Showcases:**
@@ -96,7 +96,7 @@
 
 ## 6. UPI Payment ID & QR Code
 
-- **Files:** [`checkout.html`](file:///e:/Github/Kamaal%20Shop%20Website/checkout.html#L222), [`js/checkout.js`](file:///e:/Github/Kamaal%20Shop%20Website/js/checkout.js)
+- **Files:** [`checkout.html`](./checkout.html), [`js/checkout.js`](./js/checkout.js)
 - **Placeholder Value:** `punnagai@upi` / `yourname@upi`
 - **Action Required:**
   Set the client's official merchant UPI VPA (e.g., `punnagaitoys@okicici` or `punnagai@upi`) in Store Settings so customers scan/pay directly to the store account.

@@ -435,17 +435,18 @@
 
       // Import any product images from catalog that aren't already in default or custom items
       catalogProducts.forEach((p, idx) => {
-        if (p && p.image) {
+        const prodImg = p && (p.imageUrl || p.image);
+        if (prodImg) {
           const exists =
-            DEFAULT_MEDIA_ITEMS.some((i) => i.url === p.image) ||
-            customItems.some((i) => i.url === p.image) ||
-            catalogItems.some((i) => i.url === p.image);
+            DEFAULT_MEDIA_ITEMS.some((i) => i.url === prodImg) ||
+            customItems.some((i) => i.url === prodImg) ||
+            catalogItems.some((i) => i.url === prodImg);
           if (!exists) {
             catalogItems.push({
               id: 'cat_med_' + idx + '_' + Date.now().toString().slice(-4),
               title: p.name || 'Catalog Product ' + (idx + 1),
               category: 'toys',
-              url: p.image,
+              url: prodImg,
               date: new Date().toISOString().split('T')[0],
               dimensions: '600x600'
             });

@@ -47,15 +47,15 @@
  * Once done, paste YOUR config below:
  */
 
-// Default Firebase Configuration template:
+// Default Firebase Configuration:
 const DEFAULT_FIREBASE_CONFIG = {
-  apiKey: 'YOUR_API_KEY_HERE',
+  apiKey: 'AIzaSyDJsabqiKNFmBPgskZmgbAdAIOq__zI-os',
   authDomain: 'punnagai-toy-store.firebaseapp.com',
   projectId: 'punnagai-toy-store',
   storageBucket: 'punnagai-toy-store.firebasestorage.app',
   messagingSenderId: '748480682670',
-  appId: 'YOUR_APP_ID_HERE',
-  measurementId: ''
+  appId: '1:748480682670:web:ba4ded0c0c3ec92f4deb3f',
+  measurementId: 'G-FNSVGV3KPK'
 };
 
 /**

@@ -41,7 +41,13 @@ const server = http.createServer((req, res) => {
   }
 
   // Security check: ensure path is inside ROOT
-  if (!filePath.startsWith(ROOT)) {
+  const resolvedPath = path.resolve(filePath);
+  const resolvedRoot = path.resolve(ROOT);
+  const isInsideRoot = process.platform === 'win32'
+    ? resolvedPath.toLowerCase().startsWith(resolvedRoot.toLowerCase())
+    : resolvedPath.startsWith(resolvedRoot);
+
+  if (!isInsideRoot) {
     res.writeHead(403);
     res.end('Forbidden');
     return;
@@ -76,8 +82,8 @@ const server = http.createServer((req, res) => {
 });
 
 function startServer(port) {
-  server.listen(port, () => {
-    console.log(`Punnagai Dev Server running at http://localhost:${port}`);
+  server.listen(port, '0.0.0.0', () => {
+    console.log(`Punnagai Dev Server running at http://0.0.0.0:${port}`);
   });
 }
 

@@ -11,7 +11,7 @@
 
 'use strict';
 
-const CACHE_NAME = 'punnagai-v6';
+const CACHE_NAME = 'punnagai-v7';
 const OFFLINE_PAGE = '/index.html';
 
 // Static assets to precache on install
@@ -24,6 +24,7 @@ const PRECACHE_URLS = [
   '/wishlist.html',
   '/checkout.html',
   '/account.html',
+  '/orders.html',
   '/order-confirmation.html',
   '/404.html',
   '/logo.png',
@@ -53,7 +54,7 @@ const PRECACHE_URLS = [
   '/js/app.js',
   '/js/cart.js',
   '/js/auth.js',
-  '/js/product-detail.js',
+  '/js/lib/product-detail.js',
   '/js/checkout-page.js',
   '/js/lib/cart-storage.js',
   '/js/lib/cart-logic.js',

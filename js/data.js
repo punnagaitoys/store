@@ -741,14 +741,23 @@ const LOCAL_STORAGE_CATALOG_VERSION = 'punnagai_catalog_v2026_branded';
 function getLocalProducts() {
   try {
     const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (raw !== null) {
+    const currentVer = localStorage.getItem('punnagai_catalog_version');
+    if (raw !== null && currentVer === LOCAL_STORAGE_CATALOG_VERSION) {
       const prods = JSON.parse(raw);
-      if (Array.isArray(prods)) {
+      if (Array.isArray(prods) && prods.length > 0) {
         return prods;
       }
     }
   } catch (e) {}
-  return [];
+
+  // Auto-seed from SEED_PRODUCTS if empty or version updated
+  const seeded = SEED_PRODUCTS.map((p, i) => ({
+    ...p,
+    id: 'local_seed_' + i,
+    createdAt: Date.now() - i * 1000
+  }));
+  saveLocalProducts(seeded);
+  return seeded;
 }
 
 function saveLocalProducts(products) {
@@ -878,7 +887,16 @@ async function getProductById(id) {
       }
     }
     const products = getLocalProducts();
-    return products.find((p) => p.id === id || p.name === id) || null;
+    const strId = String(id);
+    return (
+      products.find(
+        (p) =>
+          p.id === strId ||
+          p.name === strId ||
+          p.id === 'local_seed_' + strId ||
+          (p.variants && p.variants.some((v) => v.skuId === strId || v.variantId === strId))
+      ) || null
+    );
   } catch (err) {
     console.error('Error fetching product:', err);
     return null;

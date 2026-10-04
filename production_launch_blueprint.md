@@ -102,13 +102,13 @@ _(Note: Firebase client keys are public identifiers and safe to paste in fronten
 
 ### Step 1: Codebase Configuration (Agent Action)
 
-- Paste production Firebase credentials into [`js/firebase-config.js`](file:///e:/Github/Kamaal%20Shop%20Website/js/firebase-config.js).
+- Paste production Firebase credentials into [`js/firebase-config.js`](./js/firebase-config.js).
 - Set `USE_LOCAL_MODE = false` to enable live cloud syncing.
-- Deploy [`firestore.rules`](file:///e:/Github/Kamaal%20Shop%20Website/firestore.rules) and [`storage.rules`](file:///e:/Github/Kamaal%20Shop%20Website/storage.rules).
+- Deploy [`firestore.rules`](./firestore.rules) and [`storage.rules`](./storage.rules).
 
 ### Step 2: Static Deployment (Agent Action)
 
-- Initialize Firebase Hosting in [`firebase.json`](file:///e:/Github/Kamaal%20Shop%20Website/firebase.json):
+- Initialize Firebase Hosting in [`firebase.json`](./firebase.json):
   ```json
   {
     "hosting": {

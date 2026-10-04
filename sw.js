@@ -11,7 +11,7 @@
 
 'use strict';
 
-const CACHE_NAME = 'punnagai-v7';
+const CACHE_NAME = 'punnagai-v8';
 const OFFLINE_PAGE = '/index.html';
 
 // Static assets to precache on install

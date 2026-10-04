@@ -736,7 +736,27 @@ const SEED_PRODUCTS = [
 // ============================================================
 // LOCAL STORAGE HELPERS
 // ============================================================
-const LOCAL_STORAGE_CATALOG_VERSION = 'punnagai_catalog_v2026_branded';
+const LOCAL_STORAGE_CATALOG_VERSION = 'punnagai_catalog_v2026_41_branded_official';
+
+// Immediate purge of obsolete dummy products on file evaluation
+(function purgeLegacyProducts() {
+  try {
+    if (typeof localStorage !== 'undefined') {
+      const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+      const ver = localStorage.getItem('punnagai_catalog_version');
+      if (
+        raw &&
+        (ver !== LOCAL_STORAGE_CATALOG_VERSION ||
+          raw.includes('Wooden Rainbow Stacker') ||
+          raw.includes('Magnetic Drawing Board') ||
+          raw.includes('LEGO Classic Creative Bricks Set'))
+      ) {
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+        localStorage.setItem('punnagai_catalog_version', LOCAL_STORAGE_CATALOG_VERSION);
+      }
+    }
+  } catch (e) {}
+})();
 
 function getLocalProducts() {
   try {
@@ -744,13 +764,23 @@ function getLocalProducts() {
     const currentVer = localStorage.getItem('punnagai_catalog_version');
     if (raw !== null && currentVer === LOCAL_STORAGE_CATALOG_VERSION) {
       const prods = JSON.parse(raw);
-      if (Array.isArray(prods) && prods.length > 0) {
+      const isOutdated =
+        Array.isArray(prods) &&
+        prods.some(
+          (p) =>
+            p.name === 'Wooden Rainbow Stacker' ||
+            p.name === 'LEGO Classic Creative Bricks Set' ||
+            p.name === 'Magnetic Drawing Board' ||
+            p.name === 'Remote Control Racing Car 4WD' ||
+            p.name === 'Scrabble Junior Board Game'
+        );
+      if (Array.isArray(prods) && prods.length === SEED_PRODUCTS.length && !isOutdated) {
         return prods;
       }
     }
   } catch (e) {}
 
-  // Auto-seed from SEED_PRODUCTS if empty or version updated
+  // Auto-seed from SEED_PRODUCTS if empty, version updated, or contains old dummy template products
   const seeded = SEED_PRODUCTS.map((p, i) => ({
     ...p,
     id: 'local_seed_' + i,
@@ -820,8 +850,19 @@ async function getProducts(filters = {}) {
         products = [];
       }
 
-      // Resilience Fallback: If Firestore returned 0 products, fall back to local seed products
-      if (!products || products.length === 0) {
+      // Resilience Fallback: If Firestore returned 0 products or old template products, fall back to local seed products
+      const hasOutdatedFirestoreProducts =
+        Array.isArray(products) &&
+        products.some(
+          (p) =>
+            p.name === 'Wooden Rainbow Stacker' ||
+            p.name === 'LEGO Classic Creative Bricks Set' ||
+            p.name === 'Magnetic Drawing Board' ||
+            p.name === 'Remote Control Racing Car 4WD' ||
+            p.name === 'Scrabble Junior Board Game'
+        );
+
+      if (!products || products.length === 0 || hasOutdatedFirestoreProducts) {
         products = getLocalProducts();
       }
     }

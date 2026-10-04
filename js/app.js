@@ -200,13 +200,17 @@ function updateWishlistBadge() {
   });
 
   // Micro-interaction: Playful wishlist pop
-  document
-    .querySelectorAll('.wishlist-btn, .bottom-nav-item[href="wishlist.html"]')
-    .forEach((btn) => {
-      btn.classList.remove('wishlist-burst');
-      void btn.offsetWidth;
-      btn.classList.add('wishlist-burst');
+  const wishlistButtons = document.querySelectorAll(
+    '.wishlist-btn, .bottom-nav-item[href="wishlist.html"]'
+  );
+  if (wishlistButtons.length > 0) {
+    wishlistButtons.forEach((btn) => btn.classList.remove('wishlist-burst'));
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        wishlistButtons.forEach((btn) => btn.classList.add('wishlist-burst'));
+      });
     });
+  }
 }
 
 function renderMobileBottomNav(activePage = '') {
@@ -592,7 +596,10 @@ function renderSearchOverlay() {
   document.body.appendChild(el);
 }
 
+let _searchTriggerEl = null;
+
 window.openGlobalSearch = function () {
+  _searchTriggerEl = document.activeElement;
   renderSearchOverlay();
   const overlay = document.getElementById('global-search-overlay');
   if (!overlay) return;
@@ -610,9 +617,13 @@ window.closeGlobalSearch = function () {
   const overlay = document.getElementById('global-search-overlay');
   if (overlay) overlay.classList.remove('open');
   document.body.style.overflow = '';
+  if (_searchTriggerEl && typeof _searchTriggerEl.focus === 'function') {
+    _searchTriggerEl.focus();
+  }
 };
 
 function initGlobalSearch() {
+  const overlay = document.getElementById('global-search-overlay');
   const inp = document.getElementById('global-search-input');
   const resultsBox = document.getElementById('global-search-results');
   if (!inp || !resultsBox) return;
@@ -673,7 +684,7 @@ function initGlobalSearch() {
           const imgEl = p.imageUrl
             ? `<img src="${p.imageUrl}" alt="" loading="lazy" class="search-result-img" onerror="this.style.display='none'">`
             : `<div class="search-result-img-placeholder">${emoji}</div>`;
-          return `<a href="product.html?id=${p.id}" class="search-result-item" role="option" onclick="closeGlobalSearch()">
+          return `<a href="product.html?id=${p.id}" class="search-result-item" role="option" tabindex="-1" onclick="closeGlobalSearch()">
           ${imgEl}
           <div class="search-result-info">
             <div class="search-result-name">${window.escapeHtml(p.name)}</div>
@@ -684,28 +695,91 @@ function initGlobalSearch() {
         })
         .join('');
 
-      const footer = `<div class="search-results-footer"><a href="shop.html?search=${encodeURIComponent(term)}" onclick="closeGlobalSearch()">See all results for "${window.escapeHtml(term)}" →</a></div>`;
+      const footer = `<div class="search-results-footer"><a href="shop.html?search=${encodeURIComponent(term)}" role="option" tabindex="-1" onclick="closeGlobalSearch()">See all results for "${window.escapeHtml(term)}" →</a></div>`;
       resultsBox.innerHTML = items + footer;
       inp.setAttribute('aria-expanded', 'true');
     }, 220);
   });
 
-  // Escape key closes
+  // Keyboard navigation & search trigger
   inp.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeGlobalSearch();
-    if (e.key === 'Enter') {
+    if (e.key === 'Escape') {
+      closeGlobalSearch();
+    } else if (e.key === 'Enter') {
       const term = inp.value.trim();
       if (term) {
         closeGlobalSearch();
         window.location = 'shop.html?search=' + encodeURIComponent(term);
       }
+    } else if (e.key === 'ArrowDown') {
+      const firstItem = resultsBox.querySelector('.search-result-item, .search-results-footer a');
+      if (firstItem) {
+        e.preventDefault();
+        firstItem.focus();
+      }
     }
   });
+
+  // Navigate through options with ArrowDown / ArrowUp
+  resultsBox.addEventListener('keydown', (e) => {
+    const items = Array.from(
+      resultsBox.querySelectorAll('.search-result-item, .search-results-footer a')
+    );
+    const currentIndex = items.indexOf(document.activeElement);
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (currentIndex < items.length - 1) {
+        items[currentIndex + 1].focus();
+      } else {
+        items[0].focus();
+      }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (currentIndex > 0) {
+        items[currentIndex - 1].focus();
+      } else {
+        inp.focus();
+      }
+    } else if (e.key === 'Escape') {
+      closeGlobalSearch();
+    }
+  });
+
+  // Focus trap inside search overlay
+  if (overlay) {
+    overlay.addEventListener('keydown', (e) => {
+      if (e.key !== 'Tab') return;
+      const focusables = Array.from(
+        overlay.querySelectorAll('input, button, a[href], [tabindex]:not([tabindex="-1"])')
+      ).filter((el) => el.offsetParent !== null);
+      if (!focusables.length) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    });
+  }
 }
 
-// Global Escape listener
+// Global keyboard shortcuts (Ctrl+K to open, Escape to close)
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeGlobalSearch();
+  if (e.key === 'Escape') {
+    closeGlobalSearch();
+  } else if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+    e.preventDefault();
+    const overlay = document.getElementById('global-search-overlay');
+    if (overlay && overlay.classList.contains('open')) {
+      closeGlobalSearch();
+    } else if (typeof window.openGlobalSearch === 'function') {
+      window.openGlobalSearch();
+    }
+  }
 });
 
 function getProductStockLevel(product) {
@@ -829,29 +903,35 @@ function renderProductCard(product) {
     </div>`;
   }
 
+  const safeId = escapeHtml(String(product.id || ''));
+  const safeName = escapeHtml(String(product.name || ''));
+  const safeCategory = escapeHtml(String(product.category || ''));
+  const safeAge = escapeHtml(String(product.ageGroup || ''));
+  const encodedId = encodeURIComponent(String(product.id || ''));
+
   return `
-    <div class="product-card" data-id="${product.id}"
-         onclick="window.location='product.html?id=${product.id}'"
-         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location='product.html?id=${product.id}'}"
+    <div class="product-card" data-id="${safeId}"
+         onclick="window.location='product.html?id=${encodedId}'"
+         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location='product.html?id=${encodedId}'}"
          tabindex="0" role="article"
-         aria-label="${product.name}, &#8377;${product.price.toLocaleString('en-IN')}"
+         aria-label="${safeName}, &#8377;${product.price.toLocaleString('en-IN')}"
          style="cursor:pointer">
       <div class="product-card-image">
         ${imgHtml}
         ${badgeHtml}
         ${videoBadge}
-        <button class="quick-view-btn" onclick="event.stopPropagation(); openQuickView('${product.id}')" aria-label="Quick preview of ${product.name}">
+        <button class="quick-view-btn" onclick="event.stopPropagation(); openQuickView('${safeId}')" aria-label="Quick preview of ${safeName}">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           Quick View
         </button>
-        <button class="product-wishlist-btn ${typeof window !== 'undefined' && window.PunnagaiWishlist && window.PunnagaiWishlist.isInWishlist(product.id) ? 'active' : ''}" data-id="${product.id}" onclick="event.stopPropagation(); window.handleWishlistToggle && window.handleWishlistToggle('${product.id}')" aria-label="Add ${product.name} to wishlist">
+        <button class="product-wishlist-btn ${typeof window !== 'undefined' && window.PunnagaiWishlist && window.PunnagaiWishlist.isInWishlist(product.id) ? 'active' : ''}" data-id="${safeId}" onclick="event.stopPropagation(); window.handleWishlistToggle && window.handleWishlistToggle('${safeId}')" aria-label="Add ${safeName} to wishlist">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         </button>
       </div>
       <div class="product-card-body">
-        <p class="product-category">${product.category}</p>
-        <h3 class="product-name">${product.name}</h3>
-        <p class="product-age">Ages ${product.ageGroup} yrs</p>
+        <p class="product-category">${safeCategory}</p>
+        <h3 class="product-name">${safeName}</h3>
+        <p class="product-age">Ages ${safeAge} yrs</p>
         ${miniStarsHtml}
         <div class="product-price-row">
           <div class="price-group">
@@ -921,13 +1001,20 @@ async function handleAddToCart(productId) {
 // SEO: OpenGraph / Twitter Meta Update (product.html)
 // ============================================================
 
+function toAbsoluteUrl(url) {
+  if (!url) return 'https://punnagaitoysfancy.in/images/store-hero.jpg';
+  if (/^https?:\/\//i.test(url) || url.startsWith('data:')) return url;
+  const clean = url.replace(/^\/+/, '');
+  return `https://punnagaitoysfancy.in/${clean}`;
+}
+
 function updateProductPageMeta(product) {
   if (!product) return;
   const desc = (
     product.description ||
     'Quality educational toys, board games and return gifts at Punnagai Toy Store, Mylapore, Chennai.'
   ).slice(0, 160);
-  const img = product.imageUrl || 'https://punnagaitoysfancy.in/images/store-hero.jpg';
+  const img = toAbsoluteUrl(product.imageUrl);
   const prodUrl = `https://punnagaitoysfancy.in/product.html?id=${encodeURIComponent(product.id || '')}`;
 
   document.title = `${product.name} — Buy Online | Punnagai Toy Store Chennai`;
@@ -985,9 +1072,7 @@ function injectProductStructuredData(product, reviewCount, avgRating) {
     category: product.category || 'Toys',
     description:
       product.description || 'Quality toy available at Punnagai Toy Store, Mylapore, Chennai.',
-    image: product.imageUrl
-      ? [product.imageUrl]
-      : ['https://punnagaitoysfancy.in/images/store-hero.jpg'],
+    image: [toAbsoluteUrl(product.imageUrl)],
     url: prodUrl,
     brand: { '@type': 'Brand', name: 'Punnagai Toy Store' },
     offers: {
@@ -1090,9 +1175,16 @@ async function initHomePage() {
           const primaryBanner = activeBanners.sort(
             (a, b) => (a.displayOrder || 0) - (b.displayOrder || 0)
           )[0];
+          const heroPicture = document.querySelector('.hero-horizontal-banner picture');
           const imgEl = document.querySelector('.hero-main-img');
           const titleEl = document.querySelector('.hero-title');
           if (imgEl && primaryBanner.imageUrl) {
+            if (heroPicture) {
+              heroPicture.querySelectorAll('source').forEach((s) => {
+                s.srcset = primaryBanner.imageUrl;
+              });
+            }
+            imgEl.removeAttribute('srcset');
             imgEl.src = primaryBanner.imageUrl;
           }
           if (titleEl && primaryBanner.title) {
@@ -1198,16 +1290,36 @@ async function initShopPage() {
   const urlCategory = urlParams.get('category');
   const urlAgeGroup = urlParams.get('ageGroup') || urlParams.get('age');
   const urlSale = urlParams.get('sale') === 'true';
+  const urlFeatured = urlParams.get('featured') === 'true';
+  const urlSearch = urlParams.get('search') || urlParams.get('q');
+  const urlSort = urlParams.get('sort');
+  const urlPage = parseInt(urlParams.get('page'), 10);
 
   if (urlCategory) {
-    const match = catInputs.find((i) => i.dataset.cat === urlCategory);
-    if (match) match.checked = true;
+    const cats = urlCategory.split(',');
+    catInputs.forEach((i) => {
+      if (cats.includes(i.dataset.cat)) i.checked = true;
+    });
   }
   if (urlAgeGroup) {
-    const match = ageInputs.find((i) => i.dataset.age === urlAgeGroup);
-    if (match) match.checked = true;
+    const ages = urlAgeGroup.split(',');
+    ageInputs.forEach((i) => {
+      if (ages.includes(i.dataset.age)) i.checked = true;
+    });
   }
   if (urlSale && saleInput) saleInput.checked = true;
+  if (urlFeatured && featuredInput) featuredInput.checked = true;
+  if (urlSearch && searchInput) {
+    searchTerm = urlSearch;
+    searchInput.value = urlSearch;
+  }
+  if (urlSort && sortSelect) {
+    currentSort = urlSort;
+    sortSelect.value = urlSort;
+  }
+  if (urlPage && urlPage > 0) {
+    currentPage = urlPage;
+  }
 
   // ---- Read the current filter selections from the UI ----
   function readFilters() {
@@ -1409,6 +1521,29 @@ async function initShopPage() {
           : `Showing <strong>${total}</strong> ${total === 1 ? 'product' : 'products'}`;
     }
 
+    function syncUrl(currentFilters) {
+      if (typeof history === 'undefined' || !history.replaceState) return;
+      const params = new URLSearchParams();
+      if (currentFilters.categories.length > 0) {
+        params.set('category', currentFilters.categories.join(','));
+      }
+      if (currentFilters.ages.length > 0) {
+        params.set('age', currentFilters.ages.join(','));
+      }
+      if (currentFilters.sale) params.set('sale', 'true');
+      if (currentFilters.featured) params.set('featured', 'true');
+      if (searchTerm.trim()) params.set('search', searchTerm.trim());
+      if (currentSort && currentSort !== 'popularity') params.set('sort', currentSort);
+      if (currentPage > 1) params.set('page', String(currentPage));
+
+      const newQuery = params.toString();
+      const targetUrl = window.location.pathname + (newQuery ? '?' + newQuery : '');
+      const currentFullUrl = window.location.pathname + window.location.search;
+      if (targetUrl !== currentFullUrl) {
+        history.replaceState(null, '', targetUrl);
+      }
+    }
+
     if (total === 0) {
       grid.innerHTML = '';
       grid.style.display = 'none';
@@ -1417,6 +1552,7 @@ async function initShopPage() {
         pagination.style.display = 'none';
         pagination.innerHTML = '';
       }
+      syncUrl(filters);
       return;
     }
 
@@ -1437,6 +1573,7 @@ async function initShopPage() {
       })
       .join('');
     renderPagination(total);
+    syncUrl(filters);
   }
 
   // ---- Autocomplete: top 5 product suggestions (Req 1.3 helper) ----
@@ -1531,6 +1668,33 @@ async function initShopPage() {
   // ---- Initial load: cached data layer (Req 1.9), out-of-stock hidden ----
   if (grid) grid.innerHTML = '<div class="skeleton-card"></div>'.repeat(8);
   allProducts = filterAvailableProducts(await getAllProductsCached());
+  // Handle browser Back / Forward history navigation
+  window.addEventListener('popstate', () => {
+    const params = new URLSearchParams(window.location.search);
+    const cat = params.get('category');
+    const age = params.get('age') || params.get('ageGroup');
+    const cats = cat ? cat.split(',') : [];
+    const ages = age ? age.split(',') : [];
+
+    catInputs.forEach((i) => {
+      i.checked = cats.includes(i.dataset.cat);
+    });
+    ageInputs.forEach((i) => {
+      i.checked = ages.includes(i.dataset.age);
+    });
+    if (saleInput) saleInput.checked = params.get('sale') === 'true';
+    if (featuredInput) featuredInput.checked = params.get('featured') === 'true';
+
+    searchTerm = params.get('search') || params.get('q') || '';
+    if (searchInput) searchInput.value = searchTerm;
+
+    currentSort = params.get('sort') || 'popularity';
+    if (sortSelect) sortSelect.value = currentSort;
+
+    currentPage = parseInt(params.get('page'), 10) || 1;
+    render();
+  });
+
   render();
 }
 
@@ -1708,11 +1872,11 @@ function renderProductDetailsUI() {
       </div>
       <div class="product-info-wrapper">
         <div class="detail-meta">
-          <span class="badge">${product.category}</span>
-          <span class="badge" style="background:#F3F4F6;color:#374151">Age: ${product.ageGroup} yrs</span>
-          ${product.badge ? `<span class="badge" style="background:var(--accent);color:white">${product.badge}</span>` : ''}
+          <span class="badge">${escapeHtml(product.category || '')}</span>
+          <span class="badge" style="background:#F3F4F6;color:#374151">Age: ${escapeHtml(product.ageGroup || '')} yrs</span>
+          ${product.badge ? `<span class="badge" style="background:var(--accent);color:white">${escapeHtml(product.badge)}</span>` : ''}
         </div>
-        <h1 class="detail-title">${product.name}</h1>
+        <h1 class="detail-title">${escapeHtml(product.name)}</h1>
         <div class="detail-price-box">
           <div style="display:flex;align-items:center;margin-bottom:8px">
             <span class="detail-current-price">₹${displayInfo.discounted.toLocaleString('en-IN')}</span>
@@ -1724,7 +1888,7 @@ function renderProductDetailsUI() {
         ${selectorsHtml}
 
         <div class="detail-description">
-          <p>${product.description}</p>
+          <p>${escapeHtml(product.description || '')}</p>
         </div>
         
         <div class="add-to-cart-box">
@@ -2137,9 +2301,13 @@ document.addEventListener('DOMContentLoaded', () => {
 // ============================================================
 // DYNAMIC INTERACTIVE FEATURE 1: Quick View Modal
 // ============================================================
+let _quickViewTriggerEl = null;
+
 window.openQuickView = function (productId) {
   const product = productCache[productId];
   if (!product) return;
+
+  _quickViewTriggerEl = document.activeElement;
 
   let modal = document.getElementById('quick-view-modal');
   if (!modal) {
@@ -2148,6 +2316,11 @@ window.openQuickView = function (productId) {
     modal.className = 'quick-view-overlay';
     document.body.appendChild(modal);
   }
+
+  const safeName = window.escapeHtml ? window.escapeHtml(product.name) : product.name;
+  modal.setAttribute('role', 'dialog');
+  modal.setAttribute('aria-modal', 'true');
+  modal.setAttribute('aria-label', `${safeName} Quick View`);
 
   const isOnSale = product.originalPrice && product.originalPrice > product.price;
   const discount = isOnSale ? Math.round((1 - product.price / product.originalPrice) * 100) : 0;
@@ -2164,20 +2337,20 @@ window.openQuickView = function (productId) {
       <div class="quick-view-grid">
         <div class="quick-view-img-wrap">
           ${product.imageUrl ? buildOptimizedPictureHtml(product.imageUrl, product.name, { width: 400, height: 400, loading: 'eager', isCard: false, imgClass: 'quick-view-main-img' }) : `<div class="product-img-placeholder" style="height:320px"><span class="cat-emoji">🎁</span></div>`}
-          <span class="quick-view-badge">${product.category}</span>
+          <span class="quick-view-badge">${window.escapeHtml ? window.escapeHtml(product.category) : product.category}</span>
         </div>
         <div class="quick-view-content">
           <div class="quick-view-meta">
-            <span class="quick-view-age">Ages ${product.ageGroup} yrs</span>
+            <span class="quick-view-age">Ages ${window.escapeHtml ? window.escapeHtml(product.ageGroup) : product.ageGroup} yrs</span>
             <span class="quick-view-stock"><span class="pulse-dot"></span> In Stock in Mylapore</span>
           </div>
-          <h2 class="quick-view-title">${product.name}</h2>
+          <h2 class="quick-view-title">${safeName}</h2>
           <div class="quick-view-price-row">
             <span class="quick-view-price">&#8377;${product.price.toLocaleString('en-IN')}</span>
             ${isOnSale ? `<span class="quick-view-orig-price">&#8377;${product.originalPrice.toLocaleString('en-IN')}</span>` : ''}
             ${isOnSale ? `<span class="discount-tag">&minus;${discount}%</span>` : ''}
           </div>
-          <p class="quick-view-desc">${product.description || 'Delightful quality toy for growing minds. Safe, durable, and educational.'}</p>
+          <p class="quick-view-desc">${window.escapeHtml ? window.escapeHtml(product.description || 'Delightful quality toy for growing minds. Safe, durable, and educational.') : (product.description || 'Delightful quality toy for growing minds. Safe, durable, and educational.')}</p>
           <div class="quick-view-actions">
             <button class="btn btn-primary" onclick="handleAddToCart('${product.id}'); closeQuickView();" style="flex:1">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
@@ -2197,20 +2370,49 @@ window.openQuickView = function (productId) {
   `;
 
   modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
   modal.onclick = (e) => {
     if (e.target === modal) closeQuickView();
   };
-  document.addEventListener('keydown', handleEscClose);
+
+  const closeBtn = modal.querySelector('.quick-view-close');
+  if (closeBtn) closeBtn.focus();
+
+  document.addEventListener('keydown', handleQuickViewKeydown);
 };
 
 window.closeQuickView = function () {
   const modal = document.getElementById('quick-view-modal');
   if (modal) modal.style.display = 'none';
-  document.removeEventListener('keydown', handleEscClose);
+  document.body.style.overflow = '';
+  document.removeEventListener('keydown', handleQuickViewKeydown);
+  if (_quickViewTriggerEl && typeof _quickViewTriggerEl.focus === 'function') {
+    _quickViewTriggerEl.focus();
+  }
 };
 
-function handleEscClose(e) {
-  if (e.key === 'Escape') closeQuickView();
+function handleQuickViewKeydown(e) {
+  if (e.key === 'Escape') {
+    closeQuickView();
+    return;
+  }
+  if (e.key === 'Tab') {
+    const modal = document.getElementById('quick-view-modal');
+    if (!modal) return;
+    const focusables = Array.from(
+      modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
+    ).filter((el) => el.offsetParent !== null);
+    if (!focusables.length) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
 }
 
 // ============================================================

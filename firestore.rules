@@ -34,7 +34,7 @@ service cloud.firestore {
       return isAuthenticated() && (
         (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true) ||
-        request.auth.token.email == 'admin@punnagaitoystore.com'
+        request.auth.token.email in ['admin@punnagaitoystore.com', 'contact@punnagaitoysfancy.in']
       );
     }
 
@@ -83,11 +83,7 @@ service cloud.firestore {
                        (request.resource.data.userId == null && request.resource.data.total is number);
       allow get:    if isAdmin() || isOwner(resource) || resource.data.userId == null;
       allow list:   if isAdmin() || isOwner(resource);
-      allow update: if isAdmin() ||
-                       (isOwner(resource) && resource.data.orderStatus in ['pending', 'pending_verification'] &&
-                        request.resource.data.orderStatus in ['confirmed', 'pending_verification']) ||
-                       (resource.data.userId == null && resource.data.orderStatus in ['pending', 'pending_verification'] &&
-                        request.resource.data.orderStatus in ['confirmed', 'pending_verification']);
+      allow update: if isAdmin();
       allow delete: if false;               // Orders are never deleted
     }
 
@@ -105,9 +101,9 @@ service cloud.firestore {
     match /users/{userId} {
       allow read:   if isAuthenticated() && (request.auth.uid == userId || isAdmin());
       allow create: if isAuthenticated() && request.auth.uid == userId &&
-                       (request.resource.data.isAdmin == false || request.auth.token.email == 'admin@punnagaitoystore.com');
+                       (request.resource.data.isAdmin == false || request.auth.token.email in ['admin@punnagaitoystore.com', 'contact@punnagaitoysfancy.in']);
       allow update: if (isAuthenticated() && request.auth.uid == userId &&
-                        (request.resource.data.isAdmin == resource.data.isAdmin || request.auth.token.email == 'admin@punnagaitoystore.com')) ||
+                        (request.resource.data.isAdmin == resource.data.isAdmin || request.auth.token.email in ['admin@punnagaitoystore.com', 'contact@punnagaitoysfancy.in'])) ||
                        isAdmin();
       allow delete: if false;
     }

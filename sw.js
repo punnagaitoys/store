@@ -11,7 +11,7 @@
 
 'use strict';
 
-const CACHE_NAME = 'punnagai-v8';
+const CACHE_NAME = 'punnagai-v9';
 const OFFLINE_PAGE = '/index.html';
 
 // Static assets to precache on install
@@ -28,6 +28,7 @@ const PRECACHE_URLS = [
   '/order-confirmation.html',
   '/404.html',
   '/logo.png',
+  '/logo.webp',
   '/favicon.png',
   '/favicon-32x32.png',
   '/favicon.ico',
@@ -36,24 +37,38 @@ const PRECACHE_URLS = [
   '/icons/icon-512.png',
   '/images/hero-banner.png',
   '/images/hero-banner.jpg',
+  '/images/hero-banner.webp',
+  '/images/hero-banner-600.webp',
+  '/images/hero-banner-900.webp',
+  '/images/hero-banner-1200.webp',
   '/images/hero-banner-2.png',
   '/images/store-hero.jpg',
+  '/images/store-hero.webp',
   '/images/store-interior.png',
   '/images/store-interior.jpg',
+  '/images/store-interior.webp',
   '/images/store/store-entrance.jpg',
+  '/images/store/store-entrance.webp',
   '/images/store/store-interior.jpg',
+  '/images/store/store-interior.webp',
   '/images/punnagai-upi-qr.png',
   '/images/social-share.jpg',
   '/images/banners/banner-summer-sale.jpg',
+  '/images/banners/banner-summer-sale.webp',
   '/images/banners/hero-banner-1.png',
+  '/images/banners/hero-banner-1.webp',
   '/images/banners/hero-banner-2.png',
+  '/images/banners/hero-banner-2.webp',
   '/images/banners/storefront-promo-banner.png',
+  '/images/banners/storefront-promo-banner.webp',
   '/css/style.css',
+  '/js/env-config.js',
   '/js/firebase-config.js',
   '/js/data.js',
   '/js/app.js',
   '/js/cart.js',
   '/js/auth.js',
+  '/js/lib/validation.js',
   '/js/lib/product-detail.js',
   '/js/checkout-page.js',
   '/js/lib/cart-storage.js',

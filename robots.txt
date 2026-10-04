@@ -1,24 +1,39 @@
 # Robots.txt for Punnagai Toy Store (https://punnagaitoysfancy.in)
 User-agent: *
 Allow: /
+Allow: /shop
 Allow: /shop.html
+Allow: /product
 Allow: /product.html
+Allow: /delivery
 Allow: /delivery.html
+Allow: /payments
 Allow: /payments.html
+Allow: /returns
 Allow: /returns.html
+Allow: /sale-terms
 Allow: /sale-terms.html
+Allow: /privacy
 Allow: /privacy.html
+Allow: /terms
 Allow: /terms.html
 
 # Disallow private, session-specific, and administrative pages
+Disallow: /admin
 Disallow: /admin.html
+Disallow: /checkout
 Disallow: /checkout.html
+Disallow: /order-confirmation
 Disallow: /order-confirmation.html
+Disallow: /account
 Disallow: /account.html
+Disallow: /orders
 Disallow: /orders.html
 
 # Disallow cart and wishlist from search index
+Disallow: /cart
 Disallow: /cart.html
+Disallow: /wishlist
 Disallow: /wishlist.html
 
 # AI search engine crawlers (Perplexity, ChatGPT, Claude, Google Gemini)

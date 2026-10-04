@@ -60,7 +60,7 @@
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/style.css?v=9" />
 
     <!-- Schema.org Breadcrumb & CollectionPage -->
     <script type="application/ld+json">
@@ -551,15 +551,55 @@
     <script src="js/lib/catalog.js"></script>
     <script src="js/lib/wishlist.js"></script>
     <script src="js/cart.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/app.js?v=9"></script>
     <script>
-      function toggleFilterSidebar() {
+      let _filterTriggerEl = null;
+      function toggleFilterSidebar(triggerEl) {
         const sidebar = document.getElementById('filter-sidebar');
         const overlay = document.getElementById('filter-overlay');
-        sidebar.classList.toggle('open');
-        overlay.classList.toggle('show');
-        document.body.classList.toggle('filter-open');
+        if (!sidebar || !overlay) return;
+        const willOpen = !sidebar.classList.contains('open');
+        if (willOpen) {
+          _filterTriggerEl = triggerEl || document.activeElement;
+          sidebar.classList.add('open');
+          overlay.classList.add('show');
+          document.body.classList.add('filter-open');
+          sidebar.setAttribute('aria-modal', 'true');
+          const closeBtn = sidebar.querySelector('.filter-header-close-btn');
+          if (closeBtn) closeBtn.focus();
+        } else {
+          sidebar.classList.remove('open');
+          overlay.classList.remove('show');
+          document.body.classList.remove('filter-open');
+          sidebar.removeAttribute('aria-modal');
+          if (_filterTriggerEl && typeof _filterTriggerEl.focus === 'function') {
+            _filterTriggerEl.focus();
+          }
+        }
       }
+
+      document.addEventListener('keydown', function(e) {
+        const sidebar = document.getElementById('filter-sidebar');
+        if (!sidebar || !sidebar.classList.contains('open')) return;
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          toggleFilterSidebar();
+          return;
+        }
+        if (e.key === 'Tab') {
+          const focusables = sidebar.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+          if (!focusables.length) return;
+          const first = focusables[0];
+          const last = focusables[focusables.length - 1];
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      });
     </script>
   </body>
 </html>

@@ -604,11 +604,15 @@ function updateCartBadge() {
   });
 
   // Micro-interaction: Playful cart bounce on all cart buttons
-  document.querySelectorAll('.cart-btn, .bottom-nav-item[href="cart.html"]').forEach((btn) => {
-    btn.classList.remove('cart-bounce');
-    void btn.offsetWidth; // trigger reflow
-    btn.classList.add('cart-bounce');
-  });
+  const cartButtons = document.querySelectorAll('.cart-btn, .bottom-nav-item[href="cart.html"]');
+  if (cartButtons.length > 0) {
+    cartButtons.forEach((btn) => btn.classList.remove('cart-bounce'));
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        cartButtons.forEach((btn) => btn.classList.add('cart-bounce'));
+      });
+    });
+  }
 }
 
 // Initialize badge on load

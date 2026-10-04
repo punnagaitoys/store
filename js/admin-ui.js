@@ -216,7 +216,7 @@
       const rawStatus = (o.status || o.orderStatus || 'pending').toLowerCase();
       const statusClass = `badge-${rawStatus.replace(/_/g, '-')}`;
 
-      let actions = `<button class="btn btn-outline btn-sm" onclick="window.AdminUI.openOrderModal('${o.id}')">View & Verify</button>`;
+      let actions = `<button class="btn btn-outline btn-sm" onclick="window.AdminUI.openOrderModal('${escapeHtml(o.id)}')">View & Verify</button>`;
 
       const checkboxStr =
         rawStatus === 'pending' || rawStatus === 'pending_verification' || rawStatus === 'confirmed'

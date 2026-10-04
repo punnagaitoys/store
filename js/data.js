@@ -774,7 +774,7 @@ function getLocalProducts() {
             p.name === 'Remote Control Racing Car 4WD' ||
             p.name === 'Scrabble Junior Board Game'
         );
-      if (Array.isArray(prods) && prods.length === SEED_PRODUCTS.length && !isOutdated) {
+      if (Array.isArray(prods) && prods.length > 0 && !isOutdated) {
         return prods;
       }
     }

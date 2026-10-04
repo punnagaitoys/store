@@ -337,6 +337,37 @@ function clearProofFile() {
   if (previewContent) previewContent.style.display = 'none';
 }
 
+function compressProofImage(dataUrl, maxDimension = 800, quality = 0.7) {
+  return new Promise((resolve) => {
+    if (!dataUrl || typeof dataUrl !== 'string' || !dataUrl.startsWith('data:image/')) {
+      resolve(dataUrl);
+      return;
+    }
+    const img = new Image();
+    img.onload = () => {
+      let width = img.width;
+      let height = img.height;
+      if (width > maxDimension || height > maxDimension) {
+        if (width > height) {
+          height = Math.round((height * maxDimension) / width);
+          width = maxDimension;
+        } else {
+          width = Math.round((width * maxDimension) / height);
+          height = maxDimension;
+        }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
+}
+
 // ============================================================
 // ORDER SUMMARY RENDER
 // ============================================================
@@ -496,6 +527,10 @@ async function handleSubmitOrder() {
         );
         proofUrl = selectedProofDataUrl;
       }
+    }
+
+    if (proofUrl && typeof proofUrl === 'string' && proofUrl.startsWith('data:')) {
+      proofUrl = await compressProofImage(proofUrl);
     }
 
     // 2. Build order payload

@@ -13,7 +13,7 @@
 | **DNS, SSL & DDoS**      | [Cloudflare](https://www.cloudflare.com)                                                                         | Free Tier           | **₹0 / Free**     | **₹0 / Free**                              |
 | **Web Hosting**          | [Firebase Hosting](https://firebase.google.com/docs/hosting) or [Cloudflare Pages](https://pages.cloudflare.com) | Spark / Free Tier   | **₹0 / Free**     | **₹0 / Free**                              |
 | **Database & Auth**      | [Google Firebase](https://console.firebase.google.com) (Firestore + Auth)                                        | Spark (Free Tier)   | **₹0 / Free**     | **₹0 / Free** (50k reads/day)              |
-| **Payment Gateway**      | [Razorpay](https://razorpay.com) / Direct UPI Intent                                                             | Standard PG / UPI   | **₹0 Setup**      | 2% per txn (Standard PG) / 0% (Direct UPI) |
+| **Payment System**       | Official Shop UPI QR (`MAB0451035A0089284@Yesbank`)                                                             | Direct Merchant UPI | **₹0 Setup**      | **0% Gateway Fees (₹0)**                   |
 | **Media Storage**        | Firebase Cloud Storage                                                                                           | Free Tier (5 GB)    | **₹0 / Free**     | **₹0 / Free**                              |
 | **Transactional Alerts** | WhatsApp Direct / Cloud Function                                                                                 | Standard API / Link | **₹0 / Free**     | Free for basic volume                      |
 
@@ -31,7 +31,7 @@ flowchart TD
         U2["2. Create Firebase Project (Region: asia-south1)"]
         U3["3. Enable Firestore & Email Auth"]
         U4["4. Create Admin Account in Firebase Auth"]
-        U5["5. Sign up for Razorpay (or Direct UPI VPA)"]
+        U5["5. Verify Shop UPI QR (MAB0451035A0089284@Yesbank)"]
         U6["6. Add DNS Records at Registrar"]
     end
 
@@ -93,8 +93,7 @@ _(Note: Firebase client keys are public identifiers and safe to paste in fronten
 
 ### D. Payment Details
 
-- **Option 1 (Fastest / ₹0 Gateway Fee):** Business UPI ID / VPA (e.g., `punnagai@oksbi` or `punnagai@icici`) + WhatsApp confirmation number.
-- **Option 2 (Full Gateway):** Razorpay `Key Id` (from Razorpay Dashboard $\rightarrow$ Settings $\rightarrow$ API Keys).
+- **Direct Merchant UPI:** Official Shop UPI ID (`MAB0451035A0089284@Yesbank`, Yes Bank) with manual payment screenshot proof verification at checkout. 100% direct bank settlement, ₹0 transaction commission.
 
 ---
 

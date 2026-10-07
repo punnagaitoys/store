@@ -394,7 +394,7 @@ function renderCartSummaryHtml(cart) {
     <div class="free-shipping-bar unlocked" style="background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 8px; padding: 10px 14px; margin-bottom: 16px;">
       <div class="fs-header" style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
         <span class="fs-icon" style="font-size: 1.1rem;">🏪</span>
-        <span class="fs-msg" style="color: #3730a3;"><strong>Store Pickup:</strong> 4/7 Luz Bazar Complex, Mylapore • <strong>₹0 Delivery Fee</strong></span>
+        <span class="fs-msg" style="color: #3730a3;"><strong>In-Store Pickup Only:</strong> 4/7 Luz Bazar Complex, Mylapore • <strong>Free Store Collection</strong></span>
       </div>
     </div>`;
 
@@ -407,7 +407,7 @@ function renderCartSummaryHtml(cart) {
         <span>${formatPrice(subtotal)}</span>
       </div>
       <div class="summary-row" style="color: #059669; font-size: 0.9rem;">
-        <span>Pickup at Mylapore Store</span>
+        <span>In-Store Pickup (Mylapore)</span>
         <span>FREE</span>
       </div>
       ${discountRow}

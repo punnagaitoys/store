@@ -22,10 +22,10 @@
   - **Native Mobile View (`<=768px`)**: Sticky bottom tab navigation bar, slide-up bottom sheet filter drawer, quick category chips, sticky thumb-friendly buy bar, safe-area inset support.
   - **Desktop Flagship View (`>=769px`)**: Expansive top navigation, hero section with ambient drifting toy particles, multi-column catalog grid, docked left-sidebar filter navigation.
 - **Conversion & Trust Engine**:
-  - Live Chennai PIN Code Delivery Estimator (`600004` Mylapore instant same-day delivery).
+  - Store Pickup Location Information (`4/7 Luz Bazar Complex, Mylapore, Chennai`).
   - Parent FAQ Accordion (BIS non-toxic safety certification, complimentary gift wrapping with personalized greeting cards, Mylapore store demo, 7-day returns).
   - Social proof urgency badges (`🔥 14 parents in Chennai viewed this toy today`).
-  - Dynamic Free Delivery progress meter on `cart.html` (`Free Delivery over ₹499`).
+  - In-store pickup confirmation notice on `cart.html` (`Free In-Store Collection`).
   - 1-tap WhatsApp order pre-booking with automated cart formatting.
 - **Data Layer & Fallback**:
   - **Dual-Mode Persistence**: Seamlessly switches between Cloud Firestore and resilient `localStorage` auto-seeding with 26 authentic, rich toys across 5 age groups.
@@ -64,23 +64,23 @@ Punnagai-Toy-Store/
 ├── index.html                   # Storefront homepage (Hero, ambient particles, categories, reviews)
 ├── shop.html                    # 26-toy catalog with instant search, multi-filters, and bottom sheet
 ├── product.html                 # Product detail view with gallery, pincode checker, FAQs, sticky buy bar
-├── cart.html                    # Shopping cart with dynamic free-delivery meter and item controls
-├── checkout.html                # Multi-step checkout with address validation, PIN lookup, and UPI QR
-├── order-confirmation.html      # Post-purchase receipt with live status tracking
+├── cart.html                    # Shopping cart with in-store collection notice and item controls
+├── checkout.html                # In-store pickup checkout with direct UPI QR code and payment proof screenshot upload
+├── order-confirmation.html      # Post-purchase receipt with live status tracking and store collection directions
 ├── orders.html                  # Customer order history
 ├── account.html                 # Unified authentication (Login, Register, Profile)
 ├── wishlist.html                # Saved items with 1-click cart migration
-├── admin.html                   # Admin management portal (Catalog, Inventory, Orders, Coupons)
+├── admin.html                   # Admin management portal (Catalog, Inventory, Orders, Coupons, Payment Proofs)
 │
 ├── css/
 │   ├── style.css                # Storefront stylesheet (design tokens, animations, dual-view responsive rules)
 │   └── admin.css                # Admin portal styling
 │
 ├── js/
-│   ├── app.js                   # Application controller (Navbar, bottom nav, catalog render, delivery checker)
+│   ├── app.js                   # Application controller (Navbar, bottom nav, catalog render, store pickup notice)
 │   ├── data.js                  # Central data access layer (26 seed products, Firestore + LocalStorage fallback)
 │   ├── cart.js                  # Shopping cart state manager and notification handler
-│   ├── checkout-page.js         # Multi-step checkout workflow and PIN code lookup
+│   ├── checkout-page.js         # In-store pickup checkout workflow and UPI payment proof upload handler
 │   ├── firebase-config.js       # Firebase SDK initialization and emulator bindings
 │   ├── auth.js                  # Authentication manager (email/password, sessions)
 │   ├── reviews.js               # Customer reviews and verified buyer rating submissions
@@ -175,7 +175,7 @@ npm run format
 | :------------------------------- | :-----------: | :------------------------------------------------------------------------------------------------- |
 | **Mobile UX & Responsiveness**   | **10.0 / 10** | Native bottom navigation bar, slide-up bottom sheet filters, category chips, sticky buy bar.       |
 | **Visual Aesthetics & Polish**   | **10.0 / 10** | Hero ambient floating particles, button shimmer sweep, skeleton loading cards, active tap scaling. |
-| **Conversion & Funnel Drivers**  | **10.0 / 10** | Live Chennai PIN delivery estimator, parent FAQ accordion, urgency badges, free delivery meter.    |
+| **Conversion & Funnel Drivers**  | **10.0 / 10** | Clear store pickup notices, parent FAQ accordion, urgency badges, free store collection.    |
 | **Architecture & Reliability**   | **10.0 / 10** | Zero framework bloat, crash-proof native server, Service Worker v2, resilient auto-seeding.        |
 | **Catalog & Media Authenticity** | **10.0 / 10** | 26 authentic curated toys across 5 age groups, zero broken image fallbacks, demo videos.           |
 | **OVERALL STORE RATING**         | **10.0 / 10** | **100% Production Ready & Commercial Retail Release Grade**                                        |

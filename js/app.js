@@ -279,6 +279,96 @@ function renderMobileBottomNav(activePage = '') {
       }
     });
   }
+
+  // Initialize auto-hide on fast downscroll (reveals on upscroll)
+  initMobileNavAutoHide();
+}
+
+/**
+ * Mobile Bottom Nav Auto-Hide: Hides the fixed bottom nav bar on fast downscroll
+ * liberating ~60px of screen real-estate for product cards, and immediately
+ * restores it on upward scroll or near top/bottom boundaries.
+ */
+function initMobileNavAutoHide() {
+  const bottomNav = document.getElementById('mobile-bottom-nav');
+  if (!bottomNav) return;
+
+  if (window._mobileNavScrollHandler) {
+    window.removeEventListener('scroll', window._mobileNavScrollHandler);
+  }
+
+  let lastScrollY = window.scrollY || window.pageYOffset || 0;
+  let ticking = false;
+  let accumulatedDown = 0;
+  let accumulatedUp = 0;
+  const HIDE_THRESHOLD = 18; // Downscroll distance threshold
+  const SHOW_THRESHOLD = 10; // Upscroll distance threshold
+
+  window._mobileNavScrollHandler = () => {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(() => {
+      const currentScrollY = window.scrollY || window.pageYOffset || 0;
+
+      // Never hide on desktop screens (>768px)
+      if (window.innerWidth > 768) {
+        bottomNav.classList.remove('nav-hidden');
+        document.body.classList.remove('mobile-nav-hidden');
+        lastScrollY = currentScrollY;
+        ticking = false;
+        return;
+      }
+
+      // Always show near top of page (safeguard against iOS rubber-band bounce)
+      if (currentScrollY < 60) {
+        bottomNav.classList.remove('nav-hidden');
+        document.body.classList.remove('mobile-nav-hidden');
+        accumulatedDown = 0;
+        accumulatedUp = 0;
+        lastScrollY = currentScrollY;
+        ticking = false;
+        return;
+      }
+
+      // Always show near the very bottom of the document so footer links are accessible
+      const docHeight = document.documentElement.scrollHeight;
+      const winHeight = window.innerHeight;
+      if (currentScrollY + winHeight >= docHeight - 40) {
+        bottomNav.classList.remove('nav-hidden');
+        document.body.classList.remove('mobile-nav-hidden');
+        accumulatedDown = 0;
+        accumulatedUp = 0;
+        lastScrollY = currentScrollY;
+        ticking = false;
+        return;
+      }
+
+      const delta = currentScrollY - lastScrollY;
+
+      if (delta > 0) {
+        // Fast downscroll: user is actively browsing down catalog/content
+        accumulatedDown += delta;
+        accumulatedUp = 0;
+        if (accumulatedDown >= HIDE_THRESHOLD && currentScrollY > 70) {
+          bottomNav.classList.add('nav-hidden');
+          document.body.classList.add('mobile-nav-hidden');
+        }
+      } else if (delta < 0) {
+        // Upscroll: user wants to navigate or go back up
+        accumulatedUp += Math.abs(delta);
+        accumulatedDown = 0;
+        if (accumulatedUp >= SHOW_THRESHOLD) {
+          bottomNav.classList.remove('nav-hidden');
+          document.body.classList.remove('mobile-nav-hidden');
+        }
+      }
+
+      lastScrollY = currentScrollY;
+      ticking = false;
+    });
+  };
+
+  window.addEventListener('scroll', window._mobileNavScrollHandler, { passive: true });
 }
 
 function renderNavbar(activePage = '') {
@@ -443,23 +533,24 @@ function renderNavbar(activePage = '') {
     mobileCloseBtn.addEventListener('click', closeMenu);
   }
 
-  // High-performance passive throttled navbar scroll listener
+  // High-performance passive throttled navbar scroll listener (Deep scroll slim header)
   if (!window._navbarScrollListenerAttached) {
     let ticking = false;
-    let cachedNavbar = null;
     window.addEventListener(
       'scroll',
       () => {
         if (!ticking) {
           window.requestAnimationFrame(() => {
-            if (!cachedNavbar) {
-              cachedNavbar =
-                document.getElementById('navbar') ||
-                document.getElementById('main-navbar') ||
-                document.querySelector('.navbar');
+            const isScrolled = window.scrollY > 40;
+            const navWrapper = document.getElementById('navbar');
+            const mainNav = document.getElementById('main-navbar');
+            if (navWrapper) {
+              navWrapper.classList.toggle('scrolled', isScrolled);
+              navWrapper.classList.toggle('navbar-slim', isScrolled);
             }
-            if (cachedNavbar) {
-              cachedNavbar.classList.toggle('scrolled', window.scrollY > 20);
+            if (mainNav) {
+              mainNav.classList.toggle('scrolled', isScrolled);
+              mainNav.classList.toggle('navbar-slim', isScrolled);
             }
             ticking = false;
           });
@@ -552,9 +643,9 @@ function renderFooter() {
             <ul class="footer-links">
               <li><a href="privacy.html">Privacy &amp; Cookies</a></li>
               <li><a href="terms.html">Terms &amp; Conditions</a></li>
-              <li><a href="delivery.html">Delivery Policy</a></li>
+              <li><a href="delivery.html">Store Pickup Policy</a></li>
               <li><a href="returns.html">Returns &amp; Refunds</a></li>
-              <li><a href="payments.html">Fees &amp; Payment</a></li>
+              <li><a href="payments.html">UPI &amp; Payment Policy</a></li>
               <li><a href="admin.html" style="color:rgba(255,255,255,0.25);font-size:0.75rem">Admin</a></li>
             </ul>
           </div>
@@ -1899,8 +1990,17 @@ function renderProductDetailsUI() {
   const html = `
     <div class="product-detail-layout">
       <div class="product-gallery">
-        <div class="main-image-container">
+        <div class="main-image-container" id="pdp-main-image-container">
           ${buildOptimizedPictureHtml(product.imageUrl, product.name, { width: 600, height: 600, loading: 'eager', isCard: false, id: 'main-product-image', className: 'main-picture-wrap', imgClass: 'main-product-img' })}
+          <div class="pdp-zoom-badge" id="pdp-zoom-badge" title="Tap to inspect toy details">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+            <span id="pdp-zoom-text">Pinch or double-tap to zoom</span>
+          </div>
+          <button type="button" class="pdp-inspect-btn" id="pdp-inspect-btn" aria-label="Inspect toy details full screen" title="Inspect full screen">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+            </svg>
+          </button>
         </div>
         ${videoEmbedHtml}
       </div>
@@ -1982,7 +2082,7 @@ function renderProductDetailsUI() {
             <span>🏪 Direct Store Collection (Mylapore, Chennai)</span>
           </div>
           <p style="font-size:0.88rem; color:var(--text-secondary); margin:0 0 10px 0; line-height:1.5;">
-            We do not ship by courier. Reserve your toys online with zero delivery fees and pick them up directly from our store counter!
+            We offer in-store pickup only and do not provide delivery services. Reserve your toys online for free collection and pick them up directly from our Mylapore shop counter!
           </p>
           <div style="font-size:0.84rem; color:var(--text-primary); line-height:1.6; background:#ffffff; padding:10px 14px; border-radius:8px; border:1px solid var(--border);">
             📍 <strong>Address:</strong> 4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai – 600 004<br>
@@ -2044,6 +2144,7 @@ function renderProductDetailsUI() {
 
   document.getElementById('product-detail-content').innerHTML = html;
   initStickyBuyBar();
+  initProductImagePinchZoom(product);
 }
 
 function initStickyBuyBar() {
@@ -2090,6 +2191,377 @@ function initStickyBuyBar() {
   updateVisibility();
 }
 
+/**
+ * Mobile Product Image Pinch-to-Zoom:
+ * Enables fluid touch pinch-to-zoom (up to 3.5x), smooth 1-finger pan/drag when zoomed,
+ * double-tap to toggle zoom (1x <-> 2.2x), and tap-to-inspect trigger for full-screen inspection.
+ */
+function initProductImagePinchZoom(product) {
+  const container = document.getElementById('pdp-main-image-container');
+  if (!container) return;
+
+  const img = container.querySelector('.main-product-img') || container.querySelector('img');
+  if (!img) return;
+
+  const zoomBadge = document.getElementById('pdp-zoom-badge');
+  const zoomText = document.getElementById('pdp-zoom-text');
+  const inspectBtn = document.getElementById('pdp-inspect-btn');
+
+  const prod = product || currentProduct || { name: 'Toy Details', imageUrl: img.src };
+
+  if (inspectBtn) {
+    inspectBtn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      openMobileImageLightbox(prod);
+    };
+  }
+
+  if (zoomBadge) {
+    zoomBadge.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      openMobileImageLightbox(prod);
+    };
+  }
+
+  let scale = 1;
+  let translateX = 0;
+  let translateY = 0;
+  let startDistance = 0;
+  let startScale = 1;
+  let startTouchX = 0;
+  let startTouchY = 0;
+  let startTranslateX = 0;
+  let startTranslateY = 0;
+  let lastTapTime = 0;
+  let isPinching = false;
+
+  const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
+
+  const applyTransform = (animate = false) => {
+    img.style.transition = animate ? 'transform 0.28s cubic-bezier(0.16, 1, 0.3, 1)' : 'none';
+    img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+    container.classList.toggle('is-zoomed', scale > 1.05);
+    if (zoomText) {
+      zoomText.textContent =
+        scale > 1.05
+          ? `Zoom: ${scale.toFixed(1)}x • Double-tap to reset`
+          : 'Pinch or double-tap to zoom';
+    }
+  };
+
+  const resetZoom = (animate = true) => {
+    scale = 1;
+    translateX = 0;
+    translateY = 0;
+    applyTransform(animate);
+  };
+
+  container.addEventListener(
+    'touchstart',
+    (e) => {
+      if (e.touches.length === 2) {
+        isPinching = true;
+        startDistance = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        startScale = scale;
+        img.style.transition = 'none';
+      } else if (e.touches.length === 1 && scale > 1.05) {
+        startTouchX = e.touches[0].clientX;
+        startTouchY = e.touches[0].clientY;
+        startTranslateX = translateX;
+        startTranslateY = translateY;
+        img.style.transition = 'none';
+      }
+    },
+    { passive: false }
+  );
+
+  container.addEventListener(
+    'touchmove',
+    (e) => {
+      if (e.touches.length === 2 && isPinching) {
+        if (e.cancelable) e.preventDefault();
+        const currentDist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        if (startDistance > 0) {
+          const factor = currentDist / startDistance;
+          scale = clamp(startScale * factor, 1, 3.5);
+
+          const maxTx = ((scale - 1) * container.offsetWidth) / 2;
+          const maxTy = ((scale - 1) * container.offsetHeight) / 2;
+          translateX = clamp(translateX, -maxTx, maxTx);
+          translateY = clamp(translateY, -maxTy, maxTy);
+
+          applyTransform(false);
+        }
+      } else if (e.touches.length === 1 && scale > 1.05) {
+        if (e.cancelable) e.preventDefault();
+        const dx = e.touches[0].clientX - startTouchX;
+        const dy = e.touches[0].clientY - startTouchY;
+
+        const maxTx = ((scale - 1) * container.offsetWidth) / 2;
+        const maxTy = ((scale - 1) * container.offsetHeight) / 2;
+        translateX = clamp(startTranslateX + dx, -maxTx, maxTx);
+        translateY = clamp(startTranslateY + dy, -maxTy, maxTy);
+
+        applyTransform(false);
+      }
+    },
+    { passive: false }
+  );
+
+  container.addEventListener('touchend', (e) => {
+    if (e.touches.length < 2) {
+      isPinching = false;
+      if (scale < 1.05) {
+        resetZoom(true);
+      }
+    }
+
+    if (e.changedTouches.length === 1 && !isPinching) {
+      const now = Date.now();
+      if (now - lastTapTime < 320) {
+        if (scale > 1.2) {
+          resetZoom(true);
+        } else {
+          const rect = container.getBoundingClientRect();
+          const tapX = e.changedTouches[0].clientX - rect.left - rect.width / 2;
+          const tapY = e.changedTouches[0].clientY - rect.top - rect.height / 2;
+          scale = 2.2;
+          translateX = clamp(-tapX * 0.75, -container.offsetWidth * 0.4, container.offsetWidth * 0.4);
+          translateY = clamp(-tapY * 0.75, -container.offsetHeight * 0.4, container.offsetHeight * 0.4);
+          applyTransform(true);
+        }
+        lastTapTime = 0;
+      } else {
+        lastTapTime = now;
+      }
+    }
+  });
+
+  container.ondblclick = (e) => {
+    e.preventDefault();
+    if (scale > 1.2) {
+      resetZoom(true);
+    } else {
+      scale = 2.2;
+      applyTransform(true);
+    }
+  };
+}
+
+/**
+ * Fullscreen Touch Inspection Lightbox:
+ * Immersive modal with dark backdrop blur allowing parents to closely inspect
+ * toy safety warnings, small parts, BIS marks, and box packaging labels.
+ */
+function openMobileImageLightbox(product) {
+  let modal = document.getElementById('pdp-touch-lightbox');
+  if (!modal) {
+    const modalHtml = `
+      <div id="pdp-touch-lightbox" class="touch-lightbox-modal" role="dialog" aria-modal="true" aria-label="Inspect toy details">
+        <div class="touch-lightbox-header">
+          <div class="touch-lightbox-title-wrap">
+            <div class="touch-lightbox-title" id="lightbox-title"></div>
+            <div class="touch-lightbox-subtitle">
+              <span id="lightbox-category"></span>
+              <span>•</span>
+              <span id="lightbox-age"></span>
+              <span>•</span>
+              <span>🔍 Pinch / Tap to Inspect</span>
+            </div>
+          </div>
+          <button type="button" class="touch-lightbox-close" id="lightbox-close-btn" aria-label="Close inspector">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="touch-lightbox-viewport" id="lightbox-viewport">
+          <img src="" alt="" class="touch-lightbox-img" id="lightbox-img" />
+        </div>
+        <div class="touch-lightbox-controls">
+          <div class="touch-lightbox-pills">
+            <button type="button" class="touch-lightbox-btn" id="lightbox-zoom-out" aria-label="Zoom out">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+            <button type="button" class="touch-lightbox-btn touch-lightbox-zoom-val" id="lightbox-zoom-reset" aria-label="Reset zoom">
+              <span id="lightbox-zoom-pct">100%</span>
+            </button>
+            <button type="button" class="touch-lightbox-btn" id="lightbox-zoom-in" aria-label="Zoom in">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+          <div class="touch-lightbox-tip">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <span>Pinch, double-tap, or drag to inspect small parts, safety labels & packaging</span>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    modal = document.getElementById('pdp-touch-lightbox');
+  }
+
+  const titleEl = document.getElementById('lightbox-title');
+  const catEl = document.getElementById('lightbox-category');
+  const ageEl = document.getElementById('lightbox-age');
+  const imgEl = document.getElementById('lightbox-img');
+  const viewport = document.getElementById('lightbox-viewport');
+  const closeBtn = document.getElementById('lightbox-close-btn');
+  const zoomInBtn = document.getElementById('lightbox-zoom-in');
+  const zoomOutBtn = document.getElementById('lightbox-zoom-out');
+  const zoomResetBtn = document.getElementById('lightbox-zoom-reset');
+  const zoomPct = document.getElementById('lightbox-zoom-pct');
+
+  titleEl.textContent = product.name || 'Toy Details';
+  catEl.textContent = product.category || 'Toy';
+  ageEl.textContent = product.ageGroup ? `Age: ${product.ageGroup} yrs` : 'All Ages';
+  imgEl.src = product.imageUrl || 'images/logo.png';
+  imgEl.alt = product.name || 'Toy';
+
+  let scale = 1;
+  let translateX = 0;
+  let translateY = 0;
+  let startDistance = 0;
+  let startScale = 1;
+  let startTouchX = 0;
+  let startTouchY = 0;
+  let startTranslateX = 0;
+  let startTranslateY = 0;
+  let lastTapTime = 0;
+  let isPinching = false;
+
+  const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
+
+  const applyLightboxTransform = (animate = false) => {
+    imgEl.style.transition = animate ? 'transform 0.28s cubic-bezier(0.16, 1, 0.3, 1)' : 'none';
+    imgEl.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+    if (zoomPct) zoomPct.textContent = `${Math.round(scale * 100)}%`;
+  };
+
+  const resetLightboxZoom = (animate = true) => {
+    scale = 1;
+    translateX = 0;
+    translateY = 0;
+    applyLightboxTransform(animate);
+  };
+
+  const closeModal = () => {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+    resetLightboxZoom(false);
+    window.removeEventListener('keydown', handleKeyDown);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Escape') closeModal();
+  };
+
+  closeBtn.onclick = closeModal;
+
+  zoomInBtn.onclick = () => {
+    scale = clamp(scale + 0.5, 1, 4.5);
+    applyLightboxTransform(true);
+  };
+
+  zoomOutBtn.onclick = () => {
+    scale = clamp(scale - 0.5, 1, 4.5);
+    if (scale <= 1) {
+      resetLightboxZoom(true);
+    } else {
+      applyLightboxTransform(true);
+    }
+  };
+
+  zoomResetBtn.onclick = () => resetLightboxZoom(true);
+
+  viewport.ontouchstart = (e) => {
+    if (e.touches.length === 2) {
+      isPinching = true;
+      startDistance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      startScale = scale;
+      imgEl.style.transition = 'none';
+    } else if (e.touches.length === 1 && scale > 1.05) {
+      startTouchX = e.touches[0].clientX;
+      startTouchY = e.touches[0].clientY;
+      startTranslateX = translateX;
+      startTranslateY = translateY;
+      imgEl.style.transition = 'none';
+    }
+  };
+
+  viewport.ontouchmove = (e) => {
+    if (e.touches.length === 2 && isPinching) {
+      if (e.cancelable) e.preventDefault();
+      const currentDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      if (startDistance > 0) {
+        const factor = currentDist / startDistance;
+        scale = clamp(startScale * factor, 1, 4.5);
+        applyLightboxTransform(false);
+      }
+    } else if (e.touches.length === 1 && scale > 1.05) {
+      if (e.cancelable) e.preventDefault();
+      const dx = e.touches[0].clientX - startTouchX;
+      const dy = e.touches[0].clientY - startTouchY;
+      const maxTx = ((scale - 1) * viewport.offsetWidth) / 1.8;
+      const maxTy = ((scale - 1) * viewport.offsetHeight) / 1.8;
+      translateX = clamp(startTranslateX + dx, -maxTx, maxTx);
+      translateY = clamp(startTranslateY + dy, -maxTy, maxTy);
+      applyLightboxTransform(false);
+    }
+  };
+
+  viewport.ontouchend = (e) => {
+    if (e.touches.length < 2) {
+      isPinching = false;
+      if (scale < 1.05) {
+        resetLightboxZoom(true);
+      }
+    }
+
+    if (e.changedTouches.length === 1 && !isPinching) {
+      const now = Date.now();
+      if (now - lastTapTime < 320) {
+        if (scale > 1.2) {
+          resetLightboxZoom(true);
+        } else {
+          scale = 2.5;
+          applyLightboxTransform(true);
+        }
+        lastTapTime = 0;
+      } else {
+        lastTapTime = now;
+      }
+    }
+  };
+
+  viewport.onclick = (e) => {
+    if (e.target === viewport && scale <= 1.05) {
+      closeModal();
+    }
+  };
+
+  window.addEventListener('keydown', handleKeyDown);
+
+  document.body.style.overflow = 'hidden';
+  modal.classList.add('active');
+  resetLightboxZoom(false);
+}
+
 window.handleVariantSelect = function (type, value) {
   currentVariantSelection[type] = value;
   renderProductDetailsUI();
@@ -2102,7 +2574,7 @@ window.checkPincodeDelivery = function () {
   result.style.display = 'block';
   result.className = 'pincode-result success';
   result.innerHTML =
-    '🏪 <strong>In-Store Pickup Only:</strong> We do not ship or courier products. All orders are collected in-person from our shop at 4/7 Luz Bazar Complex, Mylapore, Chennai (₹0 Delivery Fee).';
+    '🏪 <strong>In-Store Pickup Only:</strong> We do not offer delivery service. All orders are collected in-person from our physical shop at 4/7 Luz Bazar Complex, Mylapore, Chennai (Free Store Pickup).';
 };
 
 window.handleDetailAddToCart = function () {
@@ -2385,14 +2857,71 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ============================================================
-// DYNAMIC INTERACTIVE FEATURE 1: Quick View Modal
+// DYNAMIC INTERACTIVE FEATURE 1: Enhanced Quick View Modal
 // ============================================================
 let _quickViewTriggerEl = null;
+window._currentQuickViewQty = 1;
 
-window.openQuickView = function (productId) {
-  const product = productCache[productId];
+window.changeQuickViewQty = function (delta) {
+  const input = document.getElementById('quick-view-qty-input');
+  if (!input) return;
+  let val = parseInt(input.value, 10) || 1;
+  const max = parseInt(input.getAttribute('max'), 10) || 99;
+  val = Math.max(1, Math.min(max, val + delta));
+  input.value = val;
+  window._currentQuickViewQty = val;
+
+  // Update dynamic WhatsApp pre-order link with updated quantity and price
+  const waBtn = document.getElementById('qv-whatsapp-btn');
+  if (waBtn && waBtn.dataset.basePrice && waBtn.dataset.prodName) {
+    const total = val * parseInt(waBtn.dataset.basePrice, 10);
+    const settings = window.PunnagaiSettings ? window.PunnagaiSettings.get() : null;
+    const waPhone = ((settings && settings.whatsappNumber) || '917550132101').replace(/\D/g, '');
+    const waMsg = encodeURIComponent(
+      `Hi Punnagai Toys! I would like to pre-order ${val} × "${waBtn.dataset.prodName}" (Total: ₹${total.toLocaleString('en-IN')}). Is it ready for pickup at your Mylapore store?`
+    );
+    waBtn.href = `https://wa.me/${waPhone}?text=${waMsg}`;
+  }
+};
+
+window.handleQuickViewAddToCart = async function (productId) {
+  const qty = window._currentQuickViewQty || 1;
+  let product = productCache[productId];
+  if (!product && typeof getProductById === 'function') {
+    product = await getProductById(productId);
+    if (product) productCache[productId] = product;
+  }
   if (!product) return;
 
+  if (typeof addToCart === 'function') {
+    addToCart(product, qty);
+  } else if (typeof handleAddToCart === 'function') {
+    await handleAddToCart(productId);
+  }
+
+  if (typeof showToast === 'function') {
+    showToast(`Added ${qty} × "${product.name}" to your cart! 🛍️`, 'success', {
+      actionText: 'View Cart',
+      actionUrl: 'cart.html'
+    });
+  }
+
+  closeQuickView();
+};
+
+window.openQuickView = async function (productId) {
+  let product = productCache[productId];
+  if (!product && typeof getProductById === 'function') {
+    product = await getProductById(productId);
+    if (product) productCache[productId] = product;
+  }
+  if (!product && Array.isArray(window.HOMEPAGE_ALL_PRODUCTS)) {
+    product = window.HOMEPAGE_ALL_PRODUCTS.find((p) => String(p.id) === String(productId));
+    if (product) productCache[productId] = product;
+  }
+  if (!product) return;
+
+  window._currentQuickViewQty = 1;
   _quickViewTriggerEl = document.activeElement;
 
   let modal = document.getElementById('quick-view-modal');
@@ -2403,7 +2932,12 @@ window.openQuickView = function (productId) {
     document.body.appendChild(modal);
   }
 
+  const safeId = window.escapeHtml ? window.escapeHtml(String(product.id)) : String(product.id);
   const safeName = window.escapeHtml ? window.escapeHtml(product.name) : product.name;
+  const safeCategory = window.escapeHtml ? window.escapeHtml(product.category || '') : (product.category || '');
+  const safeAge = window.escapeHtml ? window.escapeHtml(String(product.ageGroup || '')) : String(product.ageGroup || '');
+  const encodedId = encodeURIComponent(String(product.id));
+
   modal.setAttribute('role', 'dialog');
   modal.setAttribute('aria-modal', 'true');
   modal.setAttribute('aria-label', `${safeName} Quick View`);
@@ -2413,43 +2947,87 @@ window.openQuickView = function (productId) {
   const settings = window.PunnagaiSettings ? window.PunnagaiSettings.get() : null;
   const waPhone = ((settings && settings.whatsappNumber) || '917550132101').replace(/\D/g, '');
   const waMsg = encodeURIComponent(
-    `Hi Punnagai Toys! I would like to pre-order "${product.name}" (₹${product.price}). Is it available at your Mylapore store?`
+    `Hi Punnagai Toys! I would like to pre-order "${product.name}" (₹${product.price.toLocaleString('en-IN')}). Is it available at your Mylapore store?`
   );
   const waUrl = `https://wa.me/${waPhone}?text=${waMsg}`;
+
+  // Mini Stars HTML
+  let starsHtml = '';
+  if (product.rating) {
+    const starSvgs = typeof renderStars === 'function' ? renderStars(product.rating, '14') : '★★★★★';
+    starsHtml = `
+      <div class="quick-view-stars" aria-label="Rated ${product.rating} out of 5 stars">
+        <span class="qv-stars-icons">${starSvgs}</span>
+        <span class="qv-rating-val">${product.rating}</span>
+        <span class="qv-rating-count">(${product.reviewCount || 16} reviews)</span>
+      </div>
+    `;
+  }
+
+  // Stock and availability
+  const stockCount = typeof getProductStockLevel === 'function' ? getProductStockLevel(product) : (product.stock || 10);
+  const maxStock = Math.max(1, stockCount || 10);
+
+  // Description
+  const descText = window.escapeHtml
+    ? window.escapeHtml(product.description || 'Premium child-safe educational toy selected by experts. Non-toxic, durable, and spark-worthy!')
+    : (product.description || 'Premium child-safe educational toy selected by experts. Non-toxic, durable, and spark-worthy!');
 
   modal.innerHTML = `
     <div class="quick-view-card" onclick="event.stopPropagation()">
       <button class="quick-view-close" onclick="closeQuickView()" aria-label="Close modal">&times;</button>
       <div class="quick-view-grid">
         <div class="quick-view-img-wrap">
-          ${product.imageUrl ? buildOptimizedPictureHtml(product.imageUrl, product.name, { width: 400, height: 400, loading: 'eager', isCard: false, imgClass: 'quick-view-main-img' }) : `<div class="product-img-placeholder" style="height:320px"><span class="cat-emoji">🎁</span></div>`}
-          <span class="quick-view-badge">${window.escapeHtml ? window.escapeHtml(product.category) : product.category}</span>
+          ${product.imageUrl ? buildOptimizedPictureHtml(product.imageUrl, product.name, { width: 420, height: 420, loading: 'eager', isCard: false, imgClass: 'quick-view-main-img' }) : `<div class="product-img-placeholder" style="height:320px"><span class="cat-emoji">🎁</span></div>`}
+          <span class="quick-view-badge">${safeCategory}</span>
         </div>
         <div class="quick-view-content">
-          <div class="quick-view-meta">
-            <span class="quick-view-age">Ages ${window.escapeHtml ? window.escapeHtml(product.ageGroup) : product.ageGroup} yrs</span>
-            <span class="quick-view-stock"><span class="pulse-dot"></span> In Stock in Mylapore</span>
+          <div>
+            <div class="quick-view-meta">
+              <span class="quick-view-age">👶 Ages ${safeAge} yrs</span>
+              <span class="quick-view-stock"><span class="pulse-dot"></span> In Stock in Mylapore</span>
+            </div>
+            <h2 class="quick-view-title">${safeName}</h2>
+            ${starsHtml}
+            <div class="quick-view-price-row">
+              <span class="quick-view-price">&#8377;${product.price.toLocaleString('en-IN')}</span>
+              ${isOnSale ? `<span class="quick-view-orig-price">&#8377;${product.originalPrice.toLocaleString('en-IN')}</span>` : ''}
+              ${isOnSale ? `<span class="discount-tag">&minus;${discount}%</span>` : ''}
+            </div>
+            <p class="quick-view-desc">${descText}</p>
+            <div class="quick-view-highlights">
+              <span class="qv-highlight-pill">🛡️ BIS Non-Toxic</span>
+              <span class="qv-highlight-pill">🎁 Free Gift Wrapping</span>
+              <span class="qv-highlight-pill">🏪 Mylapore Demo Ready</span>
+            </div>
           </div>
-          <h2 class="quick-view-title">${safeName}</h2>
-          <div class="quick-view-price-row">
-            <span class="quick-view-price">&#8377;${product.price.toLocaleString('en-IN')}</span>
-            ${isOnSale ? `<span class="quick-view-orig-price">&#8377;${product.originalPrice.toLocaleString('en-IN')}</span>` : ''}
-            ${isOnSale ? `<span class="discount-tag">&minus;${discount}%</span>` : ''}
-          </div>
-          <p class="quick-view-desc">${window.escapeHtml ? window.escapeHtml(product.description || 'Delightful quality toy for growing minds. Safe, durable, and educational.') : (product.description || 'Delightful quality toy for growing minds. Safe, durable, and educational.')}</p>
-          <div class="quick-view-actions">
-            <button class="btn btn-primary" onclick="handleAddToCart('${product.id}'); closeQuickView();" style="flex:1">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-              Add to Cart
-            </button>
-            <a href="${waUrl}" target="_blank" rel="noopener" class="btn btn-whatsapp-preorder" style="flex:1; text-align:center;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-              WhatsApp Pre-Order
+
+          <div>
+            <!-- Quantity Stepper -->
+            <div class="quick-view-qty-row">
+              <span class="qv-qty-label">Quantity:</span>
+              <div class="qv-qty-stepper">
+                <button type="button" class="qv-qty-btn" aria-label="Decrease quantity" onclick="changeQuickViewQty(-1)">−</button>
+                <input type="number" id="quick-view-qty-input" class="qv-qty-input" value="1" min="1" max="${maxStock}" readonly>
+                <button type="button" class="qv-qty-btn" aria-label="Increase quantity" onclick="changeQuickViewQty(1)">+</button>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="quick-view-actions">
+              <button class="qv-btn-cart" onclick="handleQuickViewAddToCart('${safeId}')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                Add to Cart
+              </button>
+              <a href="${waUrl}" id="qv-whatsapp-btn" data-base-price="${product.price}" data-prod-name="${safeName}" target="_blank" rel="noopener" class="qv-btn-whatsapp">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                Pre-Book
+              </a>
+            </div>
+            <a href="product.html?id=${encodedId}" class="qv-btn-details">
+              View Full Product Page &rarr;
             </a>
           </div>
-          <button class="btn btn-outline" onclick="window.location='product.html?id=${product.id}'" style="width:100%; margin-top:10px;">
-            View Full Detail Page &rarr;
-          </button>
         </div>
       </div>
     </div>

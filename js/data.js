@@ -862,7 +862,7 @@ const SEED_PRODUCTS = [
   },
   {
     "name": "Punnagai Digital Store Credits & E-Gift Card",
-    "description": "Instant digital store credit redeemable for online delivery or Mylapore counter pickup. Hassle-free contactless gifting for birthdays, festive occasions, and surprise rewards for little achievers.",
+    "description": "Instant digital store credit redeemable for in-store pickup and shopping at our Mylapore counter. Hassle-free gifting for birthdays, festive occasions, and surprise rewards for little achievers.",
     "price": 500,
     "originalPrice": 500,
     "category": "Special Editions & Gifts",

@@ -36,14 +36,11 @@
  *       MUST be backed by a SERVER endpoint (or the gateway's signed webhook
  *       callback) that validates the payment signature server-side. The client
  *       NEVER decides on its own that a payment succeeded — it only relays the
- *       gateway/server's verified verdict. In production this becomes the
- *       Razorpay/PayU webhook + a Cloud Function that checks the HMAC signature.
+ *       gateway/server's verified verdict.
  *
  * In USE_LOCAL_MODE the injected gateway is a MOCK
- * (`createMockPaymentGateway`) that simulates a trusted server verifying a
- * signature, so the flow is exercisable offline. Swapping in a real
- * Razorpay/PayU adapter that implements the same { redirect, verify } shape is
- * the only change needed for production — no orchestration code changes.
+ * (`createMockPaymentGateway`) that simulates UPI verification so the flow is exercisable offline.
+ * Direct merchant UPI payments are completed via the shop's official Yes Bank QR code.
  *
  * The confirmation-email sender (Req 6.10) is likewise injectable/stubbed
  * (`createConsoleEmailSender`) because a static site cannot send email; in
@@ -118,7 +115,7 @@
   }
 
   // --------------------------------------------------------------------------
-  // Mock UPI payment gateway (USE_LOCAL_MODE) — stands in for Razorpay/PayU.
+  // Mock UPI payment gateway (USE_LOCAL_MODE) — direct UPI QR simulation.
   // --------------------------------------------------------------------------
 
   /**
@@ -570,7 +567,7 @@
   }
 
   return {
-    // Gateway + email seams (mocks for USE_LOCAL_MODE; swap for Razorpay/PayU).
+    // Gateway + email seams (mocks for USE_LOCAL_MODE / direct UPI QR).
     createMockPaymentGateway: createMockPaymentGateway,
     createConsoleEmailSender: createConsoleEmailSender,
 

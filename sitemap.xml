@@ -38,7 +38,7 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- Delivery Policy & Chennai Local Delivery -->
+  <!-- Store Pickup Policy & In-Store Collection -->
   <url>
     <loc>https://punnagaitoysfancy.in/delivery.html</loc>
     <lastmod>2026-09-06</lastmod>
@@ -46,7 +46,7 @@
     <priority>0.7</priority>
   </url>
 
-  <!-- Payments & UPI Options -->
+  <!-- Official Shop UPI & Payment Policy -->
   <url>
     <loc>https://punnagaitoysfancy.in/payments.html</loc>
     <lastmod>2026-09-06</lastmod>

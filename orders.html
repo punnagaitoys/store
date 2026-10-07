@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css?v=11" />
+    <link rel="stylesheet" href="css/style.css?v=14" />
     <style>
       .order-card {
         border: 1px solid var(--border);
@@ -80,7 +80,7 @@
     <script src="js/lib/wishlist.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/cart.js"></script>
-    <script src="js/app.js?v=11"></script>
+    <script src="js/app.js?v=14"></script>
 
     <script>
       function escapeHtml(str) {
@@ -156,8 +156,8 @@
                   <div style="font-weight:500">${escapeHtml(date)}</div>
                 </div>
                 <div class="text-right">
-                  <div class="order-status">${escapeHtml((order.status || '').toUpperCase())}</div>
-                  <div style="font-weight:600">?${(Number(order.total) || 0).toLocaleString('en-IN')}</div>
+                  <div class="order-status">${escapeHtml((order.orderStatus || order.status || '').toUpperCase())}</div>
+                  <div style="font-weight:600">₹${(Number(order.total) || 0).toLocaleString('en-IN')}</div>
                 </div>
               </div>
               <div class="order-items">
@@ -166,21 +166,27 @@
                     (item) => `
                   <div class="order-item">
                     <span>${Number(item.quantity) || 1}x ${escapeHtml(item.name || 'Item')}</span>
-                    <span>?${((Number(item.price) || 0) * (Number(item.quantity) || 1)).toLocaleString('en-IN')}</span>
+                    <span>₹${((Number(item.price) || 0) * (Number(item.quantity) || 1)).toLocaleString('en-IN')}</span>
                   </div>
                 `
                   )
                   .join('')}
               </div>
-              ${
-                order.trackingNumber
-                  ? `
-                <div style="margin-top:12px; padding-top:12px; border-top:1px dashed var(--border); font-size:13px;">
-                  <strong>Tracking Number:</strong> ${escapeHtml(order.trackingNumber)}
+              <div style="margin-top:10px; padding-top:10px; border-top:1px dashed var(--border); font-size:13px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                <div style="color:var(--text-secondary); display:flex; gap:12px; flex-wrap:wrap;">
+                  <span>🏪 <strong>Pickup:</strong> 4/7 Luz Bazar Complex, Mylapore</span>
+                  <span>🛡️ <strong>Payment:</strong> Shop UPI QR</span>
                 </div>
-              `
-                  : ''
-              }
+                ${
+                  order.paymentProofUrl
+                    ? `<div>
+                        <a href="${escapeHtml(order.paymentProofUrl)}" target="_blank" rel="noopener" class="btn btn-sm btn-outline" style="font-size:12px; padding:3px 10px;">
+                          📸 View Payment Proof
+                        </a>
+                      </div>`
+                    : ''
+                }
+              </div>
             </div>
           `;
             })

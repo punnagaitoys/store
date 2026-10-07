@@ -216,7 +216,7 @@ No coding or terminal commands are required. All steps use the standard **Fireba
 > **Plain English Glossary:**
 >
 > - **Spark Plan (Free):** Google's free tier for Firebase. Includes 50,000 Firestore reads per day, 20,000 writes per day, and 1 GB of stored data for free.
-> - **Blaze Plan (Pay-as-you-go):** Google's paid tier. You only pay if you exceed the free allowances. Required if you use Cloud Functions to talk to outside servers (like Razorpay or WhatsApp).
+> - **Blaze Plan (Pay-as-you-go):** Google's paid tier. You only pay if you exceed the free allowances. Required if you use Cloud Functions to communicate with outside APIs (like automated WhatsApp notification services).
 > - **Quota:** A daily or monthly maximum allowance of database queries or storage traffic. If you exceed a free quota, Firebase may show temporary read/write errors until the daily quota resets at midnight Pacific Time.
 
 ### Step 1: Check Your Current Plan

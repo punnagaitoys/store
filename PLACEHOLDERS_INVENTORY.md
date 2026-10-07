@@ -96,10 +96,12 @@
 
 ## 6. UPI Payment ID & QR Code
 
-- **Files:** [`checkout.html`](./checkout.html), [`js/checkout.js`](./js/checkout.js)
-- **Placeholder Value:** `punnagai@upi` / `yourname@upi`
-- **Action Required:**
-  Set the client's official merchant UPI VPA (e.g., `punnagaitoys@okicici` or `punnagai@upi`) in Store Settings so customers scan/pay directly to the store account.
+- **Files:** [`checkout.html`](./checkout.html), [`js/checkout-page.js`](./js/checkout-page.js), [`js/app.js`](./js/app.js)
+- **Status:** **CONFIGURED (ACTIVE)**
+- **Merchant:** PUNNAGAI TOYS AND FANCY (Yes Bank Merchant QR)
+- **Merchant UPI VPA:** `MAB0451035A0089284@Yesbank`
+- **QR Standee Asset:** [`images/punnagai-upi-qr.png`](./images/punnagai-upi-qr.png) (Yes Bank Scan to Pay)
+- Customers scan and pay directly to the store's official merchant account.
 
 ---
 

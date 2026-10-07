@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -71,7 +71,7 @@
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css?v=9" />
+    <link rel="stylesheet" href="css/style.css?v=11" />
 
     <!-- Schema.org JSON-LD Structured Data: LocalBusiness, WebSite & FAQPage -->
     <script type="application/ld+json">
@@ -222,24 +222,6 @@
               Discover hundreds of quality toys for every age — from baby's first plush to teen tech
               adventures. Visit us in the heart of Mylapore, Chennai.
             </p>
-            <div class="hero-actions">
-              <a href="shop.html" class="btn btn-primary btn-lg">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <circle cx="9" cy="21" r="1" />
-                  <circle cx="20" cy="21" r="1" />
-                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-                </svg>
-                Shop Now
-              </a>
-              <a href="#contact" class="btn btn-outline btn-lg">Find Our Store</a>
-            </div>
             <div class="hero-stats">
               <div class="stat">
                 <span class="stat-number">500+</span>
@@ -263,40 +245,21 @@
               <picture>
                 <source
                   type="image/webp"
-                  srcset="images/hero-banner-600.webp 600w, images/hero-banner-900.webp 900w, images/hero-banner-1200.webp 1200w, images/hero-banner.webp 1200w"
+                  srcset="images/hero-banner-600.webp 600w, images/hero-banner-900.webp 900w, images/hero-banner-1200.webp 1200w, images/hero-banner.webp 1600w"
                   sizes="(max-width: 768px) 100vw, 1200px"
                 />
                 <img
                   src="images/hero-banner.webp"
-                  srcset="images/hero-banner.jpg 1200w"
+                  srcset="images/hero-banner.jpg 1600w"
                   alt="Punnagai Toy Store Flagship Boutique in Mylapore Chennai — Handcrafted Wooden Toys, STEM Kits & Games"
                   class="hero-main-img"
                   loading="eager"
                   fetchpriority="high"
                   decoding="async"
-                  width="1200"
-                  height="675"
+                  width="1600"
+                  height="720"
                 />
               </picture>
-              <div class="hero-banner-overlay"></div>
-              <!-- Floating toy badges -->
-              <div class="floating-badge badge-1">🎯 500+ Educational &amp; Fun Toys</div>
-              <div class="floating-badge badge-2">✨ Mylapore's #1 Toy Store</div>
-              <div class="floating-badge badge-3">⭐ Age-Tested &amp; Kid-Approved</div>
-              <!-- Store tag -->
-              <div class="hero-store-tag">
-                <div class="store-tag-icon-wrap">
-                  <picture>
-                    <source type="image/webp" srcset="logo.webp" />
-                    <img src="logo.png" alt="Punnagai Toys Logo" class="store-tag-logo" width="40" height="40" loading="lazy" decoding="async" />
-                  </picture>
-                  <div class="store-tag-dot" title="Store Open Now"></div>
-                </div>
-                <div class="store-tag-text">
-                  <strong>Visit Us in Mylapore, Chennai</strong>
-                  <span>Open Daily • 9:00 AM – 9:00 PM</span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -961,6 +924,54 @@
       </div>
     </section>
 
+    <!-- BOTTOM CALL TO ACTION -->
+    <section class="section bottom-cta-section" id="bottom-cta">
+      <div class="container">
+        <div class="bottom-cta-card">
+          <div class="bottom-cta-content">
+            <span class="section-badge cta-badge">🎉 Ready to Spark Joy?</span>
+            <h2 class="bottom-cta-title">Find the Perfect Toy for Every Child</h2>
+            <p class="bottom-cta-desc">
+              Explore 500+ handpicked educational toys, board games, and return gifts. Shop online for direct store collection or visit our toy paradise in the heart of Mylapore, Chennai!
+            </p>
+            <div class="bottom-cta-actions">
+              <a href="shop.html" class="btn btn-primary btn-lg">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  aria-hidden="true"
+                >
+                  <circle cx="9" cy="21" r="1" />
+                  <circle cx="20" cy="21" r="1" />
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                </svg>
+                Shop Now
+              </a>
+              <a href="#contact" class="btn btn-outline btn-lg cta-btn-store">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  aria-hidden="true"
+                >
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                Find Our Store
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- CONTACT & LOCATION -->
     <section class="section contact-section" id="contact">
       <div class="container">
@@ -1259,6 +1270,6 @@
     <script src="js/youtube.js"></script>
     <script src="js/google-reviews.js"></script>
     <script src="js/floating-reviews.js"></script>
-    <script src="js/app.js?v=9"></script>
+    <script src="js/app.js?v=11"></script>
   </body>
 </html>

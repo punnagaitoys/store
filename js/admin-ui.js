@@ -480,7 +480,7 @@
             </a>
           </div>
           ${order.transactionRef ? `<p style="margin: 8px 0 0 0; font-size: 0.85rem; color: #475569;"><strong>Customer Transaction UTR / Ref:</strong> <code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-weight: bold;">${escapeHtml(order.transactionRef)}</code></p>` : ''}
-          <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: #475569;"><strong>Shop UPI Paid To:</strong> <code>${escapeHtml(order.shopUpiId || 'thenaadikappan@ok-axis')}</code></p>
+          <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: #475569;"><strong>Shop UPI Paid To:</strong> <code>${escapeHtml(order.shopUpiId || 'MAB0451035A0089284@Yesbank')}</code></p>
         </div>
       `;
     } else {

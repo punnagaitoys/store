@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css?v=9" />
+    <link rel="stylesheet" href="css/style.css?v=11" />
     <style>
       .order-card {
         border: 1px solid var(--border);
@@ -57,7 +57,7 @@
       </div>
 
       <div style="margin-bottom: 24px">
-        <a href="account.html" class="btn btn-outline">← Back to Profile</a>
+        <a href="account.html" class="btn btn-outline">? Back to Profile</a>
       </div>
 
       <div id="orders-list">
@@ -80,7 +80,7 @@
     <script src="js/lib/wishlist.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/cart.js"></script>
-    <script src="js/app.js?v=9"></script>
+    <script src="js/app.js?v=11"></script>
 
     <script>
       function escapeHtml(str) {
@@ -157,7 +157,7 @@
                 </div>
                 <div class="text-right">
                   <div class="order-status">${escapeHtml((order.status || '').toUpperCase())}</div>
-                  <div style="font-weight:600">₹${(Number(order.total) || 0).toLocaleString('en-IN')}</div>
+                  <div style="font-weight:600">?${(Number(order.total) || 0).toLocaleString('en-IN')}</div>
                 </div>
               </div>
               <div class="order-items">
@@ -166,7 +166,7 @@
                     (item) => `
                   <div class="order-item">
                     <span>${Number(item.quantity) || 1}x ${escapeHtml(item.name || 'Item')}</span>
-                    <span>₹${((Number(item.price) || 0) * (Number(item.quantity) || 1)).toLocaleString('en-IN')}</span>
+                    <span>?${((Number(item.price) || 0) * (Number(item.quantity) || 1)).toLocaleString('en-IN')}</span>
                   </div>
                 `
                   )

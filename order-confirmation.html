@@ -1,11 +1,11 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Order Confirmed — Thank you for your purchase at Punnagai Toy Store, Mylapore, Chennai"
+      content="Order Confirmed � Thank you for your purchase at Punnagai Toy Store, Mylapore, Chennai"
     />
     <meta name="robots" content="noindex, nofollow" />
     <title>Order Confirmed | Punnagai Toy Store</title>
@@ -18,7 +18,7 @@
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css?v=9" />
+    <link rel="stylesheet" href="css/style.css?v=11" />
     <style>
       .confirmation-wrapper {
         min-height: 70vh;
@@ -253,7 +253,7 @@
     <script src="js/lib/cart-storage.js"></script>
     <script src="js/lib/cart-logic.js"></script>
     <script src="js/cart.js"></script>
-    <script src="js/app.js?v=9"></script>
+    <script src="js/app.js?v=11"></script>
 
     <script>
       'use strict';
@@ -270,7 +270,7 @@
       }
 
       function fmt(n) {
-        return '₹' + (Number(n) || 0).toLocaleString('en-IN');
+        return '?' + (Number(n) || 0).toLocaleString('en-IN');
       }
 
       function buildTrackWhatsAppUrl(orderId) {
@@ -280,7 +280,7 @@
           ''
         );
         const msg = encodeURIComponent(
-          `Hello! 👋 I'd like to track my order from Punnagai Toy Store.\n\n*Order ID:* ${orderId}\n\nCould you please share the current status? Thank you! 🙏`
+          `Hello! ?? I'd like to track my order from Punnagai Toy Store.\n\n*Order ID:* ${orderId}\n\nCould you please share the current status? Thank you! ??`
         );
         return `https://wa.me/${phone}?text=${msg}`;
       }
@@ -328,14 +328,14 @@
 
         const discountRow =
           order.discount && Number(order.discount) > 0
-            ? `<div class="detail-row"><span class="label">Discount</span><span class="value" style="color:var(--success, #16a34a)">−${fmt(order.discount)}</span></div>`
+            ? `<div class="detail-row"><span class="label">Discount</span><span class="value" style="color:var(--success, #16a34a)">-${fmt(order.discount)}</span></div>`
             : '';
 
         const proofSection = order.paymentProofUrl
           ? `
           <div style="margin-top:20px; padding:16px; background:#ffffff; border:1px solid var(--border); border-radius:12px;">
             <div style="font-weight:700; font-size:0.88rem; margin-bottom:8px; display:flex; align-items:center; gap:6px; color:var(--text-primary);">
-              <span>📸</span> Uploaded Payment Proof:
+              <span>??</span> Uploaded Payment Proof:
             </div>
             <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
               <a href="${escHtml(order.paymentProofUrl)}" target="_blank" rel="noopener">
@@ -343,7 +343,7 @@
               </a>
               <div>
                 <a href="${escHtml(order.paymentProofUrl)}" target="_blank" rel="noopener" class="btn btn-sm btn-outline" style="font-size:0.8rem; padding:4px 12px;">
-                  🔍 View Full Screenshot
+                  ?? View Full Screenshot
                 </a>
                 ${order.transactionRef ? `<div style="font-size:12px; color:var(--text-muted); margin-top:4px;">UTR: <strong>${escHtml(order.transactionRef)}</strong></div>` : ''}
               </div>
@@ -353,16 +353,16 @@
           : '';
 
         // Dynamic title and message depending on state
-        let title = 'Order Submitted for Verification! 🎉';
+        let title = 'Order Submitted for Verification! ??';
         let subtitle =
           'We have received your payment screenshot! Our store manager is verifying your receipt with our merchant account and preparing your toys for pickup.';
 
         if (status === 'confirmed' || status === 'ready_for_pickup') {
-          title = 'Order Ready for In-Store Pickup! 🛍️';
+          title = 'Order Ready for In-Store Pickup! ???';
           subtitle =
             'Your payment has been verified! Your order is packed and ready for collection at our Mylapore shop.';
         } else if (status === 'completed') {
-          title = 'Order Completed & Handed Over! 🎉';
+          title = 'Order Completed & Handed Over! ??';
           subtitle =
             'Thank you for shopping at Punnagai Toy Store! We hope the little ones love their new toys.';
         } else if (status === 'cancelled') {
@@ -391,20 +391,20 @@
       <!-- Store Pickup Location Card -->
       <div style="background:var(--primary-50, #fef2f2); border:1.5px solid var(--primary-border, #fecaca); border-radius:14px; padding:20px; text-align:left; margin-bottom:24px;">
         <div style="font-weight:700; font-size:1rem; color:var(--primary, #dc2626); margin-bottom:6px; display:flex; align-items:center; gap:8px;">
-          🏪 In-Store Collection Address:
+          ?? In-Store Collection Address:
         </div>
         <div style="font-size:0.92rem; color:var(--text-primary); line-height:1.5;">
           <strong>Punnagai Toy Store &amp; Fancy Collections</strong><br>
-          4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai – 600 004<br>
+          4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai � 600 004<br>
           <span style="color:var(--text-muted); font-size:0.85rem;">(Landmark: Near Luz Corner, Mylapore)</span>
         </div>
         <div style="margin-top:10px; display:flex; gap:12px; flex-wrap:wrap; font-size:0.85rem; color:var(--text-secondary);">
-          <div>🕒 <strong>Timings:</strong> 10:00 AM – 9:30 PM (All Days)</div>
-          <div>📞 <strong>Store Phone:</strong> +91 75501 32101 / +91 72994 61657</div>
+          <div>?? <strong>Timings:</strong> 10:00 AM � 9:30 PM (All Days)</div>
+          <div>?? <strong>Store Phone:</strong> +91 75501 32101 / +91 72994 61657</div>
         </div>
         <div style="margin-top:14px;">
           <a href="https://maps.google.com/?q=Punnagai+Toy+Store+Mylapore+Chennai" target="_blank" rel="noopener" class="btn btn-sm btn-outline" style="border-radius:99px; background:#fff; font-size:0.82rem; padding:6px 16px;">
-            📍 Open in Google Maps
+            ?? Open in Google Maps
           </a>
         </div>
       </div>
@@ -449,7 +449,7 @@
         if (!card) return;
         card.innerHTML = `
       <div style="text-align:center; padding:20px 0;">
-        <div style="font-size:3rem; margin-bottom:16px;">⚠️</div>
+        <div style="font-size:3rem; margin-bottom:16px;">??</div>
         <h2 style="margin-bottom:8px;">Order Not Found</h2>
         <p style="color:var(--text-secondary); margin-bottom:24px;">${escHtml(message)}</p>
         <a href="shop.html" class="btn btn-primary">Back to Shop</a>

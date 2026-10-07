@@ -130,7 +130,7 @@ function getActiveShopUpiId() {
     const s = getStoreSettings();
     if (s && s.upiId) return s.upiId.trim();
   }
-  return 'thenaadikappan@ok-axis';
+  return 'MAB0451035A0089284@Yesbank';
 }
 
 if (!window.escapeHtml) {
@@ -163,21 +163,16 @@ function setupShopUPI() {
 
   // Standard Indian UPI Intent URI format
   const orderRef = 'Order_' + Date.now().toString().slice(-6);
-  const upiUri = `upi://pay?pa=${encodeURIComponent(shopUpiId)}&pn=${encodeURIComponent('Punnagai Toy Store')}&am=${currentPayableTotal.toFixed(2)}&cu=INR&tn=${encodeURIComponent(orderRef)}`;
+  const upiUri = `upi://pay?pa=${encodeURIComponent(shopUpiId)}&pn=${encodeURIComponent('Punnagai Toys and Fancy')}&am=${currentPayableTotal.toFixed(2)}&cu=INR&tn=${encodeURIComponent(orderRef)}`;
 
-  // Update dynamic QR image with local fallback
+  // Present the store's verified official Yes Bank merchant QR standee
   const qrImg = document.getElementById('shop-upi-qr-image');
   if (qrImg) {
     qrImg.onerror = function () {
       this.onerror = null;
       this.src = 'images/punnagai-upi-qr.png';
     };
-    if (currentPayableTotal > 0) {
-      const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=${encodeURIComponent(upiUri)}`;
-      qrImg.src = qrApiUrl;
-    } else {
-      qrImg.src = 'images/punnagai-upi-qr.png';
-    }
+    qrImg.src = 'images/punnagai-upi-qr.png';
   }
 
   // Update mobile intent link

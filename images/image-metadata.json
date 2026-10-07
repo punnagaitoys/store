@@ -399,12 +399,28 @@
     "webpBytes": 126352,
     "cached": true
   },
+  "images/punnagai-upi-qr.jpeg": {
+    "width": 1254,
+    "height": 1254,
+    "aspectRatio": "1.0000",
+    "webpPath": "images/punnagai-upi-qr.webp",
+    "originalBytes": 175382,
+    "webpBytes": 104524
+  },
+  "images/punnagai-upi-qr.jpg": {
+    "width": 0,
+    "height": 0,
+    "webpPath": "images/punnagai-upi-qr.webp",
+    "originalBytes": 175382,
+    "webpBytes": 104524,
+    "cached": true
+  },
   "images/punnagai-upi-qr.png": {
     "width": 0,
     "height": 0,
     "webpPath": "images/punnagai-upi-qr.webp",
-    "originalBytes": 846,
-    "webpBytes": 7092,
+    "originalBytes": 175382,
+    "webpBytes": 104524,
     "cached": true
   },
   "images/social-share.jpg": {

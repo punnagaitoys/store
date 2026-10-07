@@ -59,7 +59,8 @@ const CATEGORIES = [
   'Remote Control',
   'Building Blocks',
   'Musical Toys',
-  'Soft Toys & Plush'
+  'Soft Toys & Plush',
+  'Special Editions & Gifts'
 ];
 
 const AGE_GROUPS = [
@@ -730,13 +731,157 @@ const SEED_PRODUCTS = [
     "newArrival": false,
     "badge": "Pocket Game",
     "videoUrl": ""
+  },
+  {
+    "name": "Punnagai Signature Brand Mascot Toy & Plush",
+    "description": "Official Punnagai mascot plush toy – colourful children's companion designed for joyful storytelling, warm hugs, imaginative playtime adventures, and lasting store souvenir memories.",
+    "price": 399,
+    "originalPrice": 599,
+    "category": "Soft Toys & Plush",
+    "ageGroup": "0-2",
+    "imageUrl": "images/logo.jpg",
+    "inStock": true,
+    "stock": 50,
+    "quantity": 50,
+    "featured": true,
+    "newArrival": true,
+    "badge": "Official Mascot",
+    "videoUrl": ""
+  },
+  {
+    "name": "Punnagai Summer Vacation Mega Holiday Play Hamper",
+    "description": "Vibrant festive holiday gift hamper curated for sunny days and school vacation joy. Packed with interactive outdoor games, board activities, and surprise novelty toys for hours of shared laughter.",
+    "price": 1499,
+    "originalPrice": 1999,
+    "category": "Special Editions & Gifts",
+    "ageGroup": "6-8",
+    "imageUrl": "images/banners/banner-summer-sale.jpg",
+    "inStock": true,
+    "stock": 20,
+    "quantity": 20,
+    "featured": true,
+    "newArrival": true,
+    "badge": "Mega Hamper",
+    "videoUrl": ""
+  },
+  {
+    "name": "Punnagai Flagship Wonderland Play & Learn Mega Box",
+    "description": "The quintessential Punnagai toy wonderland showcase! A premium mega collection bundle combining developmental wooden puzzles, sensory toys, and imaginative learning kits hand-picked for growing minds.",
+    "price": 2499,
+    "originalPrice": 3299,
+    "category": "Educational & Learning",
+    "ageGroup": "3-5",
+    "imageUrl": "images/hero-banner.jpg",
+    "inStock": true,
+    "stock": 15,
+    "quantity": 15,
+    "featured": true,
+    "newArrival": false,
+    "badge": "Flagship Edition",
+    "videoUrl": ""
+  },
+  {
+    "name": "High-Octane RC Super Speed & Stunt Racing Pack",
+    "description": "Double the thrills with our dynamic high-speed vehicle collection! Features extreme drift capabilities, multi-channel remote controls, durable crash bumpers, and 360-degree aerial stunt action.",
+    "price": 2199,
+    "originalPrice": 2899,
+    "category": "Remote Control",
+    "ageGroup": "6-8",
+    "imageUrl": "images/banners/hero-banner-2.png",
+    "inStock": true,
+    "stock": 15,
+    "quantity": 15,
+    "featured": true,
+    "newArrival": true,
+    "badge": "Turbo Stunt Pack",
+    "videoUrl": ""
+  },
+  {
+    "name": "Punnagai All-Stars Best-Seller Celebration Box",
+    "description": "A grand celebration of Chennai's most cherished toys: top-rated tactile wooden board games, electronic robots, and cuddly animal companions nestled in one deluxe presentation gift box.",
+    "price": 1899,
+    "originalPrice": 2499,
+    "category": "Special Editions & Gifts",
+    "ageGroup": "6-8",
+    "imageUrl": "images/banners/storefront-promo-banner.png",
+    "inStock": true,
+    "stock": 18,
+    "quantity": 18,
+    "featured": true,
+    "newArrival": false,
+    "badge": "Best Seller Box",
+    "videoUrl": ""
+  },
+  {
+    "name": "Punnagai Mylapore Boutique In-Store Shopping Experience Pass",
+    "description": "Exclusive visit pass for our flagship boutique in Mylapore, Chennai. Includes VIP toy demonstration session, complimentary festive gift packaging, and expert toy-matching consultation with our curators.",
+    "price": 500,
+    "originalPrice": 500,
+    "category": "Special Editions & Gifts",
+    "ageGroup": "0-2",
+    "imageUrl": "images/store/store-entrance.jpg",
+    "inStock": true,
+    "stock": 100,
+    "quantity": 100,
+    "featured": false,
+    "newArrival": false,
+    "badge": "Store Pass",
+    "videoUrl": ""
+  },
+  {
+    "name": "Punnagai Mylapore Family Play & Shop Day Gift Card",
+    "description": "Enjoy a memorable hands-on play and discovery experience inside our Mylapore store. Redeemable towards any premium toys, board games, or custom birthday party bulk orders at the counter.",
+    "price": 1000,
+    "originalPrice": 1000,
+    "category": "Special Editions & Gifts",
+    "ageGroup": "3-5",
+    "imageUrl": "images/store/store-interior.jpg",
+    "inStock": true,
+    "stock": 100,
+    "quantity": 100,
+    "featured": false,
+    "newArrival": false,
+    "badge": "Gift Voucher",
+    "videoUrl": ""
+  },
+  {
+    "name": "Punnagai Deluxe Birthday & Return Gifts Party Bundle",
+    "description": "Handcrafted party favor and return gift assortment tailored for children's birthdays, festive gatherings, and school milestones. Includes assorted puzzles, sensory activities, and joy for all guests.",
+    "price": 1299,
+    "originalPrice": 1699,
+    "category": "Special Editions & Gifts",
+    "ageGroup": "6-8",
+    "imageUrl": "images/social-share.jpg",
+    "inStock": true,
+    "stock": 25,
+    "quantity": 25,
+    "featured": true,
+    "newArrival": true,
+    "badge": "Party Favorite",
+    "videoUrl": ""
+  },
+  {
+    "name": "Punnagai Digital Store Credits & E-Gift Card",
+    "description": "Instant digital store credit redeemable for online delivery or Mylapore counter pickup. Hassle-free contactless gifting for birthdays, festive occasions, and surprise rewards for little achievers.",
+    "price": 500,
+    "originalPrice": 500,
+    "category": "Special Editions & Gifts",
+    "ageGroup": "0-2",
+    "imageUrl": "images/punnagai-upi-qr.png",
+    "inStock": true,
+    "stock": 100,
+    "quantity": 100,
+    "featured": false,
+    "newArrival": false,
+    "badge": "E-Gift Card",
+    "videoUrl": ""
   }
 ];
 
 // ============================================================
 // LOCAL STORAGE HELPERS
 // ============================================================
-const LOCAL_STORAGE_CATALOG_VERSION = 'punnagai_catalog_v2026_41_branded_official';
+const LOCAL_STORAGE_CATALOG_VERSION = 'punnagai_catalog_v2026_50_all_inventory_items';
 
 // Immediate purge of obsolete dummy products on file evaluation
 (function purgeLegacyProducts() {

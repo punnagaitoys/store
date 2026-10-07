@@ -1,7 +1,8 @@
-// server.js - Zero-dependency static dev server for Punnagai Toy Store
+// server.js - High-Performance Zero-dependency static dev server for Punnagai Toy Store
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const zlib = require('zlib');
 
 const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 3000;
 let currentPort = DEFAULT_PORT;
@@ -22,8 +23,15 @@ const MIME_TYPES = {
   '.ico': 'image/x-icon',
   '.webp': 'image/webp',
   '.xml': 'application/xml',
-  '.txt': 'text/plain; charset=UTF-8'
+  '.txt': 'text/plain; charset=UTF-8',
+  '.woff': 'font/woff',
+  '.woff2': 'font/woff2',
+  '.ttf': 'font/ttf'
 };
+
+const COMPRESSIBLE_EXTS = new Set([
+  '.html', '.css', '.js', '.mjs', '.json', '.svg', '.xml', '.txt'
+]);
 
 const server = http.createServer((req, res) => {
   let reqPath = decodeURIComponent(req.url.split('?')[0]);
@@ -70,20 +78,51 @@ const server = http.createServer((req, res) => {
     const ext = path.extname(filePath).toLowerCase();
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 
-    res.writeHead(200, {
-      'Content-Type': contentType,
-      'Cache-Control': 'no-cache',
-      'Access-Control-Allow-Origin': '*'
-    });
+    // HTTP Caching & ETag
+    const etag = `"${stats.size.toString(16)}-${Math.floor(stats.mtimeMs).toString(16)}"`;
+    const clientEtag = req.headers['if-none-match'];
 
-    const stream = fs.createReadStream(filePath);
-    stream.pipe(res);
+    if (clientEtag && clientEtag === etag) {
+      res.writeHead(304, {
+        'ETag': etag,
+        'Cache-Control': ext === '.html' ? 'public, max-age=0, must-revalidate' : 'public, max-age=86400, stale-while-revalidate=604800',
+        'Access-Control-Allow-Origin': '*'
+      });
+      res.end();
+      return;
+    }
+
+    const headers = {
+      'Content-Type': contentType,
+      'ETag': etag,
+      'Cache-Control': ext === '.html' ? 'public, max-age=0, must-revalidate' : 'public, max-age=86400, stale-while-revalidate=604800',
+      'Access-Control-Allow-Origin': '*',
+      'Vary': 'Accept-Encoding'
+    };
+
+    // Compression support (gzip / deflate) for compressible text assets
+    const acceptEncoding = req.headers['accept-encoding'] || '';
+    const shouldCompress = COMPRESSIBLE_EXTS.has(ext) && stats.size > 256;
+
+    if (shouldCompress && /\bgzip\b/.test(acceptEncoding)) {
+      headers['Content-Encoding'] = 'gzip';
+      res.writeHead(200, headers);
+      fs.createReadStream(filePath).pipe(zlib.createGzip({ level: 6 })).pipe(res);
+    } else if (shouldCompress && /\bdeflate\b/.test(acceptEncoding)) {
+      headers['Content-Encoding'] = 'deflate';
+      res.writeHead(200, headers);
+      fs.createReadStream(filePath).pipe(zlib.createDeflate()).pipe(res);
+    } else {
+      headers['Content-Length'] = stats.size;
+      res.writeHead(200, headers);
+      fs.createReadStream(filePath).pipe(res);
+    }
   });
 });
 
 function startServer(port) {
   server.listen(port, '0.0.0.0', () => {
-    console.log(`Punnagai Dev Server running at http://0.0.0.0:${port}`);
+    console.log(`Punnagai High-Performance Dev Server running at http://0.0.0.0:${port}`);
   });
 }
 

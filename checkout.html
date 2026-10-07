@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -18,7 +18,7 @@
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css?v=9" />
+    <link rel="stylesheet" href="css/style.css?v=11" />
     <style>
       .form-input {
         width: 100%;
@@ -287,7 +287,7 @@
                         word-break: break-all;
                       "
                     >
-                      thenaadikappan@ok-axis
+                      MAB0451035A0089284@Yesbank
                     </span>
                     <button
                       type="button"
@@ -330,50 +330,81 @@
                   </strong>
                 </div>
 
-                <!-- Dynamic QR Code Container -->
+                <!-- Verified Merchant QR Code Container -->
                 <div
                   id="upi-qr-wrapper"
                   style="
                     background: #ffffff;
-                    padding: 14px;
-                    border: 1.5px solid var(--border, #e5e7eb);
-                    border-radius: var(--radius-md, 14px);
+                    padding: 16px;
+                    border: 2px solid var(--border, #e2e8f0);
+                    border-radius: var(--radius-lg, 18px);
                     display: inline-flex;
                     flex-direction: column;
                     align-items: center;
-                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+                    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+                    max-width: 320px;
+                    width: 100%;
+                    box-sizing: border-box;
                   "
                 >
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      gap: 6px;
+                      margin-bottom: 10px;
+                      font-size: 0.82rem;
+                      font-weight: 800;
+                      color: #1e3a8a;
+                      background: #eff6ff;
+                      padding: 4px 12px;
+                      border-radius: 999px;
+                    "
+                  >
+                    <span>🛡️ Verified Merchant QR Code</span>
+                  </div>
                   <img
                     id="shop-upi-qr-image"
                     src="images/punnagai-upi-qr.png"
-                    alt="Punnagai Toy Store UPI QR Code"
-                    width="220"
-                    height="220"
+                    alt="Punnagai Toys and Fancy Official Yes Bank UPI QR Code"
+                    width="280"
+                    height="280"
                     style="
                       display: block;
-                      border-radius: 8px;
-                      width: 220px;
-                      height: 220px;
+                      border-radius: 10px;
+                      width: 100%;
+                      max-width: 280px;
+                      height: auto;
                       object-fit: contain;
+                      border: 1px solid #f1f5f9;
                     "
                   />
                   <div
                     style="
-                      margin-top: 8px;
-                      font-size: 0.78rem;
-                      font-weight: 700;
+                      margin-top: 10px;
+                      font-size: 0.82rem;
+                      font-weight: 800;
+                      color: var(--text-primary);
+                    "
+                  >
+                    PUNNAGAI TOYS AND FANCY
+                  </div>
+                  <div
+                    style="
+                      margin-top: 2px;
+                      font-size: 0.74rem;
+                      font-weight: 600;
                       color: var(--text-muted);
                     "
                   >
-                    Scan with GPay / PhonePe / Paytm / BHIM
+                    Scan with GPay / PhonePe / Paytm / BHIM / Any UPI App
                   </div>
                 </div>
 
                 <!-- Mobile Direct UPI Intent Button -->
                 <a
                   id="mobile-upi-intent-btn"
-                  href="upi://pay?pa=thenaadikappan@ok-axis&pn=Punnagai%20Toy%20Store&cu=INR"
+                  href="upi://pay?pa=MAB0451035A0089284@Yesbank&pn=Punnagai%20Toys%20and%20Fancy&cu=INR"
                   class="btn btn-outline"
                   style="
                     border-radius: var(--radius-full);
@@ -650,6 +681,6 @@
     <script src="js/checkout.js"></script>
     <!-- Page-specific checkout UI -->
     <script src="js/checkout-page.js"></script>
-    <script src="js/app.js?v=9"></script>
+    <script src="js/app.js?v=11"></script>
   </body>
 </html>

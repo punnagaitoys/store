@@ -29,7 +29,7 @@ const DEFAULT_STORE_SETTINGS = {
   phoneSecondary: '+91 72994 61657',
   whatsappNumber: '917550132101',
   storeEmail: 'contact@punnagaitoysfancy.in',
-  upiId: 'thenaadikappan@ok-axis',
+  upiId: 'MAB0451035A0089284@Yesbank',
   storeAddress: '4/7 Luz Bazar Complex, R.K. Mutt Road, Mylapore, Chennai – 600 004',
   youtubeChannel: 'https://www.youtube.com/@PunnagaiRahim',
   instagramUrl: 'https://www.instagram.com/punnagaitoys.fancy/',
@@ -355,9 +355,13 @@ function renderNavbar(activePage = '') {
             <a href="shop.html?category=Educational+%26+Learning" class="subnav-chip">🧠 Educational</a>
             <a href="shop.html?category=Building+Blocks" class="subnav-chip">🧱 Building Blocks</a>
             <a href="shop.html?category=Board+Games+%26+Puzzles" class="subnav-chip">♟️ Board Games</a>
-            <a href="shop.html?category=Outdoor+%26+Sports" class="subnav-chip">⚽ Outdoor</a>
-            <a href="shop.html?category=Arts+%26+Crafts" class="subnav-chip">🎨 Arts &amp; Crafts</a>
             <a href="shop.html?category=Remote+Control" class="subnav-chip">🚗 Remote Control</a>
+            <a href="shop.html?category=Soft+Toys+%26+Plush" class="subnav-chip">🧸 Soft Plush</a>
+            <a href="shop.html?category=Musical+Toys" class="subnav-chip">🎵 Musical Toys</a>
+            <a href="shop.html?category=Action+%26+Adventure" class="subnav-chip">⚡ Action Toys</a>
+            <a href="shop.html?category=Dolls+%26+Fashion" class="subnav-chip">👑 Dolls &amp; Pretend</a>
+            <a href="shop.html?category=Outdoor+%26+Sports" class="subnav-chip">⚽ Outdoor</a>
+            <a href="shop.html?category=Special+Editions+%26+Gifts" class="subnav-chip">🎁 Gifts &amp; Vouchers</a>
             <a href="shop.html?sale=true" class="subnav-chip subnav-chip-sale">🔥 Deals &amp; Offers</a>
           </div>
         </div>
@@ -370,6 +374,18 @@ function renderNavbar(activePage = '') {
           </div>
           <div class="mobile-menu-links">
             ${pages.map((p) => `<a href="${p.href}" class="mobile-nav-link ${activePage === p.id ? 'active' : ''}">${p.label}</a>`).join('')}
+            <div class="mobile-menu-divider" style="height:1px;background:var(--border,#e2e8f0);margin:8px 0;"></div>
+            <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-secondary,#64748b);padding:4px 16px;">Product Menus</span>
+            <a href="shop.html?category=Educational+%26+Learning" class="mobile-nav-link">🧠 Educational Toys</a>
+            <a href="shop.html?category=Board+Games+%26+Puzzles" class="mobile-nav-link">🎲 Board Games &amp; Puzzles</a>
+            <a href="shop.html?category=Remote+Control" class="mobile-nav-link">🚗 Remote Control Cars &amp; Jets</a>
+            <a href="shop.html?category=Soft+Toys+%26+Plush" class="mobile-nav-link">🧸 Soft Toys &amp; Plush</a>
+            <a href="shop.html?category=Musical+Toys" class="mobile-nav-link">🎵 Musical &amp; Sensory Toys</a>
+            <a href="shop.html?category=Action+%26+Adventure" class="mobile-nav-link">⚡ Action &amp; Adventure</a>
+            <a href="shop.html?category=Dolls+%26+Fashion" class="mobile-nav-link">👑 Dolls &amp; Pretend Play</a>
+            <a href="shop.html?category=Outdoor+%26+Sports" class="mobile-nav-link">⚽ Outdoor &amp; Sports</a>
+            <a href="shop.html?category=Special+Editions+%26+Gifts" class="mobile-nav-link">🎁 Special Editions &amp; Gifts</a>
+            <div class="mobile-menu-divider" style="height:1px;background:var(--border,#e2e8f0);margin:8px 0;"></div>
             <a href="wishlist.html" class="mobile-nav-link ${activePage === 'wishlist' ? 'active' : ''}">Wishlist (<span class="wishlist-badge-mobile">${wishlistCount}</span>)</a>
             <a href="cart.html" class="mobile-nav-link ${activePage === 'cart' ? 'active' : ''}">Cart (<span class="cart-badge-mobile">${cartCount}</span>)</a>
             <a href="account.html" class="mobile-nav-link ${activePage === 'account' ? 'active' : ''}">My Account</a>
@@ -427,17 +443,31 @@ function renderNavbar(activePage = '') {
     mobileCloseBtn.addEventListener('click', closeMenu);
   }
 
-  // Navbar scroll effect
+  // High-performance passive throttled navbar scroll listener
   if (!window._navbarScrollListenerAttached) {
-    window.addEventListener('scroll', () => {
-      const navbar =
-        document.getElementById('navbar') ||
-        document.getElementById('main-navbar') ||
-        document.querySelector('.navbar');
-      if (navbar) {
-        navbar.classList.toggle('scrolled', window.scrollY > 20);
-      }
-    });
+    let ticking = false;
+    let cachedNavbar = null;
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            if (!cachedNavbar) {
+              cachedNavbar =
+                document.getElementById('navbar') ||
+                document.getElementById('main-navbar') ||
+                document.querySelector('.navbar');
+            }
+            if (cachedNavbar) {
+              cachedNavbar.classList.toggle('scrolled', window.scrollY > 20);
+            }
+            ticking = false;
+          });
+          ticking = true;
+        }
+      },
+      { passive: true }
+    );
     window._navbarScrollListenerAttached = true;
   }
 
@@ -1616,16 +1646,20 @@ async function initShopPage() {
     });
   }
 
-  // ---- Wire events ----
+  // Wire events with 160ms debouncing for fast typing on mobile & desktop
   if (searchInput) {
+    let searchDebounceTimer = null;
     searchInput.addEventListener('input', (e) => {
       searchTerm = e.target.value;
       currentPage = 1;
-      renderAutocomplete();
-      render();
+      clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = setTimeout(() => {
+        renderAutocomplete();
+        render();
+      }, 160);
     });
     searchInput.addEventListener('focus', renderAutocomplete);
-    searchInput.addEventListener('blur', () => setTimeout(hideAutocomplete, 150));
+    searchInput.addEventListener('blur', () => setTimeout(hideAutocomplete, 180));
   }
 
   if (sortSelect) {
@@ -1980,28 +2014,80 @@ function renderProductDetailsUI() {
       </div>
     </div>
 
-    <!-- Mobile Sticky Bottom Buy Bar (visible on mobile only) -->
-    <div class="mobile-sticky-buy-bar" id="mobile-sticky-buy-bar">
-      <div class="sticky-buy-price-wrap">
-        <span class="sticky-buy-price">₹${displayInfo.discounted.toLocaleString('en-IN')}</span>
-        ${displayInfo.hasDiscount ? `<span class="sticky-buy-orig">₹${displayInfo.original.toLocaleString('en-IN')}</span>` : ''}
+    <!-- Mobile Sticky Bottom Buy Bar (visible on mobile only, slides up past hero button) -->
+    <div class="mobile-sticky-buy-bar" id="mobile-sticky-buy-bar" aria-label="Quick Add to Cart Bar">
+      <div class="sticky-buy-product-meta">
+        <img src="${escapeHtml(product.imageUrl || 'images/logo.png')}" alt="${escapeHtml(product.name)}" class="sticky-buy-thumb" width="44" height="44" loading="lazy" decoding="async" />
+        <div class="sticky-buy-info">
+          <div class="sticky-buy-title">${escapeHtml(product.name)}</div>
+          <div class="sticky-buy-price-wrap">
+            <span class="sticky-buy-price">₹${displayInfo.discounted.toLocaleString('en-IN')}</span>
+            ${displayInfo.hasDiscount ? `<span class="sticky-buy-orig">₹${displayInfo.original.toLocaleString('en-IN')}</span>` : ''}
+          </div>
+        </div>
       </div>
       <div class="sticky-buy-btn-group">
-        <button type="button" class="btn btn-whatsapp-sticky" onclick="handleDetailWhatsApp()" aria-label="Order on WhatsApp">
+        <button type="button" class="btn btn-whatsapp-sticky" onclick="handleDetailWhatsApp()" aria-label="Order on WhatsApp" title="WhatsApp Enquiry">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
-          <span>WhatsApp</span>
         </button>
         ${
           displayInfo.stock.inStock
-            ? `<button type="button" class="btn btn-primary btn-sticky-cart" onclick="handleDetailAddToCart()">Add to Cart</button>`
-            : `<button type="button" class="btn btn-disabled btn-sticky-cart" disabled>Out of Stock</button>`
+            ? `<button type="button" class="btn btn-primary btn-sticky-cart" onclick="handleDetailAddToCart()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:2px"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                <span>Add</span>
+              </button>`
+            : `<button type="button" class="btn btn-disabled btn-sticky-cart" disabled>Sold Out</button>`
         }
       </div>
     </div>
   `;
 
   document.getElementById('product-detail-content').innerHTML = html;
-  document.body.classList.add('has-sticky-bar');
+  initStickyBuyBar();
+}
+
+function initStickyBuyBar() {
+  const stickyBar = document.getElementById('mobile-sticky-buy-bar');
+  const heroBox = document.querySelector('.add-to-cart-box');
+  if (!stickyBar || !heroBox) return;
+
+  const updateVisibility = () => {
+    if (window.innerWidth > 768) {
+      stickyBar.classList.remove('visible');
+      document.body.classList.remove('has-sticky-bar');
+      return;
+    }
+    const rect = heroBox.getBoundingClientRect();
+    // Show bar when hero add to cart box has scrolled above viewport or navbar
+    if (rect.bottom < 60) {
+      stickyBar.classList.add('visible');
+      document.body.classList.add('has-sticky-bar');
+    } else {
+      stickyBar.classList.remove('visible');
+      document.body.classList.remove('has-sticky-bar');
+    }
+  };
+
+  if (window._stickyBarScrollHandler) {
+    window.removeEventListener('scroll', window._stickyBarScrollHandler);
+    window.removeEventListener('resize', window._stickyBarResizeHandler);
+  }
+
+  let ticking = false;
+  window._stickyBarScrollHandler = () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        updateVisibility();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  };
+  window._stickyBarResizeHandler = updateVisibility;
+
+  window.addEventListener('scroll', window._stickyBarScrollHandler, { passive: true });
+  window.addEventListener('resize', window._stickyBarResizeHandler, { passive: true });
+  updateVisibility();
 }
 
 window.handleVariantSelect = function (type, value) {
